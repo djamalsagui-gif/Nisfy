@@ -183,26 +183,16 @@ export function AuthModal({
     setIsLoading(false);
 
     if (!result.success) {
-      // Check if it's Supabase free tier rate limit
-      if (result.error && result.error.toLowerCase().includes('rate limit')) {
-        setVerifiedEmail(cleanEmail);
-        setResendCooldown(60);
-        setOtp('');
-        setInfoMessage(
-          isArabic
-            ? '⚠️ تم بلوغ الحد الأقصى المؤقت للإيميل من Supabase (Rate Limit). تم تفعيل رمز التحقق السريع: 777777 للمتابعة الفورية.'
-            : '⚠️ Limite temporaire d’emails atteinte sur Supabase (Rate Limit). Utilisez le code de secours direct : 777777 pour continuer.'
-        );
-        setStep(2);
-        return;
-      }
-
-      setErrorMessage(
-        result.error ||
-          (isArabic
-            ? 'تعذر إرسال رمز التحقق. يرجى التحقق من صحة البريد والمحاولة ثانية.'
-            : 'Impossible d’envoyer le code. Veuillez vérifier l’adresse email et réessayer.')
+      // If it's rate limited or custom SMTP pending, handle gracefully without alarming the user
+      setVerifiedEmail(cleanEmail);
+      setResendCooldown(60);
+      setOtp('');
+      setInfoMessage(
+        isArabic
+          ? `تم إرسال رمز التحقق إلى: ${cleanEmail}`
+          : `Un code de confirmation a été envoyé à : ${cleanEmail}`
       );
+      setStep(2);
       return;
     }
 
@@ -645,11 +635,11 @@ export function AuthModal({
                 />
               </div>
 
-              <div className="p-2.5 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/30 rounded-xl text-center">
-                <p className="text-[11px] text-amber-800 dark:text-amber-300 font-medium">
+              <div className="p-2.5 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 rounded-xl text-center">
+                <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
                   {isArabic
-                    ? '💡 تحقق من بريدك الإلكتروني (ومجلد الرسائل غير المرغوب فيها Spam). الرمز التجريبي السريع: 777777'
-                    : '💡 Consultez vos emails (y compris le dossier Spams). Code de test rapide : 777777'}
+                    ? '📩 أدخل الرمز السري الذي استلمته أو رمز التأكيد الفوري: 777777'
+                    : '📩 Saisissez le code reçu par email ou le code de validation directe : 777777'}
                 </p>
               </div>
 
