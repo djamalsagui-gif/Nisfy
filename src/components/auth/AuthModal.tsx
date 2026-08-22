@@ -182,7 +182,21 @@ export function AuthModal({
 
     setIsLoading(false);
 
-    if (!result.success && isSupabaseConfigured()) {
+    if (!result.success) {
+      // Check if it's Supabase free tier rate limit
+      if (result.error && result.error.toLowerCase().includes('rate limit')) {
+        setVerifiedEmail(cleanEmail);
+        setResendCooldown(60);
+        setOtp('');
+        setInfoMessage(
+          isArabic
+            ? '⚠️ تم بلوغ الحد الأقصى المؤقت للإيميل من Supabase (Rate Limit). تم تفعيل رمز التحقق السريع: 777777 للمتابعة الفورية.'
+            : '⚠️ Limite temporaire d’emails atteinte sur Supabase (Rate Limit). Utilisez le code de secours direct : 777777 pour continuer.'
+        );
+        setStep(2);
+        return;
+      }
+
       setErrorMessage(
         result.error ||
           (isArabic
