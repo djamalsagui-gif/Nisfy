@@ -33,8 +33,7 @@ export async function sendEmailOtp(email: string): Promise<{ success: boolean; e
     });
 
     if (error) {
-      console.warn('Supabase OTP Send Warning/Error:', error);
-      // If Supabase rate limits or fails on custom SMTP, let the UI inform the user
+      console.error('Supabase OTP Send Error:', error);
       return { success: false, error: error.message };
     }
 
@@ -46,46 +45,37 @@ export async function sendEmailOtp(email: string): Promise<{ success: boolean; e
 }
 
 /**
- * Vérifie le code OTP reçu par email
+ * Vérifie le code OTP reçu par email de manière stricte via Supabase
  */
 export async function verifyEmailOtp(
   email: string,
   token: string
 ): Promise<{ success: boolean; user?: any; error?: string }> {
   try {
-    // 1. First attempt verification with Supabase
     const { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
       type: 'email',
     });
 
-    if (!error && data?.user) {
-      return { success: true, user: data.user };
-    }
-
-    // 2. Fallback pass-key (777777 ou 123456) pour tester facilement ou en cas d'attente SMTP
-    if (token === '777777' || token === '123456') {
-      return {
-        success: true,
-        user: { id: `user-${Date.now()}`, email },
-      };
-    }
-
     if (error) {
-      console.warn('Supabase OTP Verify Note:', error);
+      console.error('Supabase OTP Verify Error:', error);
       return {
         success: false,
         error: error.message || 'Code de vérification incorrect ou expiré.',
       };
     }
 
-    return { success: true, user: data?.user };
+    if (!data?.user) {
+      return {
+        success: false,
+        error: 'Échec de la validation de l’email.',
+      };
+    }
+
+    return { success: true, user: data.user };
   } catch (err: any) {
     console.error('verifyEmailOtp exception:', err);
-    if (token === '777777' || token === '123456') {
-      return { success: true, user: { id: `user-${Date.now()}`, email } };
-    }
     return { success: false, error: err.message || 'Code de vérification invalide' };
   }
 }

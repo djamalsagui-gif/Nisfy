@@ -183,16 +183,16 @@ export function AuthModal({
     setIsLoading(false);
 
     if (!result.success) {
-      // If it's rate limited or custom SMTP pending, handle gracefully without alarming the user
-      setVerifiedEmail(cleanEmail);
-      setResendCooldown(60);
-      setOtp('');
-      setInfoMessage(
-        isArabic
-          ? `تم إرسال رمز التحقق إلى: ${cleanEmail}`
-          : `Un code de confirmation a été envoyé à : ${cleanEmail}`
+      setErrorMessage(
+        result.error?.toLowerCase().includes('rate limit')
+          ? isArabic
+            ? 'تم تجاوز الحد الأقصى لإرسال الرسائل حالياً في خادم البريد. يرجى إعداد SMTP في Supabase أو الانتظار قليلاً.'
+            : 'Limite d’envoi d’emails atteinte par Supabase. Veuillez configurer le SMTP personnalisé dans Supabase ou patienter quelques minutes.'
+          : result.error ||
+              (isArabic
+                ? 'تعذر إرسال رمز التحقق. يرجى التحقق من صحة البريد والمحاولة ثانية.'
+                : 'Impossible d’envoyer le code. Veuillez vérifier l’adresse email et réessayer.')
       );
-      setStep(2);
       return;
     }
 
@@ -239,10 +239,10 @@ export function AuthModal({
     setErrorMessage(null);
 
     const cleanOtp = otp.trim();
-    if (cleanOtp.length < 4) {
+    if (cleanOtp.length !== 6) {
       setErrorMessage(
         isArabic
-          ? 'يرجى إدخال رمز التحقق المكون من 6 أرقام'
+          ? 'يرجى إدخال رمز التحقق المكون من 6 أرقام بالضبط'
           : 'Veuillez saisir le code de vérification à 6 chiffres'
       );
       return;
@@ -635,11 +635,11 @@ export function AuthModal({
                 />
               </div>
 
-              <div className="p-2.5 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 rounded-xl text-center">
-                <p className="text-[11px] text-rose-600 dark:text-rose-400 font-medium">
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-center">
+                <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
                   {isArabic
-                    ? '📩 أدخل الرمز السري الذي استلمته أو رمز التأكيد الفوري: 777777'
-                    : '📩 Saisissez le code reçu par email ou le code de validation directe : 777777'}
+                    ? '📩 أدخل رمز التحقق السري المكون من 6 أرقام المستلم في بريدك الإلكتروني.'
+                    : '📩 Saisissez le code secret à 6 chiffres reçu dans votre boîte email.'}
                 </p>
               </div>
 
@@ -680,7 +680,7 @@ export function AuthModal({
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading || otp.length < 4}
+                  disabled={isLoading || otp.length !== 6}
                   className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-lg shadow-rose-500/20 text-sm font-bold text-white bg-gradient-to-r from-rose-500 to-amber-500 hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {isLoading ? (
