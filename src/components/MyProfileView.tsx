@@ -32,6 +32,7 @@ import {
   saveRememberedAccount,
   clearRememberedAccount,
 } from '../utils/storage';
+import { syncUserProfileToSupabase } from '../api/supabase';
 
 interface MyProfileViewProps {
   currentUser: UserProfile;
@@ -323,6 +324,7 @@ export function MyProfileView({
 
     datingSounds.playLikeSound();
     onUpdateProfile(updated);
+    syncUserProfileToSupabase(updated);
 
     // Save or update remembered credentials on this device
     if (rememberedOnDevice) {

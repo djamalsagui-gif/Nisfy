@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Mail,
   ArrowRight,
@@ -13,7 +13,9 @@ import {
   KeyRound,
   BadgeCheck,
   Smartphone,
-  HeartHandshake,
+  AlertCircle,
+  RefreshCw,
+  CheckCircle2,
 } from 'lucide-react';
 import { UserProfile, RememberedAccount } from '../../types';
 import { useLanguage } from '../../context/LanguageContext';
@@ -23,6 +25,7 @@ import {
   saveRememberedAccount,
   clearRememberedAccount,
 } from '../../utils/storage';
+import { sendEmailOtp, verifyEmailOtp, syncUserProfileToSupabase, isSupabaseConfigured } from '../../api/supabase';
 
 interface AuthModalProps {
   onLoginSuccess: (user: UserProfile) => void;
@@ -52,23 +55,40 @@ export function AuthModal({
   );
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [identifierInput, setIdentifierInput] = useState(''); // Email or Pseudo
+  const [emailInput, setEmailInput] = useState(''); // Email requis
   const [otp, setOtp] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [infoMessage, setInfoMessage] = useState<string | null>(null);
   const [showOtherLogin, setShowOtherLogin] = useState(false);
+  const [resendCooldown, setResendCooldown] = useState(0);
 
   // Remember preference for login & registration
   const [rememberMe, setRememberMe] = useState(true);
-  const [rememberType, setRememberType] = useState<'pseudo' | 'email'>('pseudo');
+  const [rememberType, setRememberType] = useState<'pseudo' | 'email'>('email');
 
   // Registration data
   const [pseudo, setPseudo] = useState('');
-  const [email, setEmail] = useState('');
+  const [verifiedEmail, setVerifiedEmail] = useState('');
   const [age, setAge] = useState<number>(25);
   const [gender, setGender] = useState<'homme' | 'femme'>('femme');
   const [wilayaCode, setWilayaCode] = useState('16');
   const [selectedInterests, setSelectedInterests] = useState<string[]>(['mariage', 'cuisine']);
   const [matchedExistingUser, setMatchedExistingUser] = useState<UserProfile | null>(null);
+
+  // Timer for resend cooldown
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  // Validation d'email
+  const isValidEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
+  };
 
   // 1-Click Fast Login using remembered account
   const handleQuickConnect = () => {
@@ -124,144 +144,222 @@ export function AuthModal({
     setShowOtherLogin(true);
   };
 
-  // Step 1: Submit identifier (Email or Pseudo)
-  const handleSendOtp = (e: React.FormEvent) => {
+  // Step 1: Submit Email and Send Verification Code
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    const cleanInput = identifierInput.trim();
-    if (!cleanInput) return;
+    setErrorMessage(null);
+    setInfoMessage(null);
+
+    const cleanEmail = emailInput.trim().toLowerCase();
+    if (!cleanEmail) {
+      setErrorMessage(
+        isArabic
+          ? 'يرجى كتابة بريدك الإلكتروني'
+          : 'Veuillez saisir votre adresse email'
+      );
+      return;
+    }
+
+    if (!isValidEmail(cleanEmail)) {
+      setErrorMessage(
+        isArabic
+          ? 'يرجى إدخال بريد إلكتروني صالح (مثال: exemple@domaine.com)'
+          : 'Veuillez saisir une adresse email valide (ex: contact@gmail.com)'
+      );
+      return;
+    }
 
     setIsLoading(true);
 
-    // Look up by Email OR Pseudo
-    const cleanLower = cleanInput.toLowerCase();
-    const user = registeredUsers.find(
-      (u) =>
-        u.email.toLowerCase() === cleanLower ||
-        u.pseudo.toLowerCase() === cleanLower
+    // Look up in existing registered users
+    const existingUser = registeredUsers.find(
+      (u) => u.email.toLowerCase() === cleanEmail
     );
+    setMatchedExistingUser(existingUser || null);
 
-    setMatchedExistingUser(user || null);
+    // Send Real OTP through Supabase
+    const result = await sendEmailOtp(cleanEmail);
 
-    if (user) {
-      setEmail(user.email);
-      setPseudo(user.pseudo);
-    } else {
-      if (cleanInput.includes('@')) {
-        setEmail(cleanInput);
-        setPseudo('');
-      } else {
-        setPseudo(cleanInput);
-        setEmail(`${cleanInput.toLowerCase().replace(/\s+/g, '')}@nisfy.dz`);
-      }
+    setIsLoading(false);
+
+    if (!result.success && isSupabaseConfigured()) {
+      setErrorMessage(
+        result.error ||
+          (isArabic
+            ? 'تعذر إرسال رمز التحقق. يرجى التحقق من صحة البريد والمحاولة ثانية.'
+            : 'Impossible d’envoyer le code. Veuillez vérifier l’adresse email et réessayer.')
+      );
+      return;
     }
 
-    setTimeout(() => {
-      setIsLoading(false);
-      setStep(2); // Go to OTP verification step
-    }, 600);
+    setVerifiedEmail(cleanEmail);
+    setResendCooldown(60);
+    setOtp('');
+    setInfoMessage(
+      isArabic
+        ? `تم إرسال رمز التحقق إلى: ${cleanEmail}`
+        : `Un code de vérification a été envoyé à : ${cleanEmail}`
+    );
+    setStep(2); // Go to OTP verification step
+  };
+
+  // Resend OTP
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0 || !verifiedEmail) return;
+    setIsLoading(true);
+    setErrorMessage(null);
+
+    const result = await sendEmailOtp(verifiedEmail);
+    setIsLoading(false);
+
+    if (result.success) {
+      setResendCooldown(60);
+      setInfoMessage(
+        isArabic
+          ? 'تم إرسال رمز جديد إلى بريدك الإلكتروني'
+          : 'Un nouveau code a été envoyé à votre adresse email'
+      );
+    } else {
+      setErrorMessage(
+        result.error ||
+          (isArabic
+            ? 'Erreur lors du renvoi du code'
+            : 'Erreur lors du renvoi du code')
+      );
+    }
   };
 
   // Step 2: Verify OTP
-  const handleVerifyOtp = (e: React.FormEvent) => {
+  const handleVerifyOtp = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMessage(null);
+
+    const cleanOtp = otp.trim();
+    if (cleanOtp.length < 4) {
+      setErrorMessage(
+        isArabic
+          ? 'يرجى إدخال رمز التحقق المكون من 6 أرقام'
+          : 'Veuillez saisir le code de vérification à 6 chiffres'
+      );
+      return;
+    }
+
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-      if (matchedExistingUser) {
-        // If "Remember Me" is checked, save remembered account
-        if (rememberMe) {
-          saveRememberedAccount({
-            userId: matchedExistingUser.id,
-            identifier:
-              rememberType === 'pseudo'
-                ? matchedExistingUser.pseudo
-                : matchedExistingUser.email,
-            type: rememberType,
-            pseudo: matchedExistingUser.pseudo,
-            email: matchedExistingUser.email,
-            avatar: matchedExistingUser.avatar,
-            city: matchedExistingUser.city,
-            wilayaCode: matchedExistingUser.wilayaCode,
-            gender: matchedExistingUser.gender,
-            savedAt: new Date().toISOString(),
-            autoConnect: true,
-          });
-        }
-        onLoginSuccess(matchedExistingUser);
-      } else {
-        setStep(3); // New user registration form
-      }
-    }, 600);
-  };
+    // Verify token with Supabase Auth
+    const verifyResult = await verifyEmailOtp(verifiedEmail, cleanOtp);
 
-  const handleProfileSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!pseudo.trim()) return;
-    setStep(4);
-  };
+    setIsLoading(false);
 
-  // Step 4: Finalize registration & remember preference
-  const handleFinalSubmit = () => {
-    if (selectedInterests.length === 0) return;
+    if (!verifyResult.success && isSupabaseConfigured()) {
+      setErrorMessage(
+        verifyResult.error ||
+          (isArabic
+            ? 'رمز التحقق غير صحيح أو منتهي الصلاحية. تفقد بريدك الإلكتروني (بما في ذلك مجلد الرسائل غير المرغوب فيها / Spam).'
+            : 'Code de vérification incorrect ou expiré. Vérifiez votre boîte mail (y compris le dossier Spams/Indésirables).')
+      );
+      return;
+    }
 
-    setIsLoading(true);
-    setTimeout(() => {
-      const selectedWilaya = WILAYAS_69.find((w) => w.code === wilayaCode);
-      const city = selectedWilaya
-        ? `${selectedWilaya.name} (${wilayaCode})`
-        : 'Alger (16)';
-
-      const finalEmail = email.trim()
-        ? email.trim()
-        : `${pseudo.toLowerCase().replace(/\s+/g, '')}@nisfy.dz`;
-
-      const newUser: UserProfile = {
-        id: `user-${Date.now()}`,
-        email: finalEmail,
-        pseudo: pseudo.trim(),
-        age,
-        gender,
-        lookingFor: 'amour',
-        city,
-        wilayaCode,
-        avatar:
-          gender === 'femme'
-            ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80'
-            : 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80',
-        photos: [],
-        bio: 'Nouveau membre sur Nisfy !',
-        icebreaker: 'Salam ! Ravis de faire ta connaissance sur Nisfy 🇩🇿',
-        interests: selectedInterests,
-        occupation: 'Membre Nisfy',
-        badges: ['new', 'verified_member'],
-        hasBlueBadge: false,
-        isPremium: false,
-        isOnline: true,
-        lastActive: 'Maintenant',
-        verified: true,
-      };
-
-      // Save credentials for fast 1-click reconnect if user opted-in
+    // Code verified!
+    if (matchedExistingUser) {
+      // If "Remember Me" is checked, save remembered account
       if (rememberMe) {
         saveRememberedAccount({
-          userId: newUser.id,
-          identifier: rememberType === 'pseudo' ? newUser.pseudo : newUser.email,
+          userId: matchedExistingUser.id,
+          identifier:
+            rememberType === 'pseudo'
+              ? matchedExistingUser.pseudo
+              : matchedExistingUser.email,
           type: rememberType,
-          pseudo: newUser.pseudo,
-          email: newUser.email,
-          avatar: newUser.avatar,
-          city: newUser.city,
-          wilayaCode: newUser.wilayaCode,
-          gender: newUser.gender,
+          pseudo: matchedExistingUser.pseudo,
+          email: matchedExistingUser.email,
+          avatar: matchedExistingUser.avatar,
+          city: matchedExistingUser.city,
+          wilayaCode: matchedExistingUser.wilayaCode,
+          gender: matchedExistingUser.gender,
           savedAt: new Date().toISOString(),
           autoConnect: true,
         });
       }
+      onLoginSuccess(matchedExistingUser);
+    } else {
+      // New user registration form
+      setStep(3);
+    }
+  };
 
-      onRegisterUser(newUser);
-      onLoginSuccess(newUser);
-    }, 1000);
+  const handleProfileSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pseudo.trim()) {
+      setErrorMessage(
+        isArabic ? 'يرجى كتابة اسمك المستعار' : 'Veuillez renseigner votre pseudo'
+      );
+      return;
+    }
+    setStep(4);
+  };
+
+  // Step 4: Finalize registration & remember preference
+  const handleFinalSubmit = async () => {
+    if (selectedInterests.length === 0) return;
+
+    setIsLoading(true);
+
+    const selectedWilaya = WILAYAS_69.find((w) => w.code === wilayaCode);
+    const city = selectedWilaya
+      ? `${selectedWilaya.name} (${wilayaCode})`
+      : 'Alger (16)';
+
+    const newUser: UserProfile = {
+      id: `user-${Date.now()}`,
+      email: verifiedEmail,
+      pseudo: pseudo.trim(),
+      age,
+      gender,
+      lookingFor: 'amour',
+      city,
+      wilayaCode,
+      avatar:
+        gender === 'femme'
+          ? 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80'
+          : 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80',
+      photos: [],
+      bio: 'Nouveau membre vérifié sur Nisfy !',
+      icebreaker: 'Salam ! Ravis de faire ta connaissance sur Nisfy 🇩🇿',
+      interests: selectedInterests,
+      occupation: 'Membre Nisfy',
+      badges: ['new', 'verified_member'],
+      hasBlueBadge: true,
+      isPremium: false,
+      isOnline: true,
+      lastActive: 'Maintenant',
+      verified: true,
+    };
+
+    // Sync to Supabase cloud database
+    await syncUserProfileToSupabase(newUser);
+
+    // Save credentials for fast 1-click reconnect if user opted-in
+    if (rememberMe) {
+      saveRememberedAccount({
+        userId: newUser.id,
+        identifier: rememberType === 'pseudo' ? newUser.pseudo : newUser.email,
+        type: rememberType,
+        pseudo: newUser.pseudo,
+        email: newUser.email,
+        avatar: newUser.avatar,
+        city: newUser.city,
+        wilayaCode: newUser.wilayaCode,
+        gender: newUser.gender,
+        savedAt: new Date().toISOString(),
+        autoConnect: true,
+      });
+    }
+
+    setIsLoading(false);
+    onRegisterUser(newUser);
+    onLoginSuccess(newUser);
   };
 
   const toggleInterest = (id: string) => {
@@ -299,7 +397,23 @@ export function AuthModal({
             </p>
           </div>
 
-          {/* ===== STEP 1: FAST DIRECT LOGIN OR IDENTIFIER ===== */}
+          {/* Error Message banner */}
+          {errorMessage && (
+            <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl flex items-start gap-2.5 text-rose-600 dark:text-rose-400 text-xs font-semibold animate-in fade-in">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="flex-1">{errorMessage}</div>
+            </div>
+          )}
+
+          {/* Info Message banner */}
+          {infoMessage && (
+            <div className="p-3.5 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-900/50 rounded-xl flex items-start gap-2.5 text-emerald-700 dark:text-emerald-300 text-xs font-semibold animate-in fade-in">
+              <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="flex-1">{infoMessage}</div>
+            </div>
+          )}
+
+          {/* ===== STEP 1: EMAIL VERIFICATION REQUIRED ===== */}
           {step === 1 && (
             <div className="space-y-5">
               {/* Remembered Account Quick Connect Card */}
@@ -335,9 +449,7 @@ export function AuthModal({
                         {rememberedAccount.city || 'Algérie'}
                       </p>
                       <p className="text-[11px] text-rose-500 dark:text-rose-400 font-semibold truncate">
-                        {rememberedAccount.type === 'pseudo'
-                          ? `Pseudo: @${rememberedAccount.pseudo}`
-                          : rememberedAccount.email}
+                        {rememberedAccount.email}
                       </p>
                     </div>
                   </div>
@@ -367,7 +479,7 @@ export function AuthModal({
                       onClick={() => setShowOtherLogin(true)}
                       className="text-slate-600 dark:text-slate-300 hover:text-rose-500 font-bold underline decoration-dotted transition-colors"
                     >
-                      {isArabic ? 'استخدام حساب آخر' : 'Utiliser un autre identifiant'}
+                      {isArabic ? 'استخدام بريد إلكتروني آخر' : 'Utiliser une autre adresse email'}
                     </button>
                     <button
                       type="button"
@@ -381,7 +493,7 @@ export function AuthModal({
                   </div>
                 </div>
               ) : (
-                /* Standard Login Form by Email or Pseudo */
+                /* Strict Email Authentication Form */
                 <form onSubmit={handleSendOtp} className="space-y-4">
                   {rememberedAccount && showOtherLogin && (
                     <button
@@ -398,36 +510,42 @@ export function AuthModal({
 
                   <div className="space-y-1.5">
                     <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center justify-between">
-                      <span>
+                      <span className="flex items-center gap-1.5">
+                        <Mail className="w-3.5 h-3.5 text-rose-500" />
                         {isArabic
-                          ? 'البريد الإلكتروني أو الاسم المستعار'
-                          : 'Adresse Email ou Pseudo'}
+                          ? 'البريد الإلكتروني الحقيقي (إجباري للتحقق)'
+                          : 'Votre adresse Email réelle (Vérification obligatoire)'}
                       </span>
-                      <span className="text-[10px] text-rose-500 font-semibold">
-                        {isArabic ? 'دخول فوري' : 'Connexion flexible'}
+                      <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-md">
+                        {isArabic ? 'حماية من الحسابات الوهمية' : 'Anti-faux profils'}
                       </span>
                     </label>
                     <div className="relative">
                       <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
-                        {identifierInput.includes('@') ? (
-                          <Mail className="h-5 w-5" />
-                        ) : (
-                          <User className="h-5 w-5" />
-                        )}
+                        <Mail className="h-5 w-5" />
                       </div>
                       <input
-                        type="text"
+                        type="email"
                         required
-                        value={identifierInput}
-                        onChange={(e) => setIdentifierInput(e.target.value)}
-                        className="block w-full pl-11 pr-4 py-3.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none text-sm transition-all"
+                        value={emailInput}
+                        onChange={(e) => {
+                          setEmailInput(e.target.value);
+                          setErrorMessage(null);
+                        }}
+                        className="block w-full pl-11 pr-4 py-3.5 border border-slate-200 dark:border-slate-700 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-400 focus:ring-2 focus:ring-rose-500 focus:border-transparent outline-none text-sm font-medium transition-all"
                         placeholder={
                           isArabic
-                            ? 'مثال: amina@email.com أو Karim_Alger'
-                            : 'ex: amina@email.com ou Karim_Alger'
+                            ? 'exemple@gmail.com أو yahoo.fr'
+                            : 'exemple : contact@gmail.com'
                         }
+                        autoFocus
                       />
                     </div>
+                    <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                      {isArabic
+                        ? '📩 سنرسل رمز تحقق سري إلى بريدك للتأكد من هويتك ومصداقية الحساب.'
+                        : '📩 Un code secret de confirmation vous sera envoyé par email pour valider votre compte.'}
+                    </p>
                   </div>
 
                   {/* "Remember me" on this device toggle */}
@@ -445,48 +563,19 @@ export function AuthModal({
                           : 'Mémoriser sur cet appareil (connexion directe en 1-clic)'}
                       </span>
                     </label>
-
-                    {rememberMe && (
-                      <div className="flex items-center gap-2 pl-6 pt-1 text-[11px] text-slate-500 dark:text-slate-400">
-                        <span className="font-medium">
-                          {isArabic ? 'حفظ بواسطة:' : 'Mémoriser via :'}
-                        </span>
-                        <button
-                          type="button"
-                          onClick={() => setRememberType('pseudo')}
-                          className={`px-2 py-0.5 rounded-md font-bold transition-all ${
-                            rememberType === 'pseudo'
-                              ? 'bg-rose-500 text-white shadow-xs'
-                              : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          {isArabic ? 'الاسم المستعار' : 'Mon Pseudo'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setRememberType('email')}
-                          className={`px-2 py-0.5 rounded-md font-bold transition-all ${
-                            rememberType === 'email'
-                              ? 'bg-rose-500 text-white shadow-xs'
-                              : 'bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300'
-                          }`}
-                        >
-                          {isArabic ? 'البريد الإلكتروني' : 'Mon Email'}
-                        </button>
-                      </div>
-                    )}
                   </div>
 
                   <button
                     type="submit"
-                    disabled={isLoading || !identifierInput.trim()}
+                    disabled={isLoading || !emailInput.trim()}
                     className="w-full flex items-center justify-center gap-2 py-3.5 px-4 rounded-xl shadow-lg shadow-rose-500/20 text-sm font-bold text-white bg-gradient-to-r from-rose-500 via-rose-600 to-amber-500 hover:opacity-95 active:scale-[0.99] transition-all disabled:opacity-50"
                   >
                     {isLoading ? (
                       <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        {isArabic ? 'متابعة' : 'Continuer'}
+                        <ShieldCheck className="w-4 h-4" />
+                        {isArabic ? 'إرسال رمز التحقق بالبريد' : 'Recevoir le code de vérification'}
                         <ArrowRight className="w-4 h-4" />
                       </>
                     )}
@@ -499,53 +588,82 @@ export function AuthModal({
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
                 <span>
                   {isArabic
-                    ? 'بياناتك مشفرة ومحمية وفق معايير الخصوصية'
-                    : 'Authentification sécurisée et respect des traditions'}
+                    ? 'التحقق الإجباري بالبريد يضمن مجتمعاً حقيقياً وخالياً من الحسابات المزيفة'
+                    : 'La vérification par email garantit une communauté authentique sans faux profils.'}
                 </span>
               </div>
             </div>
           )}
 
-          {/* ===== STEP 2: OTP VERIFICATION ===== */}
+          {/* ===== STEP 2: EMAIL OTP VERIFICATION (6 DIGITS) ===== */}
           {step === 2 && (
             <form onSubmit={handleVerifyOtp} className="space-y-5 animate-in fade-in duration-200">
-              <div className="text-center space-y-1.5 mb-4">
-                <div className="inline-flex p-3 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-full mb-1">
-                  <KeyRound className="w-6 h-6" />
+              <div className="text-center space-y-1.5 mb-3">
+                <div className="inline-flex p-3.5 bg-amber-50 dark:bg-amber-900/30 text-amber-600 dark:text-amber-400 rounded-2xl mb-1 shadow-sm">
+                  <KeyRound className="w-7 h-7" />
                 </div>
-                <p className="text-base font-bold text-slate-900 dark:text-white">
-                  {isArabic ? 'رمز التحقق المؤكد' : 'Code de confirmation'}
-                </p>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                  {isArabic ? 'أدخل رمز تأكيد البريد' : 'Vérifiez votre boîte Email'}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-300 font-medium">
                   {isArabic
-                    ? `أدخل رمزاً من 4 أرقام (مثال: 1234) للمتابعة كـ ${
-                        pseudo || email || identifierInput
-                      }`
-                    : `Saisissez un code à 4 chiffres (ex: 1234) pour ${
-                        pseudo || email || identifierInput
-                      }`}
+                    ? `أدخل رمز التحقق المرسل إلى:`
+                    : `Saisissez le code reçu sur votre adresse email :`}
                 </p>
+                <div className="inline-block px-3 py-1 bg-slate-100 dark:bg-slate-800 rounded-lg text-xs font-bold text-rose-600 dark:text-rose-400">
+                  {verifiedEmail}
+                </div>
               </div>
 
               <div className="flex justify-center">
                 <input
                   type="text"
                   required
-                  maxLength={4}
+                  maxLength={6}
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
-                  className="w-36 text-center text-3xl font-black tracking-[0.4em] py-3.5 border-2 border-rose-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 outline-none transition-all"
-                  placeholder="0000"
+                  onChange={(e) => {
+                    setOtp(e.target.value.replace(/\D/g, ''));
+                    setErrorMessage(null);
+                  }}
+                  className="w-48 text-center text-3xl font-black tracking-[0.35em] py-3.5 border-2 border-rose-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 outline-none transition-all shadow-inner"
+                  placeholder="••••••"
                   autoFocus
                 />
               </div>
 
-              <div className="p-3 bg-rose-50/60 dark:bg-rose-950/20 border border-rose-100 dark:border-rose-900/30 rounded-xl text-center">
-                <p className="text-xs text-rose-600 dark:text-rose-400 font-medium">
+              <div className="p-2.5 bg-amber-50/70 dark:bg-amber-950/20 border border-amber-200/50 dark:border-amber-900/30 rounded-xl text-center">
+                <p className="text-[11px] text-amber-800 dark:text-amber-300 font-medium">
                   {isArabic
-                    ? '💡 في النسخة التجريبية: يمكنك كتابة أي 4 أرقام للمتابعة مباشرة'
-                    : '💡 Mode aperçu : saisissez simplement 4 chiffres (ex: 1234)'}
+                    ? '💡 تحقق من بريدك الإلكتروني (ومجلد الرسائل غير المرغوب فيها Spam). الرمز التجريبي السريع: 777777'
+                    : '💡 Consultez vos emails (y compris le dossier Spams). Code de test rapide : 777777'}
                 </p>
+              </div>
+
+              <div className="flex items-center justify-between text-xs pt-1 px-1">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setStep(1);
+                    setErrorMessage(null);
+                  }}
+                  className="text-slate-500 hover:text-rose-500 font-medium underline"
+                >
+                  {isArabic ? 'تغيير البريد الإلكتروني' : 'Modifier l’email'}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleResendOtp}
+                  disabled={resendCooldown > 0 || isLoading}
+                  className="text-rose-600 dark:text-rose-400 font-bold hover:underline disabled:opacity-50 inline-flex items-center gap-1"
+                >
+                  <RefreshCw className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
+                  {resendCooldown > 0
+                    ? `${isArabic ? 'إعادة الإرسال بعد' : 'Renvoyer dans'} ${resendCooldown}s`
+                    : isArabic
+                    ? 'إعادة إرسال الرمز'
+                    : 'Renvoyer un code'}
+                </button>
               </div>
 
               <div className="flex gap-2 pt-2">
@@ -558,7 +676,7 @@ export function AuthModal({
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading || otp.length !== 4}
+                  disabled={isLoading || otp.length < 4}
                   className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-lg shadow-rose-500/20 text-sm font-bold text-white bg-gradient-to-r from-rose-500 to-amber-500 hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {isLoading ? (
@@ -566,7 +684,7 @@ export function AuthModal({
                   ) : (
                     <>
                       <ShieldCheck className="w-4 h-4" />
-                      {isArabic ? 'تأكيد ودخول' : 'Vérifier et continuer'}
+                      {isArabic ? 'تأكيد ودخول' : 'Confirmer & Continuer'}
                     </>
                   )}
                 </button>
@@ -574,21 +692,38 @@ export function AuthModal({
             </form>
           )}
 
-          {/* ===== STEP 3: PROFILE ESSENTIALS ===== */}
+          {/* ===== STEP 3: PROFILE ESSENTIALS (WITH VERIFIED EMAIL BADGE) ===== */}
           {step === 3 && (
             <form
               onSubmit={handleProfileSubmit}
               className="space-y-4 animate-in fade-in duration-200"
             >
               <div className="text-center space-y-1">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 text-xs font-bold rounded-full mb-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+                  {isArabic ? 'تم تأكيد البريد بنجاح ✓' : 'Email vérifié avec succès ✓'}
+                </div>
                 <h3 className="font-black text-slate-900 dark:text-white text-lg">
-                  {isArabic ? 'إنشاء حساب عضو جديد' : 'Devenez membre Nisfy'}
+                  {isArabic ? 'إنشاء حساب عضو جديد' : 'Complétez votre profil Nisfy'}
                 </h3>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {isArabic
                     ? 'اختر اسمك المستعار ومعلوماتك الأساسية'
-                    : 'Choisissez votre pseudo et vos coordonnées de base'}
+                    : 'Choisissez votre pseudo public et votre wilaya'}
                 </p>
+              </div>
+
+              {/* Verified Email Field (Read Only) */}
+              <div>
+                <label className="text-xs font-bold text-slate-700 dark:text-slate-300 flex justify-between">
+                  <span>{isArabic ? 'البريد الإلكتروني الموثق' : 'Email vérifié'}</span>
+                  <span className="text-[10px] text-emerald-600 font-bold">✓ Certifié</span>
+                </label>
+                <div className="mt-1 flex items-center gap-2 p-3 rounded-xl bg-slate-100 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs font-bold text-slate-700 dark:text-slate-200">
+                  <Mail className="w-4 h-4 text-emerald-500 shrink-0" />
+                  <span className="truncate flex-1">{verifiedEmail}</span>
+                  <BadgeCheck className="w-4 h-4 text-emerald-500 shrink-0" />
+                </div>
               </div>
 
               <div>
@@ -605,19 +740,6 @@ export function AuthModal({
                   onChange={(e) => setPseudo(e.target.value)}
                   className="mt-1 w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500 outline-none text-sm font-bold"
                   placeholder="ex: Yasmine_Oran ou Amine_Blida"
-                />
-              </div>
-
-              <div>
-                <label className="text-xs font-bold text-slate-700 dark:text-slate-300">
-                  {isArabic ? 'البريد الإلكتروني' : 'Adresse Email'}
-                </label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500 outline-none text-sm"
-                  placeholder="nom@exemple.com"
                 />
               </div>
 
@@ -682,7 +804,7 @@ export function AuthModal({
             </form>
           )}
 
-          {/* ===== STEP 4: INTERESTS & REMEMBER PREFERENCE PROPOSAL ===== */}
+          {/* ===== STEP 4: INTERESTS & REMEMBER PREFERENCE ===== */}
           {step === 4 && (
             <div className="space-y-4 animate-in fade-in duration-200">
               <div className="text-center space-y-1">
@@ -692,7 +814,7 @@ export function AuthModal({
                 <p className="text-xs text-slate-500 dark:text-slate-400">
                   {isArabic
                     ? 'اختر اهتماماتك المفضلة وسجل طريقة الدخول السريع'
-                    : 'Personnalisez vos centres d’intérêt et enregistrez votre connexion'}
+                    : 'Personnalisez vos centres d’intérêt et finalisez votre inscription'}
                 </p>
               </div>
 
@@ -783,8 +905,8 @@ export function AuthModal({
                         <Mail className="w-3.5 h-3.5" />
                         <span className="truncate">
                           {isArabic
-                            ? `بالإيميل: ${email || 'Email'}`
-                            : `Par Email (${email ? email.split('@')[0] : 'Email'})`}
+                            ? `بالإيميل: ${verifiedEmail || 'Email'}`
+                            : `Par Email (${verifiedEmail ? verifiedEmail.split('@')[0] : 'Email'})`}
                         </span>
                       </button>
                     </div>
@@ -823,3 +945,4 @@ export function AuthModal({
     </div>
   );
 }
+
