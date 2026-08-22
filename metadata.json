@@ -1,0 +1,11 @@
+{
+  "name": "Remix Remix Remix Nisfy",
+  "description": "Application de rencontre et mariage respectueuse pour les célibataires des 69 Wilayas d'Algérie et de la Diaspora.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
