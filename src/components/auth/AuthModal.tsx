@@ -238,12 +238,12 @@ export function AuthModal({
     e.preventDefault();
     setErrorMessage(null);
 
-    const cleanOtp = otp.trim();
+    const cleanOtp = otp.trim().replace(/\s+/g, '').replace(/-/g, '');
     if (cleanOtp.length < 6 || cleanOtp.length > 8) {
       setErrorMessage(
         isArabic
-          ? 'يرجى إدخال رمز التحقق المستلم في بريدك الإلكتروني'
-          : 'Veuillez saisir le code de vérification reçu par email'
+          ? 'يرجى إدخال رمز التحقق المكون من 6 أو 8 أرقام المستلم في بريدك الإلكتروني'
+          : 'Veuillez saisir le code de vérification reçu par email (6 ou 8 chiffres)'
       );
       return;
     }
@@ -256,11 +256,20 @@ export function AuthModal({
     setIsLoading(false);
 
     if (!verifyResult.success && isSupabaseConfigured()) {
+      const isExpiredOrInvalid =
+        verifyResult.error?.toLowerCase().includes('expired') ||
+        verifyResult.error?.toLowerCase().includes('invalide') ||
+        verifyResult.error?.toLowerCase().includes('token');
+
       setErrorMessage(
-        verifyResult.error ||
-          (isArabic
-            ? 'رمز التحقق غير صحيح أو منتهي الصلاحية. تفقد بريدك الإلكتروني (بما في ذلك مجلد الرسائل غير المرغوب فيها / Spam).'
-            : 'Code de vérification incorrect ou expiré. Vérifiez votre boîte mail (y compris le dossier Spams/Indésirables).')
+        isExpiredOrInvalid
+          ? isArabic
+            ? 'رمز التحقق منتهي الصلاحية أو غير صحيح. إذا طلبت أكثر من رمز، يرجى إدخال الرمز من آخر رسالة بريد إلكتروني وصلتك أو الضغط على "إعادة إرسال الرمز".'
+            : 'Code incorrect ou expiré. Si vous avez demandé plusieurs codes, veillez à utiliser le code du TOUT DERNIER email reçu (les précédents sont automatiquement annulés).'
+          : verifyResult.error ||
+              (isArabic
+                ? 'رمز التحقق غير صحيح. يرجى التأكد والمحاولة ثانية.'
+                : 'Code de vérification incorrect. Veuillez vérifier et réessayer.')
       );
       return;
     }
@@ -623,10 +632,19 @@ export function AuthModal({
                 <input
                   type="text"
                   required
+                  inputMode="numeric"
+                  autoComplete="one-time-code"
                   maxLength={8}
                   value={otp}
                   onChange={(e) => {
                     setOtp(e.target.value.replace(/\D/g, ''));
+                    setErrorMessage(null);
+                  }}
+                  onPaste={(e) => {
+                    e.preventDefault();
+                    const text = e.clipboardData.getData('text');
+                    const clean = text.replace(/\D/g, '').slice(0, 8);
+                    setOtp(clean);
                     setErrorMessage(null);
                   }}
                   className="w-60 text-center text-2xl sm:text-3xl font-black tracking-[0.25em] py-3.5 border-2 border-rose-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 outline-none transition-all shadow-inner"

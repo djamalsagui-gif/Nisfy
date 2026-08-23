@@ -571,14 +571,27 @@ export function BecomePartnerModal({ isOpen, onClose }: BecomePartnerModalProps)
                 <span>Code Promo attribué :</span>
                 <span className="font-mono bg-white px-2 py-0.5 rounded border border-slate-300">{promoCode || 'PROMO-NISFY'}</span>
               </div>
+              <div className="flex justify-between font-bold text-slate-800 border-t border-slate-200 pt-1">
+                <span>Contact Admin Nisfy :</span>
+                <span className="text-rose-600 font-mono">samirlaouami@gmail.com</span>
+              </div>
             </div>
 
-            <button
-              onClick={handleReset}
-              className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-sm rounded-xl transition-all cursor-pointer"
-            >
-              {isArabic ? 'إغلاق والعودة إلى التطبيق' : 'Fermer et Retourner à l’Application'}
-            </button>
+            <div className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto">
+              <a
+                href={`mailto:samirlaouami@gmail.com?subject=${encodeURIComponent(`[NISFY PARTENAIRE] Dossier ${businessName} - RC ${rcNumber}`)}&body=${encodeURIComponent(`Salam alaykoum,\n\nVoici le dossier de souscription pour ${businessName} :\n- RC : ${rcNumber}\n- NIF : ${nifNumber || 'N/A'}\n- Téléphone : ${phone}\n- Email : ${email}\n- Forfait : ${selectedPlanObj.name} (${selectedPlanObj.price})\n- Wilaya : ${selectedWilaya}\n- Réf Paiement : ${transactionRef || 'En cours'}\n\nCordialement.`)}`}
+                className="flex-1 px-4 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition-all flex items-center justify-center gap-2"
+              >
+                <Send className="w-4 h-4" />
+                <span>Envoyer dossier à samirlaouami@gmail.com</span>
+              </a>
+              <button
+                onClick={handleReset}
+                className="px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl transition-all cursor-pointer"
+              >
+                {isArabic ? 'إغلاق' : 'Fermer'}
+              </button>
+            </div>
           </div>
         )}
       </div>

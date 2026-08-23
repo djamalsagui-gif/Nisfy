@@ -26,6 +26,7 @@ import {
   Sun,
   BookOpen,
   Store,
+  Mail,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -51,6 +52,7 @@ interface NavbarProps {
   onToggleDarkMode?: () => void;
   onOpenPremium?: () => void;
   onOpenVerification?: () => void;
+  onOpenContact?: () => void;
 }
 
 export function Navbar({
@@ -73,6 +75,7 @@ export function Navbar({
   onToggleDarkMode,
   onOpenPremium,
   onOpenVerification,
+  onOpenContact,
 }: NavbarProps) {
   const { t, isArabic } = useLanguage();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -541,6 +544,21 @@ export function Navbar({
                 >
                   <Cake className="w-4 h-4 text-amber-600" />
                   <span>{isArabic ? 'صفحة الشيف نجاة (حلويات الأعراس)' : 'Chef Nadjet (Recettes & Mariage)'}</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowUserMenu(false);
+                    if (onOpenContact) {
+                      onOpenContact();
+                    } else {
+                      window.location.href = 'mailto:samirlaouami@gmail.com?subject=[NISFY]%20Demande%20ou%20Assistance';
+                    }
+                  }}
+                  className="w-full px-3 py-2 text-left text-xs font-bold text-rose-700 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <Mail className="w-4 h-4 text-rose-500" />
+                  <span>{isArabic ? 'الدعم الفني والإدارة (samirlaouami@gmail.com)' : 'Contact & Support (samirlaouami@gmail.com)'}</span>
                 </button>
 
                 <div className="border-t border-slate-100 my-1"></div>

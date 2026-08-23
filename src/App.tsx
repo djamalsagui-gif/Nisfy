@@ -45,6 +45,7 @@ import { CallModal } from './components/CallModal';
 import { FooterProverbs } from './components/FooterProverbs';
 import { PremiumModal } from './components/PremiumModal';
 import { VerificationModal } from './components/auth/VerificationModal';
+import { ContactModal } from './components/ContactModal';
 import { useLanguage } from './context/LanguageContext';
 
 export default function App() {
@@ -91,6 +92,7 @@ export default function App() {
   // Modals state
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Bookmarks State
@@ -473,6 +475,7 @@ export default function App() {
           onToggleDarkMode={handleToggleDarkMode}
           onOpenPremium={() => setIsPremiumModalOpen(true)}
           onOpenVerification={() => setIsVerificationModalOpen(true)}
+          onOpenContact={() => setIsContactModalOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -499,7 +502,15 @@ export default function App() {
 
           {activeTab === 'feed' && (
             <div className="-mt-6 -mx-4 sm:-mx-6 lg:-mx-8 h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)]">
-              <SocialFeed />
+              <SocialFeed 
+                onSelectUser={(userId) => {
+                  const target = registeredUsers.find((u) => u.id === userId);
+                  if (target) {
+                    handleStartDirectChat(target);
+                  }
+                }}
+                onNavigateToDiscover={() => setActiveTab('discover')}
+              />
             </div>
           )}
 
@@ -595,7 +606,7 @@ export default function App() {
       </div>
 
       {/* Cultural Wisdom Proverbs Footer */}
-      <FooterProverbs />
+      <FooterProverbs onOpenContact={() => setIsContactModalOpen(true)} />
 
       {/* ===== POPUP MODAL: MUTUAL MATCH ALERT ===== */}
       {newMatchAlert && (
@@ -699,6 +710,12 @@ export default function App() {
           );
           setTimeout(() => setToastMessage(null), 4000);
         }}
+      />
+
+      {/* ===== POPUP MODAL: CONTACT & SUPPORT (samirlaouami@gmail.com) ===== */}
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={() => setIsContactModalOpen(false)}
       />
 
       {/* ===== TOAST NOTIFICATION POPUP ===== */}

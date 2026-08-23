@@ -52,18 +52,28 @@ export async function verifyEmailOtp(
   token: string
 ): Promise<{ success: boolean; user?: any; error?: string }> {
   try {
-    // Attempt verification with standard 'email' type (signInWithOtp default)
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanToken = token.trim().replace(/\s+/g, '').replace(/-/g, '');
+
+    if (!cleanEmail || !cleanToken) {
+      return {
+        success: false,
+        error: 'Email et code de vérification requis.',
+      };
+    }
+
+    // 1. Attempt verification with standard 'email' type (signInWithOtp default)
     let { data, error } = await supabase.auth.verifyOtp({
-      email,
-      token,
+      email: cleanEmail,
+      token: cleanToken,
       type: 'email',
     });
 
-    // If that fails, attempt with 'signup' type (in case shouldCreateUser triggered signup template)
+    // 2. If that fails, attempt with 'signup' type (in case user is new and signup template was used)
     if (error) {
       const fallbackSignup = await supabase.auth.verifyOtp({
-        email,
-        token,
+        email: cleanEmail,
+        token: cleanToken,
         type: 'signup',
       });
       if (!fallbackSignup.error && fallbackSignup.data?.user) {
@@ -72,11 +82,11 @@ export async function verifyEmailOtp(
       }
     }
 
-    // If still fails, attempt with 'magiclink' type
+    // 3. If still fails, attempt with 'magiclink' type
     if (error) {
       const fallbackMagic = await supabase.auth.verifyOtp({
-        email,
-        token,
+        email: cleanEmail,
+        token: cleanToken,
         type: 'magiclink',
       });
       if (!fallbackMagic.error && fallbackMagic.data?.user) {
@@ -85,11 +95,31 @@ export async function verifyEmailOtp(
       }
     }
 
+    // 4. If still fails, attempt with 'recovery' or 'invite'
+    if (error) {
+      const fallbackRec = await supabase.auth.verifyOtp({
+        email: cleanEmail,
+        token: cleanToken,
+        type: 'recovery',
+      });
+      if (!fallbackRec.error && fallbackRec.data?.user) {
+        data = fallbackRec.data;
+        error = null;
+      }
+    }
+
     if (error) {
       console.error('Supabase OTP Verify Error:', error);
+      const isExpiredOrInvalid = 
+        error.message?.toLowerCase().includes('expired') || 
+        error.message?.toLowerCase().includes('invalid') ||
+        error.message?.toLowerCase().includes('token');
+
       return {
         success: false,
-        error: error.message || 'Code de vérification incorrect ou expiré.',
+        error: isExpiredOrInvalid
+          ? 'Ce code a expiré ou est invalide. Si vous avez demandé plusieurs codes, seul le tout dernier email reçu est valide.'
+          : error.message || 'Code de vérification incorrect ou expiré.',
       };
     }
 

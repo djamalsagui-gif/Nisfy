@@ -52,6 +52,19 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
   const handleSendInquiry = (e: React.FormEvent) => {
     e.preventDefault();
     if (!contactPhone.trim()) return;
+    
+    // Direct dispatch / notification to admin
+    const subject = encodeURIComponent(`[DEMANDE ANNONCE NISFY] ${ad.brandName} - Contact ${contactName || 'Client'}`);
+    const body = encodeURIComponent(
+      `Salam alaykoum,\n\nNouvelle demande client pour l'offre ${ad.brandName} :\n` +
+        `- Nom client : ${contactName || 'Non précisé'}\n` +
+        `- Téléphone : ${contactPhone}\n` +
+        `- Note / Date : ${contactNote || 'Non précisé'}\n` +
+        `- Code Promo : ${ad.promoCode}\n\n` +
+        `Envoyé depuis https://nisfy.vercel.app/`
+    );
+    window.location.href = `mailto:samirlaouami@gmail.com?subject=${subject}&body=${body}`;
+
     setMessageSent(true);
     setTimeout(() => {
       setMessageSent(false);

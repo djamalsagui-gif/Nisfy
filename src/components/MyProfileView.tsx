@@ -883,6 +883,29 @@ export function MyProfileView({
             )}
           </div>
 
+          {/* Support & Admin Assistance Nisfy */}
+          <div className="p-4 bg-gradient-to-r from-slate-50 to-rose-50/50 dark:from-slate-800 dark:to-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-rose-100 dark:bg-rose-950/60 text-rose-600 flex items-center justify-center shrink-0">
+                <Mail className="w-4 h-4" />
+              </div>
+              <div>
+                <p className="font-bold text-slate-800 dark:text-white">
+                  {isArabic ? 'الدعم الفني والإدارة الرسمية' : 'Support & Direction Nisfy'}
+                </p>
+                <p className="text-[11px] text-slate-500 dark:text-slate-400">
+                  {isArabic ? 'لأي استفسار أو طلب مساعدة، راسلنا على :' : 'Pour toute question ou demande officielle :'}
+                </p>
+              </div>
+            </div>
+            <a
+              href="mailto:samirlaouami@gmail.com?subject=[NISFY%20SUPPORT]%20Demande%20Utilisateur"
+              className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-rose-50 text-rose-600 dark:text-rose-400 font-bold border border-slate-200 dark:border-slate-600 flex items-center gap-1.5 transition-colors shadow-2xs font-mono"
+            >
+              <span>samirlaouami@gmail.com</span>
+            </a>
+          </div>
+
           {/* Actions Button */}
           <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100">
             <button

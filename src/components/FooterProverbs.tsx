@@ -1,9 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Sparkles, ChevronLeft, ChevronRight, Pause, Play, HeartHandshake } from 'lucide-react';
+import { Sparkles, ChevronLeft, ChevronRight, Pause, Play, HeartHandshake, Mail } from 'lucide-react';
 import { ALGERIAN_PROVERBS } from '../data/proverbs';
 import { useLanguage } from '../context/LanguageContext';
 
-export function FooterProverbs() {
+interface FooterProverbsProps {
+  onOpenContact?: () => void;
+}
+
+export function FooterProverbs({ onOpenContact }: FooterProverbsProps) {
   const { isArabic } = useLanguage();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -27,8 +31,8 @@ export function FooterProverbs() {
   };
 
   return (
-    <footer className="mt-auto border-t border-slate-200 bg-gradient-to-b from-white via-slate-50 to-rose-50/30 py-4 px-3 sm:px-6 relative z-10 select-none">
-      <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+    <footer className="mt-auto border-t border-slate-200 dark:border-slate-800 bg-gradient-to-b from-white via-slate-50 to-rose-50/30 dark:from-slate-900 dark:via-slate-900 dark:to-rose-950/20 py-4 px-3 sm:px-6 relative z-10 select-none">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
         {/* Proverb Content with Algerian Cultural Badge */}
         <div className="flex items-center gap-3 flex-1 min-w-0">
           <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center shrink-0 shadow-sm shadow-amber-500/20">
@@ -45,44 +49,69 @@ export function FooterProverbs() {
               </span>
             </div>
 
-            <p className="text-sm sm:text-base font-extrabold text-slate-800 font-serif tracking-tight truncate">
+            <p className="text-sm sm:text-base font-extrabold text-slate-800 dark:text-slate-200 font-serif tracking-tight truncate">
               {proverb.arabic}
             </p>
-            <p className="text-xs text-slate-500 font-medium italic truncate">
+            <p className="text-xs text-slate-500 dark:text-slate-400 font-medium italic truncate">
               {proverb.french}
             </p>
           </div>
         </div>
 
-        {/* Controls */}
-        <div className="flex items-center gap-1.5 shrink-0 bg-white/80 backdrop-blur-xs p-1 rounded-2xl border border-slate-200 shadow-2xs">
-          <button
-            onClick={handlePrev}
-            className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
-            title="Précédent"
-          >
-            <ChevronLeft className="w-4 h-4" />
-          </button>
+        {/* Contact Email & Controls */}
+        <div className="flex items-center gap-2 shrink-0">
+          {onOpenContact ? (
+            <button
+              onClick={onOpenContact}
+              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs cursor-pointer"
+              title="Contacter la direction de Nisfy"
+            >
+              <Mail className="w-3.5 h-3.5 text-rose-500" />
+              <span className="hidden md:inline">Contact :</span>
+              <span className="font-mono text-[11px] font-bold">samirlaouami@gmail.com</span>
+            </button>
+          ) : (
+            <a
+              href="mailto:samirlaouami@gmail.com?subject=[NISFY]%20Demande%20ou%20Contact"
+              className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs"
+              title="Contacter la direction de Nisfy"
+            >
+              <Mail className="w-3.5 h-3.5 text-rose-500" />
+              <span className="hidden md:inline">Contact :</span>
+              <span className="font-mono text-[11px] font-bold">samirlaouami@gmail.com</span>
+            </a>
+          )}
 
-          <button
-            onClick={() => setIsPlaying(!isPlaying)}
-            className="p-1.5 rounded-xl hover:bg-rose-50 text-rose-600 transition-colors cursor-pointer"
-            title={isPlaying ? 'Pause' : 'Lecture'}
-          >
-            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-          </button>
+          {/* Controls */}
+          <div className="flex items-center gap-1 bg-white/80 dark:bg-slate-800/80 backdrop-blur-xs p-1 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-2xs">
+            <button
+              onClick={handlePrev}
+              className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              title="Précédent"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
 
-          <button
-            onClick={handleNext}
-            className="p-1.5 rounded-xl hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
-            title="Suivant"
-          >
-            <ChevronRight className="w-4 h-4" />
-          </button>
+            <button
+              onClick={() => setIsPlaying(!isPlaying)}
+              className="p-1.5 rounded-xl hover:bg-rose-50 dark:hover:bg-rose-950/40 text-rose-600 dark:text-rose-400 transition-colors cursor-pointer"
+              title={isPlaying ? 'Pause' : 'Lecture'}
+            >
+              {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
+            </button>
 
-          <span className="text-[10px] font-black text-slate-400 px-1.5">
-            {currentIndex + 1}/{ALGERIAN_PROVERBS.length}
-          </span>
+            <button
+              onClick={handleNext}
+              className="p-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              title="Suivant"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
+
+            <span className="text-[10px] font-black text-slate-400 px-1.5">
+              {currentIndex + 1}/{ALGERIAN_PROVERBS.length}
+            </span>
+          </div>
         </div>
       </div>
     </footer>

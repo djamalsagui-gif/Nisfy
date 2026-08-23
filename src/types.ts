@@ -154,7 +154,7 @@ export interface LikeAction {
   timestamp: string;
 }
 
-export type ActiveTab = 'discover' | 'feed' | 'customs' | 'marketplace' | 'matches' | 'chat' | 'lounge' | 'map' | 'profile' | 'live' | 'chef_nadjet';
+export type ActiveTab = 'discover' | 'feed' | 'customs' | 'marketplace' | 'shop' | 'matches' | 'chat' | 'lounge' | 'map' | 'profile' | 'live' | 'chef_nadjet';
 
 export interface WilayaCustom {
   id: string;

@@ -472,27 +472,50 @@ export const WeddingMarketplaceView: React.FC = () => {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/60 text-xs text-amber-900 dark:text-amber-200 flex items-center justify-between">
+              <span>Conseiller Mariage & Administration :</span>
+              <span className="font-bold font-mono text-rose-600">samirlaouami@gmail.com</span>
+            </div>
+
+            <div className="flex flex-col sm:flex-row gap-2">
               <button
                 type="button"
                 onClick={() => {
+                  const servicesList = [
+                    'Salle & Traiteur',
+                    includeTenues ? 'Tenues & Neggafa' : null,
+                    includePhoto ? 'Photo & Vidéo HD' : null,
+                    includeGateaux ? 'Gâteaux & Pâtisserie DZ' : null,
+                    includeZorna ? 'Zorna & Musique' : null,
+                  ].filter(Boolean).join(', ');
+
+                  const subject = encodeURIComponent(`[DEVIS MARIAGE NISFY] Estimation pour ${guestCount} invités à ${selectedWilaya}`);
+                  const body = encodeURIComponent(
+                    `Salam alaykoum,\n\nVoici ma demande de devis & checklist mariage :\n` +
+                      `- Wilaya : ${selectedWilaya}\n` +
+                      `- Nombre d'invités : ${guestCount}\n` +
+                      `- Budget estimé : ${estimatedBudgetDZD.toLocaleString('fr-FR')} DZD\n` +
+                      `- Services sélectionnés : ${servicesList}\n\n` +
+                      `Merci de m'adresser les propositions des prestataires certifiés.`
+                  );
+                  window.location.href = `mailto:samirlaouami@gmail.com?subject=${subject}&body=${body}`;
                   setQuoteSuccess(true);
                   setTimeout(() => {
                     setQuoteSuccess(false);
                     setIsQuoteModalOpen(false);
-                  }, 2000);
+                  }, 2500);
                 }}
-                className="w-full py-3.5 rounded-2xl bg-slate-900 text-white font-bold text-sm hover:bg-slate-800 transition flex items-center justify-center gap-2"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 {quoteSuccess ? (
                   <>
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    Devis synthétisé sauvegardé !
+                    <CheckCircle2 className="w-4 h-4 text-emerald-300" />
+                    Demande transmise à samirlaouami@gmail.com !
                   </>
                 ) : (
                   <>
-                    <Send className="w-4 h-4 text-amber-400" />
-                    Recevoir la checklist & propositions par email
+                    <Send className="w-4 h-4 text-amber-300" />
+                    Transmettre le devis par email à samirlaouami@gmail.com
                   </>
                 )}
               </button>
