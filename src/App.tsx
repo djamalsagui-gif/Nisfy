@@ -41,6 +41,7 @@ import { ChefNadjetView } from './components/chef-nadjet/ChefNadjetView';
 import { SocialFeed } from './components/feed/SocialFeed';
 import { CustomsGuideView } from './components/CustomsGuideView';
 import { WeddingMarketplaceView } from './components/WeddingMarketplaceView';
+import { YouthShopView } from './components/YouthShopView';
 import { CallModal } from './components/CallModal';
 import { FooterProverbs } from './components/FooterProverbs';
 import { PremiumModal } from './components/PremiumModal';
@@ -520,6 +521,10 @@ export default function App() {
             />
           )}
 
+          {activeTab === 'shop' && (
+            <YouthShopView />
+          )}
+
           {activeTab === 'marketplace' && (
             <WeddingMarketplaceView />
           )}
@@ -712,7 +717,7 @@ export default function App() {
         }}
       />
 
-      {/* ===== POPUP MODAL: CONTACT & SUPPORT (samirlaouami@gmail.com) ===== */}
+      {/* ===== POPUP MODAL: CONTACT & SUPPORT ===== */}
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}

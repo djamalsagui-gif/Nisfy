@@ -26,6 +26,7 @@ import {
   Sun,
   BookOpen,
   Store,
+  ShoppingBag,
   Mail,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
@@ -185,11 +186,11 @@ export function Navbar({
         </div>
 
         {/* Navigation Tabs (Desktop & Tablet) */}
-        <nav className="flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar">
+        <nav className="flex-1 min-w-0 flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-1">
           {/* Discover */}
           <button
             onClick={() => onSelectTab('discover')}
-            className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+            className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'discover'
                 ? 'bg-rose-50 text-rose-600 border border-rose-200/80 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -197,6 +198,40 @@ export function Navbar({
           >
             <Compass className="w-4 h-4 text-rose-500" />
             <span className="hidden sm:inline">{t.tabDiscover}</span>
+          </button>
+
+          {/* Boutique E-Commerce (Nisfy Shop) */}
+          <button
+            onClick={() => onSelectTab('shop')}
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === 'shop'
+                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/25'
+                : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 border border-slate-200'
+            }`}
+            title="Boutique & Trousseau Mariage (E-Commerce)"
+          >
+            <ShoppingBag className={`w-4 h-4 ${activeTab === 'shop' ? 'text-white' : 'text-emerald-600'}`} />
+            <span className="hidden sm:inline">{isArabic ? 'متجر الأعراس' : 'Boutique'}</span>
+            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'shop' ? 'bg-white text-emerald-700' : 'bg-emerald-100 text-emerald-800'}`}>
+              SHOP
+            </span>
+          </button>
+
+          {/* Wedding Marketplace (Prestataires & Salles) */}
+          <button
+            onClick={() => onSelectTab('marketplace')}
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === 'marketplace'
+                ? 'bg-gradient-to-r from-amber-600 to-rose-600 text-white shadow-md shadow-amber-500/25'
+                : 'text-slate-700 hover:text-amber-700 hover:bg-amber-50/60 border border-slate-200'
+            }`}
+            title="Prestataires & Salles des Fêtes"
+          >
+            <Store className={`w-4 h-4 ${activeTab === 'marketplace' ? 'text-white' : 'text-amber-600'}`} />
+            <span className="hidden sm:inline">{isArabic ? 'سوق الأعراس' : 'Marketplace'}</span>
+            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'marketplace' ? 'bg-white text-rose-600' : 'bg-amber-100 text-amber-800'}`}>
+              DZ
+            </span>
           </button>
 
           {/* Social Feed (Reels 69 Wilayas) */}
@@ -218,7 +253,7 @@ export function Navbar({
           {/* Live Streaming Tab */}
           <button
             onClick={() => onSelectTab('live')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'live'
                 ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md shadow-rose-500/30'
                 : 'text-slate-700 hover:text-rose-600 hover:bg-rose-50/50'
@@ -237,7 +272,7 @@ export function Navbar({
           {/* Matches */}
           <button
             onClick={() => onSelectTab('matches')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'matches'
                 ? 'bg-rose-50 text-rose-600 border border-rose-200/80 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -255,7 +290,7 @@ export function Navbar({
           {/* Private Chat */}
           <button
             onClick={() => onSelectTab('chat')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'chat'
                 ? 'bg-indigo-50 text-indigo-600 border border-indigo-200/80 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -273,7 +308,7 @@ export function Navbar({
           {/* Public Lounge */}
           <button
             onClick={() => onSelectTab('lounge')}
-            className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+            className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'lounge'
                 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs'
                 : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
@@ -295,23 +330,6 @@ export function Navbar({
           >
             <BookOpen className={`w-4 h-4 ${activeTab === 'customs' ? 'text-white' : 'text-emerald-600'}`} />
             <span className="hidden sm:inline">{isArabic ? 'تقاليد 69 ولاية' : 'Coutumes 69 Wilayas'}</span>
-          </button>
-
-          {/* Wedding Marketplace (Prestataires & Salles) */}
-          <button
-            onClick={() => onSelectTab('marketplace')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'marketplace'
-                ? 'bg-gradient-to-r from-amber-600 to-rose-600 text-white shadow-md shadow-amber-500/25'
-                : 'text-slate-700 hover:text-amber-700 hover:bg-amber-50/60 border border-slate-200'
-            }`}
-            title="Prestataires & Salles des Fêtes"
-          >
-            <Store className={`w-4 h-4 ${activeTab === 'marketplace' ? 'text-white' : 'text-amber-600'}`} />
-            <span className="hidden sm:inline">{isArabic ? 'سوق الأعراس' : 'Marketplace'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'marketplace' ? 'bg-white text-rose-600' : 'bg-amber-100 text-amber-800'}`}>
-              DZ
-            </span>
           </button>
 
           {/* Chef Nadjet Pâtisserie & Mariage Tab */}
@@ -363,8 +381,8 @@ export function Navbar({
 
         {/* User Profile & Actions */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Two-button Language Switcher: FR & Arabe */}
-          <LanguageSwitcher size="sm" />
+          {/* Sleek Compact Language Switcher Toggle */}
+          <LanguageSwitcher size="sm" variant="toggle" />
 
           {/* Dark Mode Toggle */}
           {onToggleDarkMode && (
@@ -526,6 +544,17 @@ export function Navbar({
 
                 <button
                   onClick={() => {
+                    onSelectTab('shop');
+                    setShowUserMenu(false);
+                  }}
+                  className="w-full px-3 py-2 text-left text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition-colors cursor-pointer"
+                >
+                  <ShoppingBag className="w-4 h-4 text-emerald-600" />
+                  <span>{isArabic ? 'متجر الأعراس (E-Commerce)' : 'Boutique & Trousseau Nisfy'}</span>
+                </button>
+
+                <button
+                  onClick={() => {
                     onSelectTab('marketplace');
                     setShowUserMenu(false);
                   }}
@@ -552,13 +581,13 @@ export function Navbar({
                     if (onOpenContact) {
                       onOpenContact();
                     } else {
-                      window.location.href = 'mailto:samirlaouami@gmail.com?subject=[NISFY]%20Demande%20ou%20Assistance';
+                      window.location.href = 'mailto:contact@nisfy.app?subject=[NISFY]%20Demande%20ou%20Assistance';
                     }
                   }}
                   className="w-full px-3 py-2 text-left text-xs font-bold text-rose-700 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Mail className="w-4 h-4 text-rose-500" />
-                  <span>{isArabic ? 'الدعم الفني والإدارة (samirlaouami@gmail.com)' : 'Contact & Support (samirlaouami@gmail.com)'}</span>
+                  <span>{isArabic ? 'الدعم الفني والإدارة الرسمية' : 'Contact & Support Nisfy'}</span>
                 </button>
 
                 <div className="border-t border-slate-100 my-1"></div>

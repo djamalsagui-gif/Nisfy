@@ -474,7 +474,7 @@ export const WeddingMarketplaceView: React.FC = () => {
 
             <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/60 text-xs text-amber-900 dark:text-amber-200 flex items-center justify-between">
               <span>Conseiller Mariage & Administration :</span>
-              <span className="font-bold font-mono text-rose-600">samirlaouami@gmail.com</span>
+              <span className="font-bold font-mono text-rose-600">contact@nisfy.app</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
@@ -498,7 +498,7 @@ export const WeddingMarketplaceView: React.FC = () => {
                       `- Services sélectionnés : ${servicesList}\n\n` +
                       `Merci de m'adresser les propositions des prestataires certifiés.`
                   );
-                  window.location.href = `mailto:samirlaouami@gmail.com?subject=${subject}&body=${body}`;
+                  window.location.href = `mailto:contact@nisfy.app?subject=${subject}&body=${body}`;
                   setQuoteSuccess(true);
                   setTimeout(() => {
                     setQuoteSuccess(false);
@@ -510,12 +510,12 @@ export const WeddingMarketplaceView: React.FC = () => {
                 {quoteSuccess ? (
                   <>
                     <CheckCircle2 className="w-4 h-4 text-emerald-300" />
-                    Demande transmise à samirlaouami@gmail.com !
+                    Demande transmise avec succès !
                   </>
                 ) : (
                   <>
                     <Send className="w-4 h-4 text-amber-300" />
-                    Transmettre le devis par email à samirlaouami@gmail.com
+                    Transmettre le devis par email
                   </>
                 )}
               </button>

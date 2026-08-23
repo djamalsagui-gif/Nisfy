@@ -1347,7 +1347,7 @@ export const YouthShopView: React.FC = () => {
 
                 <div className="p-3 bg-emerald-50 dark:bg-emerald-950/40 rounded-xl border border-emerald-200 dark:border-emerald-900/60 text-[11px] text-emerald-800 dark:text-emerald-300 flex items-center justify-between">
                   <span>Validation & Administration :</span>
-                  <span className="font-bold font-mono text-emerald-700 dark:text-emerald-400">samirlaouami@gmail.com</span>
+                  <span className="font-bold font-mono text-emerald-700 dark:text-emerald-400">contact@nisfy.app</span>
                 </div>
 
                 <div className="pt-2">

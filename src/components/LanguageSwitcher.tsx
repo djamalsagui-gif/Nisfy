@@ -5,10 +5,16 @@ import { datingSounds } from '../utils/soundEffects';
 interface LanguageSwitcherProps {
   className?: string;
   size?: 'sm' | 'md' | 'lg';
+  variant?: 'toggle' | 'segmented' | 'compact';
 }
 
-export function LanguageSwitcher({ className = '', size = 'md' }: LanguageSwitcherProps) {
+export function LanguageSwitcher({ className = '', size = 'sm', variant = 'toggle' }: LanguageSwitcherProps) {
   const { language, setLanguage } = useLanguage();
+
+  const toggleLanguage = () => {
+    datingSounds.playLikeSound();
+    setLanguage(language === 'fr' ? 'ar' : 'fr');
+  };
 
   const handleSelect = (lang: 'fr' | 'ar') => {
     if (language !== lang) {
@@ -17,6 +23,23 @@ export function LanguageSwitcher({ className = '', size = 'md' }: LanguageSwitch
     }
   };
 
+  if (variant === 'toggle' || variant === 'compact') {
+    return (
+      <button
+        type="button"
+        onClick={toggleLanguage}
+        className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl text-xs font-black bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 transition-all shadow-2xs shrink-0 cursor-pointer ${className}`}
+        title={language === 'fr' ? 'Passer en Arabe (عربي)' : 'Passer en Français'}
+        aria-label="Changer de langue"
+      >
+        <span className="text-sm">{language === 'fr' ? '🇫🇷' : '🇩🇿'}</span>
+        <span className="font-mono text-[11px] font-black">{language === 'fr' ? 'FR' : 'عربي'}</span>
+        <span className="text-[10px] text-slate-400">⇄</span>
+      </button>
+    );
+  }
+
+  // Segmented (2-button version)
   const isSmall = size === 'sm';
   const isLarge = size === 'lg';
 
@@ -28,39 +51,38 @@ export function LanguageSwitcher({ className = '', size = 'md' }: LanguageSwitch
 
   return (
     <div
-      className={`inline-flex items-center p-1 bg-slate-100/90 border border-slate-200/90 rounded-2xl shadow-xs ${className}`}
+      className={`inline-flex items-center p-0.5 bg-slate-100 border border-slate-200 rounded-xl shadow-2xs ${className}`}
       role="group"
       aria-label="Sélection de la langue"
     >
-      {/* French Button */}
       <button
         type="button"
         onClick={() => handleSelect('fr')}
-        className={`${basePadding} rounded-xl font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+        className={`${basePadding} rounded-lg font-black transition-all flex items-center gap-1 cursor-pointer ${
           language === 'fr'
-            ? 'bg-white text-rose-600 shadow-xs ring-1 ring-rose-200'
-            : 'text-slate-500 hover:text-slate-800 hover:bg-white/60'
+            ? 'bg-white text-rose-600 shadow-2xs ring-1 ring-rose-200'
+            : 'text-slate-500 hover:text-slate-800'
         }`}
         title="Passer en Français"
       >
-        <span className="text-sm">🇫🇷</span>
+        <span className="text-xs">🇫🇷</span>
         <span>FR</span>
       </button>
 
-      {/* Arabic Button */}
       <button
         type="button"
         onClick={() => handleSelect('ar')}
-        className={`${basePadding} rounded-xl font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+        className={`${basePadding} rounded-lg font-black transition-all flex items-center gap-1 cursor-pointer ${
           language === 'ar'
-            ? 'bg-emerald-600 text-white shadow-xs ring-1 ring-emerald-400'
-            : 'text-slate-500 hover:text-slate-800 hover:bg-white/60'
+            ? 'bg-emerald-600 text-white shadow-2xs ring-1 ring-emerald-400'
+            : 'text-slate-500 hover:text-slate-800'
         }`}
-        title="التحويل إلى العربية والدارجة الجزائرية"
+        title="التحويل إلى العربية"
       >
-        <span className="text-sm">🇩🇿</span>
+        <span className="text-xs">🇩🇿</span>
         <span>عربي</span>
       </button>
     </div>
   );
 }
+

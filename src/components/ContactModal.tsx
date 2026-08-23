@@ -21,7 +21,7 @@ interface ContactModalProps {
   initialType?: 'general' | 'partnership' | 'vendor' | 'support' | 'verification';
 }
 
-export const OFFICIAL_ADMIN_EMAIL = 'samirlaouami@gmail.com';
+export const OFFICIAL_ADMIN_EMAIL = 'contact@nisfy.app';
 
 export function ContactModal({
   isOpen,

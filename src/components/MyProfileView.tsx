@@ -899,10 +899,10 @@ export function MyProfileView({
               </div>
             </div>
             <a
-              href="mailto:samirlaouami@gmail.com?subject=[NISFY%20SUPPORT]%20Demande%20Utilisateur"
+              href="mailto:contact@nisfy.app?subject=[NISFY%20SUPPORT]%20Demande%20Utilisateur"
               className="px-3.5 py-2 rounded-xl bg-white dark:bg-slate-700 hover:bg-rose-50 text-rose-600 dark:text-rose-400 font-bold border border-slate-200 dark:border-slate-600 flex items-center gap-1.5 transition-colors shadow-2xs font-mono"
             >
-              <span>samirlaouami@gmail.com</span>
+              <span>contact@nisfy.app</span>
             </a>
           </div>
 

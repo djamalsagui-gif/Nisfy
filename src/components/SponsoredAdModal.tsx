@@ -63,7 +63,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
         `- Code Promo : ${ad.promoCode}\n\n` +
         `Envoyé depuis https://nisfy.vercel.app/`
     );
-    window.location.href = `mailto:samirlaouami@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:contact@nisfy.app?subject=${subject}&body=${body}`;
 
     setMessageSent(true);
     setTimeout(() => {

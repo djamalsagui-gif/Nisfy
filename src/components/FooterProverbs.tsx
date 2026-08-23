@@ -67,18 +67,16 @@ export function FooterProverbs({ onOpenContact }: FooterProverbsProps) {
               title="Contacter la direction de Nisfy"
             >
               <Mail className="w-3.5 h-3.5 text-rose-500" />
-              <span className="hidden md:inline">Contact :</span>
-              <span className="font-mono text-[11px] font-bold">samirlaouami@gmail.com</span>
+              <span>Contact Support</span>
             </button>
           ) : (
             <a
-              href="mailto:samirlaouami@gmail.com?subject=[NISFY]%20Demande%20ou%20Contact"
+              href="mailto:contact@nisfy.app?subject=[NISFY]%20Demande%20ou%20Contact"
               className="px-2.5 py-1.5 rounded-xl bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:text-rose-600 dark:hover:text-rose-400 border border-slate-200 dark:border-slate-700 text-xs font-bold transition flex items-center gap-1.5 shadow-2xs"
               title="Contacter la direction de Nisfy"
             >
               <Mail className="w-3.5 h-3.5 text-rose-500" />
-              <span className="hidden md:inline">Contact :</span>
-              <span className="font-mono text-[11px] font-bold">samirlaouami@gmail.com</span>
+              <span>contact@nisfy.app</span>
             </a>
           )}
 
