@@ -239,11 +239,11 @@ export function AuthModal({
     setErrorMessage(null);
 
     const cleanOtp = otp.trim();
-    if (cleanOtp.length !== 6) {
+    if (cleanOtp.length < 6 || cleanOtp.length > 8) {
       setErrorMessage(
         isArabic
-          ? 'يرجى إدخال رمز التحقق المكون من 6 أرقام بالضبط'
-          : 'Veuillez saisir le code de vérification à 6 chiffres'
+          ? 'يرجى إدخال رمز التحقق المستلم في بريدك الإلكتروني'
+          : 'Veuillez saisir le code de vérification reçu par email'
       );
       return;
     }
@@ -623,13 +623,13 @@ export function AuthModal({
                 <input
                   type="text"
                   required
-                  maxLength={6}
+                  maxLength={8}
                   value={otp}
                   onChange={(e) => {
                     setOtp(e.target.value.replace(/\D/g, ''));
                     setErrorMessage(null);
                   }}
-                  className="w-48 text-center text-3xl font-black tracking-[0.35em] py-3.5 border-2 border-rose-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 outline-none transition-all shadow-inner"
+                  className="w-60 text-center text-2xl sm:text-3xl font-black tracking-[0.25em] py-3.5 border-2 border-rose-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 rounded-2xl text-slate-900 dark:text-white focus:border-rose-500 focus:ring-4 focus:ring-rose-500/20 outline-none transition-all shadow-inner"
                   placeholder="••••••"
                   autoFocus
                 />
@@ -638,8 +638,8 @@ export function AuthModal({
               <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-center">
                 <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
                   {isArabic
-                    ? '📩 أدخل رمز التحقق السري المكون من 6 أرقام المستلم في بريدك الإلكتروني.'
-                    : '📩 Saisissez le code secret à 6 chiffres reçu dans votre boîte email.'}
+                    ? '📩 أدخل رمز التحقق السري المستلم في بريدك الإلكتروني.'
+                    : '📩 Saisissez le code secret reçu dans votre boîte email.'}
                 </p>
               </div>
 
@@ -680,7 +680,7 @@ export function AuthModal({
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading || otp.length !== 6}
+                  disabled={isLoading || otp.length < 6 || otp.length > 8}
                   className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl shadow-lg shadow-rose-500/20 text-sm font-bold text-white bg-gradient-to-r from-rose-500 to-amber-500 hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   {isLoading ? (

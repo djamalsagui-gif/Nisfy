@@ -52,11 +52,38 @@ export async function verifyEmailOtp(
   token: string
 ): Promise<{ success: boolean; user?: any; error?: string }> {
   try {
-    const { data, error } = await supabase.auth.verifyOtp({
+    // Attempt verification with standard 'email' type (signInWithOtp default)
+    let { data, error } = await supabase.auth.verifyOtp({
       email,
       token,
       type: 'email',
     });
+
+    // If that fails, attempt with 'signup' type (in case shouldCreateUser triggered signup template)
+    if (error) {
+      const fallbackSignup = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: 'signup',
+      });
+      if (!fallbackSignup.error && fallbackSignup.data?.user) {
+        data = fallbackSignup.data;
+        error = null;
+      }
+    }
+
+    // If still fails, attempt with 'magiclink' type
+    if (error) {
+      const fallbackMagic = await supabase.auth.verifyOtp({
+        email,
+        token,
+        type: 'magiclink',
+      });
+      if (!fallbackMagic.error && fallbackMagic.data?.user) {
+        data = fallbackMagic.data;
+        error = null;
+      }
+    }
 
     if (error) {
       console.error('Supabase OTP Verify Error:', error);
