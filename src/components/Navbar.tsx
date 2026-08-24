@@ -128,6 +128,7 @@ export function Navbar({
   };
 
   return (
+    <>
     <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-xs">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand Logo */}
@@ -185,8 +186,8 @@ export function Navbar({
           </button>
         </div>
 
-        {/* Navigation Tabs (Desktop & Tablet) */}
-        <nav className="flex-1 min-w-0 flex items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-1">
+        {/* Navigation Tabs (Desktop & Tablet) - hidden on small mobile, visible sm+ */}
+        <nav className="hidden sm:flex flex-1 min-w-0 items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-1">
           {/* Discover */}
           <button
             onClick={() => onSelectTab('discover')}
@@ -197,7 +198,7 @@ export function Navbar({
             }`}
           >
             <Compass className="w-4 h-4 text-rose-500" />
-            <span className="hidden sm:inline">{t.tabDiscover}</span>
+            <span>{t.tabDiscover}</span>
           </button>
 
           {/* Boutique E-Commerce (Nisfy Shop) */}
@@ -211,7 +212,7 @@ export function Navbar({
             title="Boutique & Trousseau Mariage (E-Commerce)"
           >
             <ShoppingBag className={`w-4 h-4 ${activeTab === 'shop' ? 'text-white' : 'text-emerald-600'}`} />
-            <span className="hidden sm:inline">{isArabic ? 'متجر الأعراس' : 'Boutique'}</span>
+            <span>{isArabic ? 'متجر الأعراس' : 'Boutique'}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'shop' ? 'bg-white text-emerald-700' : 'bg-emerald-100 text-emerald-800'}`}>
               SHOP
             </span>
@@ -228,7 +229,7 @@ export function Navbar({
             title="Prestataires & Salles des Fêtes"
           >
             <Store className={`w-4 h-4 ${activeTab === 'marketplace' ? 'text-white' : 'text-amber-600'}`} />
-            <span className="hidden sm:inline">{isArabic ? 'سوق الأعراس' : 'Marketplace'}</span>
+            <span>{isArabic ? 'سوق الأعراس' : 'Marketplace'}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'marketplace' ? 'bg-white text-rose-600' : 'bg-amber-100 text-amber-800'}`}>
               DZ
             </span>
@@ -244,7 +245,7 @@ export function Navbar({
             }`}
           >
             <Film className="w-4 h-4 text-amber-400" />
-            <span className="hidden sm:inline">{isArabic ? 'خلاصة الفيديوهات' : 'Social Feed'}</span>
+            <span className="hidden md:inline">{isArabic ? 'خلاصة الفيديوهات' : 'Social Feed'}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'feed' ? 'bg-white text-purple-700' : 'bg-purple-100 text-purple-700'}`}>
               REELS
             </span>
@@ -263,7 +264,7 @@ export function Navbar({
               <Radio className={`w-4 h-4 ${activeTab === 'live' ? 'text-white animate-pulse' : 'text-rose-600 animate-pulse'}`} />
               <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping" />
             </div>
-            <span className="hidden sm:inline">{t.tabLive}</span>
+            <span className="hidden md:inline">{t.tabLive}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'live' ? 'bg-white text-rose-600' : 'bg-rose-100 text-rose-700'}`}>
               LIVE
             </span>
@@ -279,7 +280,7 @@ export function Navbar({
             }`}
           >
             <Sparkles className="w-4 h-4 text-amber-500" />
-            <span className="hidden sm:inline">{t.tabMatches}</span>
+            <span className="hidden md:inline">{t.tabMatches}</span>
             {matchesCount > 0 && (
               <span className="px-1.5 py-0.2 bg-amber-500 text-white rounded-full text-[10px] font-extrabold">
                 {matchesCount}
@@ -297,7 +298,7 @@ export function Navbar({
             }`}
           >
             <MessageCircle className="w-4 h-4 text-indigo-500" />
-            <span className="hidden sm:inline">{t.tabChat}</span>
+            <span className="hidden md:inline">{t.tabChat}</span>
             {unreadCount > 0 && (
               <span className="px-1.5 py-0.2 bg-rose-600 text-white rounded-full text-[10px] font-extrabold animate-pulse">
                 {unreadCount}
@@ -315,7 +316,7 @@ export function Navbar({
             }`}
           >
             <Users className="w-4 h-4 text-emerald-500" />
-            <span className="hidden sm:inline">{t.tabLounge}</span>
+            <span className="hidden lg:inline">{t.tabLounge}</span>
           </button>
 
           {/* Customs Guide (Coutumes 69 Wilayas) */}
@@ -329,7 +330,7 @@ export function Navbar({
             title="Guide des Coutumes & Mariage des 69 Wilayas"
           >
             <BookOpen className={`w-4 h-4 ${activeTab === 'customs' ? 'text-white' : 'text-emerald-600'}`} />
-            <span className="hidden sm:inline">{isArabic ? 'تقاليد 69 ولاية' : 'Coutumes 69 Wilayas'}</span>
+            <span className="hidden lg:inline">{isArabic ? 'تقاليد 69 ولاية' : 'Coutumes 69 Wilayas'}</span>
           </button>
 
           {/* Chef Nadjet Pâtisserie & Mariage Tab */}
@@ -343,7 +344,7 @@ export function Navbar({
             title="Espace Chef Nadjet - Gâteaux & Recettes Mariage"
           >
             <Cake className={`w-4 h-4 ${activeTab === 'chef_nadjet' ? 'text-white' : 'text-amber-600'}`} />
-            <span className="hidden sm:inline">{isArabic ? 'الشيف نجاة' : 'Chef Nadjet'}</span>
+            <span className="hidden lg:inline">{isArabic ? 'الشيف نجاة' : 'Chef Nadjet'}</span>
             <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'chef_nadjet' ? 'bg-white text-amber-800' : 'bg-amber-200 text-amber-900'}`}>
               👑
             </span>
@@ -364,7 +365,7 @@ export function Navbar({
                 <Globe className="w-4 h-4 text-rose-500" />
                 <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
               </div>
-              <span className="hidden sm:inline">{t.tabMap}</span>
+              <span className="hidden lg:inline">{t.tabMap}</span>
             </button>
           ) : (
             <button
@@ -608,5 +609,103 @@ export function Navbar({
         </div>
       </div>
     </header>
+
+    {/* Mobile Fixed Bottom Navigation Bar (Visible only on mobile devices < sm) */}
+    <nav
+      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-1.5 flex items-center justify-around shadow-lg"
+      dir={isArabic ? 'rtl' : 'ltr'}
+    >
+      {/* 1. Découvrir */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('discover')}
+        className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+          activeTab === 'discover'
+            ? 'text-rose-600 font-black'
+            : 'text-slate-500 hover:text-slate-800 font-bold'
+        }`}
+      >
+        <div className={`p-1 rounded-xl transition-colors ${activeTab === 'discover' ? 'bg-rose-50 text-rose-600' : ''}`}>
+          <Compass className="w-5 h-5" />
+        </div>
+        <span className="text-[10px] tracking-tight mt-0.5">{t.tabDiscover}</span>
+      </button>
+
+      {/* 2. Boutique SHOP */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('shop')}
+        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+          activeTab === 'shop'
+            ? 'text-emerald-700 font-black'
+            : 'text-slate-500 hover:text-slate-800 font-bold'
+        }`}
+      >
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'shop' ? 'bg-emerald-50 text-emerald-700' : ''}`}>
+          <ShoppingBag className="w-5 h-5" />
+          <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-emerald-600 text-white rounded-full text-[8px] font-black">
+            SHOP
+          </span>
+        </div>
+        <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'المتجر' : 'Boutique'}</span>
+      </button>
+
+      {/* 3. Marketplace DZ */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('marketplace')}
+        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+          activeTab === 'marketplace'
+            ? 'text-amber-700 font-black'
+            : 'text-slate-500 hover:text-slate-800 font-bold'
+        }`}
+      >
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'marketplace' ? 'bg-amber-50 text-amber-700' : ''}`}>
+          <Store className="w-5 h-5" />
+          <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-amber-600 text-white rounded-full text-[8px] font-black">
+            DZ
+          </span>
+        </div>
+        <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'السوق' : 'Marché'}</span>
+      </button>
+
+      {/* 4. Social Feed / Live */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('feed')}
+        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+          activeTab === 'feed'
+            ? 'text-purple-700 font-black'
+            : 'text-slate-500 hover:text-slate-800 font-bold'
+        }`}
+      >
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'feed' ? 'bg-purple-50 text-purple-700' : ''}`}>
+          <Film className="w-5 h-5" />
+        </div>
+        <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'ريلز' : 'Reels'}</span>
+      </button>
+
+      {/* 5. Messages / Chat */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('chat')}
+        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+          activeTab === 'chat'
+            ? 'text-indigo-600 font-black'
+            : 'text-slate-500 hover:text-slate-800 font-bold'
+        }`}
+      >
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'chat' ? 'bg-indigo-50 text-indigo-600' : ''}`}>
+          <MessageCircle className="w-5 h-5" />
+          {unreadCount > 0 && (
+            <span className="absolute -top-1 -right-1.5 px-1 py-0.2 bg-rose-600 text-white rounded-full text-[8px] font-black animate-pulse">
+              {unreadCount}
+            </span>
+          )}
+        </div>
+        <span className="text-[10px] tracking-tight mt-0.5">{t.tabChat}</span>
+      </button>
+    </nav>
+    </>
   );
 }
