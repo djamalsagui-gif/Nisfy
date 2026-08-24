@@ -25,7 +25,13 @@ import {
   saveRememberedAccount,
   clearRememberedAccount,
 } from '../../utils/storage';
-import { sendEmailOtp, verifyEmailOtp, syncUserProfileToSupabase, isSupabaseConfigured } from '../../api/supabase';
+import {
+  sendEmailOtp,
+  verifyEmailOtp,
+  syncUserProfileToSupabase,
+  fetchUserProfileFromSupabase,
+  isSupabaseConfigured,
+} from '../../api/supabase';
 
 interface AuthModalProps {
   onLoginSuccess: (user: UserProfile) => void;
@@ -70,6 +76,7 @@ export function AuthModal({
   // Registration data
   const [pseudo, setPseudo] = useState('');
   const [verifiedEmail, setVerifiedEmail] = useState('');
+  const [verifiedUserId, setVerifiedUserId] = useState<string | null>(null);
   const [age, setAge] = useState<number>(25);
   const [gender, setGender] = useState<'homme' | 'femme'>('femme');
   const [wilayaCode, setWilayaCode] = useState('16');
@@ -275,29 +282,50 @@ export function AuthModal({
     }
 
     // Code verified!
-    if (matchedExistingUser) {
-      // If "Remember Me" is checked, save remembered account
+    // 1. Check if user profile already exists in memory or in Supabase
+    let existingProfile = matchedExistingUser;
+    if (!existingProfile) {
+      existingProfile =
+        registeredUsers.find(
+          (u) => u.email.toLowerCase() === verifiedEmail.toLowerCase()
+        ) || null;
+    }
+
+    if (!existingProfile && isSupabaseConfigured()) {
+      // Lookup remote database
+      const remote = await fetchUserProfileFromSupabase(verifiedEmail);
+      if (remote) {
+        existingProfile = remote;
+        onRegisterUser(remote);
+      }
+    }
+
+    if (existingProfile) {
+      // User is already fully registered
       if (rememberMe) {
         saveRememberedAccount({
-          userId: matchedExistingUser.id,
+          userId: existingProfile.id,
           identifier:
             rememberType === 'pseudo'
-              ? matchedExistingUser.pseudo
-              : matchedExistingUser.email,
+              ? existingProfile.pseudo
+              : existingProfile.email,
           type: rememberType,
-          pseudo: matchedExistingUser.pseudo,
-          email: matchedExistingUser.email,
-          avatar: matchedExistingUser.avatar,
-          city: matchedExistingUser.city,
-          wilayaCode: matchedExistingUser.wilayaCode,
-          gender: matchedExistingUser.gender,
+          pseudo: existingProfile.pseudo,
+          email: existingProfile.email,
+          avatar: existingProfile.avatar,
+          city: existingProfile.city,
+          wilayaCode: existingProfile.wilayaCode,
+          gender: existingProfile.gender,
           savedAt: new Date().toISOString(),
           autoConnect: true,
         });
       }
-      onLoginSuccess(matchedExistingUser);
+      onLoginSuccess(existingProfile);
     } else {
-      // New user registration form
+      // New user registration flow
+      if (verifyResult.user?.id) {
+        setVerifiedUserId(verifyResult.user.id);
+      }
       setStep(3);
     }
   };
@@ -325,7 +353,7 @@ export function AuthModal({
       : 'Alger (16)';
 
     const newUser: UserProfile = {
-      id: `user-${Date.now()}`,
+      id: verifiedUserId || `user-${Date.now()}`,
       email: verifiedEmail,
       pseudo: pseudo.trim(),
       age,
@@ -412,9 +440,33 @@ export function AuthModal({
 
           {/* Error Message banner */}
           {errorMessage && (
-            <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl flex items-start gap-2.5 text-rose-600 dark:text-rose-400 text-xs font-semibold animate-in fade-in">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              <div className="flex-1">{errorMessage}</div>
+            <div className="p-3.5 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-900/50 rounded-xl space-y-2 text-rose-600 dark:text-rose-400 text-xs font-semibold animate-in fade-in">
+              <div className="flex items-start gap-2.5">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                <div className="flex-1 leading-relaxed">{errorMessage}</div>
+              </div>
+              {step === 2 && (
+                <div className="pt-1 flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtp('');
+                      handleResendOtp();
+                    }}
+                    disabled={resendCooldown > 0 || isLoading}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-[11px] font-bold shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+                  >
+                    <RefreshCw className={`w-3 h-3 ${isLoading ? 'animate-spin' : ''}`} />
+                    <span>
+                      {resendCooldown > 0
+                        ? `${isArabic ? 'إعادة الإرسال بعد' : 'Renvoyer dans'} ${resendCooldown}s`
+                        : isArabic
+                        ? 'طلب رمز جديد الآن'
+                        : 'Demander un nouveau code'}
+                    </span>
+                  </button>
+                </div>
+              )}
             </div>
           )}
 
