@@ -104,12 +104,25 @@ export function DiscoverView({
   const [selectedAdForModal, setSelectedAdForModal] = useState<Advertisement | null>(null);
   const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
   const [activeBannerAdIndex, setActiveBannerAdIndex] = useState(0);
+  const [isBannerMinimized, setIsBannerMinimized] = useState(() => {
+    return localStorage.getItem('nisfy_ad_minimized') === 'true';
+  });
+  const [isBannerDismissed, setIsBannerDismissed] = useState(false);
+  const [dismissedGridAdIds, setDismissedGridAdIds] = useState<string[]>([]);
 
   useEffect(() => {
     const handleUpdate = () => setActiveAds(getActiveAdvertisements());
     window.addEventListener('nisfy_ads_updated', handleUpdate);
     return () => window.removeEventListener('nisfy_ads_updated', handleUpdate);
   }, []);
+
+  const toggleBannerMinimized = () => {
+    setIsBannerMinimized((prev) => {
+      const next = !prev;
+      localStorage.setItem('nisfy_ad_minimized', String(next));
+      return next;
+    });
+  };
 
   // Rotate sponsored banner ad (from active ads only)
   const currentBannerAd = activeAds.length > 0 ? activeAds[activeBannerAdIndex % activeAds.length] : null;
@@ -463,55 +476,71 @@ export function DiscoverView({
         )}
       </div>
 
-      {/* 3. Sponsored Partner Spotlight Banner */}
-      <div className="relative">
-        <div className="flex items-center justify-between px-1 mb-2">
-          <div className="flex items-center gap-1.5 text-xs font-black text-slate-700">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>{isArabic ? 'شركاء وباقات الزفاف المعتمدة' : 'Bons Plans & Prestataires Mariage'}</span>
+      {/* 3. Sponsored Partner Spotlight Banner (Non-intrusive, Collapsible & Dismissible) */}
+      {!isBannerDismissed ? (
+        <div className="relative">
+          <div className="flex items-center justify-between px-1 mb-2">
+            <div className="flex items-center gap-1.5 text-xs font-black text-slate-700 dark:text-slate-300">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>{isArabic ? 'شركاء وباقات الزفاف المعتمدة' : 'Bons Plans & Prestataires Mariage'}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={toggleBannerMinimized}
+                className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
+              >
+                {isBannerMinimized
+                  ? (isArabic ? 'عرض كامل ⤢' : 'Agrandir ⤢')
+                  : (isArabic ? 'تصغير ⤡' : 'Réduire ⤡')}
+              </button>
+              <button
+                type="button"
+                onClick={() => setActiveBannerAdIndex((prev) => prev + 1)}
+                className="text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
+              >
+                {isArabic ? 'العرض التالي ↻' : 'Offre suivante ↻'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBecomePartnerOpen(true)}
+                className="text-[11px] font-black text-amber-600 dark:text-amber-400 hover:text-amber-700 bg-amber-50 dark:bg-amber-950/60 hover:bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-800/60 transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <Megaphone className="w-3 h-3" />
+                <span>{isArabic ? 'فضاء المهنيين' : 'Espace Pros'}</span>
+              </button>
+            </div>
           </div>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setActiveBannerAdIndex((prev) => prev + 1)}
-              className="text-[11px] font-bold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
-            >
-              {isArabic ? 'العرض التالي ↻' : 'Offre suivante ↻'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsBecomePartnerOpen(true)}
-              className="text-[11px] font-black text-amber-600 hover:text-amber-700 bg-amber-50 hover:bg-amber-100 px-2.5 py-1 rounded-full border border-amber-200 transition-colors cursor-pointer flex items-center gap-1"
-            >
-              <Megaphone className="w-3 h-3" />
-              <span>{isArabic ? 'فضاء المهنيين (إعلانات مدفوعة)' : 'Espace Annonceurs Pro'}</span>
-            </button>
-          </div>
-        </div>
 
-        {currentBannerAd && (
-          <SponsoredAdCard
-            ad={currentBannerAd}
-            layout="banner"
-            onOpenDetails={(ad) => setSelectedAdForModal(ad)}
-          />
-        )}
-      </div>
+          {currentBannerAd && (
+            <SponsoredAdCard
+              ad={currentBannerAd}
+              layout={isBannerMinimized ? 'compact' : 'banner'}
+              onOpenDetails={(ad) => setSelectedAdForModal(ad)}
+              onDismiss={() => setIsBannerDismissed(true)}
+            />
+          )}
+        </div>
+      ) : (
+        <div className="flex items-center justify-between p-2 px-3 bg-amber-50/50 dark:bg-slate-900/50 rounded-2xl border border-amber-200/50 dark:border-slate-800 text-xs">
+          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-400 font-medium text-[11px]">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>{isArabic ? 'عروض وباقات زفاف حصرية بانتظاركم' : 'Offres & réductions prestataires mariage disponibles'}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() => setIsBannerDismissed(false)}
+            className="text-[11px] font-bold text-amber-700 dark:text-amber-400 hover:underline cursor-pointer"
+          >
+            {isArabic ? 'إظهار الباقة' : 'Afficher les bons plans'}
+          </button>
+        </div>
+      )}
 
       {/* Main View Mode: Card Swipe vs Grid */}
       {viewMode === 'card' ? (
-        <div className="flex flex-col items-center justify-center py-4">
-          {/* Periodic Sponsored Card every 4 swipes */}
-          {currentIndex > 0 && currentIndex % 4 === 0 && activeAds.length > 0 ? (
-            <div className="w-full flex flex-col items-center space-y-3">
-              <SponsoredAdCard
-                ad={activeAds[(Math.floor(currentIndex / 4) - 1) % activeAds.length]}
-                layout="card"
-                onOpenDetails={(ad) => setSelectedAdForModal(ad)}
-                onDismiss={() => setCurrentIndex((prev) => prev + 1)}
-              />
-            </div>
-          ) : activeCardUser ? (
+        <div className="flex flex-col items-center justify-center py-2 space-y-4">
+          {activeCardUser ? (
             <div className="w-full flex flex-col items-center">
               <ProfileCard
                 profile={activeCardUser}
@@ -526,20 +555,20 @@ export function DiscoverView({
             </div>
           ) : (
             /* Empty state when deck is finished */
-            <div className="w-full max-w-md bg-white rounded-3xl p-8 text-center border border-slate-200 shadow-lg space-y-4">
-              <div className="w-16 h-16 bg-rose-50 text-rose-500 rounded-full flex items-center justify-center text-3xl mx-auto">
+            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-8 text-center border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
+              <div className="w-16 h-16 bg-rose-50 dark:bg-rose-950/50 text-rose-500 rounded-full flex items-center justify-center text-3xl mx-auto">
                 ✨
               </div>
-              <h3 className="text-lg font-black text-slate-900">
+              <h3 className="text-lg font-black text-slate-900 dark:text-white">
                 {t.noMoreCardsTitle}
               </h3>
-              <p className="text-xs text-slate-500 max-w-xs mx-auto">
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
                 {t.noMoreCardsDesc}
               </p>
               <button
                 type="button"
                 onClick={handleResetCards}
-                className="py-2.5 px-5 bg-slate-900 hover:bg-slate-800 text-white rounded-2xl text-xs font-bold transition-all inline-flex items-center gap-2 shadow-xs cursor-pointer"
+                className="py-2.5 px-5 bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 text-white rounded-2xl text-xs font-bold transition-all inline-flex items-center gap-2 shadow-xs cursor-pointer"
               >
                 <RotateCcw className="w-4 h-4" />
                 <span>{t.restartDeckBtn}</span>
@@ -552,13 +581,23 @@ export function DiscoverView({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredUsers.map((user, idx) => {
             const hasVideo = user.videos && user.videos.length > 0;
-            const shouldShowAd = idx > 0 && idx % 3 === 0 && activeAds.length > 0;
-            const adToShow = activeAds.length > 0 ? activeAds[Math.floor(idx / 3) % activeAds.length] : null;
+            const shouldShowAd = idx > 0 && idx % 8 === 0 && activeAds.length > 0;
+            const adToShow = activeAds.length > 0 ? activeAds[Math.floor(idx / 8) % activeAds.length] : null;
+            const isAdDismissed = adToShow && dismissedGridAdIds.includes(adToShow.id);
 
             return (
               <React.Fragment key={user.id}>
-                {shouldShowAd && adToShow && (
-                  <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-rose-950 rounded-3xl overflow-hidden border border-amber-400/50 shadow-md p-4 text-white flex flex-col justify-between group">
+                {shouldShowAd && adToShow && !isAdDismissed && (
+                  <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-rose-950 rounded-3xl overflow-hidden border border-amber-400/50 shadow-md p-4 text-white flex flex-col justify-between group">
+                    <button
+                      type="button"
+                      onClick={() => setDismissedGridAdIds((prev) => [...prev, adToShow.id])}
+                      className="absolute top-2.5 right-2.5 z-20 p-1.5 rounded-full bg-slate-900/80 hover:bg-slate-900 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                      title={isArabic ? 'إخفاء' : 'Masquer'}
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+
                     <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 mb-3">
                       <img
                         src={adToShow.bannerImage}

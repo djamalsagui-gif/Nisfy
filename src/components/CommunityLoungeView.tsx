@@ -58,6 +58,7 @@ export function CommunityLoungeView({
   const [selectedAdForModal, setSelectedAdForModal] = useState<Advertisement | null>(null);
   const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
   const [loungeAdIndex, setLoungeAdIndex] = useState(1);
+  const [isLoungeAdDismissed, setIsLoungeAdDismissed] = useState(false);
 
   React.useEffect(() => {
     const handleSync = () => setActiveAds(getActiveAdvertisements());
@@ -431,39 +432,40 @@ export function CommunityLoungeView({
       </div>
 
       {/* Sponsored Partner Spotlight in Lounge */}
-      <div className="space-y-2">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>{isArabic ? 'عروض حصرية لأعضاء الصالون' : 'Offres Partenaires Mariage'}</span>
-          </span>
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => setLoungeAdIndex((prev) => prev + 1)}
-              className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
-            >
-              {isArabic ? 'عرض آخر ↻' : 'Changer ↻'}
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsBecomePartnerOpen(true)}
-              className="text-[11px] font-bold text-amber-700 hover:text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 transition-colors cursor-pointer flex items-center gap-1"
-            >
-              <Megaphone className="w-3 h-3" />
-              <span>{isArabic ? 'إعلانات المهنيين' : 'Pub Pro'}</span>
-            </button>
+      {!isLoungeAdDismissed && currentLoungeAd && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-xs font-bold text-slate-600 flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+              <span>{isArabic ? 'عروض حصرية لأعضاء الصالون' : 'Offres Partenaires Mariage'}</span>
+            </span>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setLoungeAdIndex((prev) => prev + 1)}
+                className="text-[11px] font-semibold text-slate-500 hover:text-slate-800 transition-colors cursor-pointer"
+              >
+                {isArabic ? 'عرض آخر ↻' : 'Changer ↻'}
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsBecomePartnerOpen(true)}
+                className="text-[11px] font-bold text-amber-700 hover:text-amber-800 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200 transition-colors cursor-pointer flex items-center gap-1"
+              >
+                <Megaphone className="w-3 h-3" />
+                <span>{isArabic ? 'إعلانات المهنيين' : 'Pub Pro'}</span>
+              </button>
+            </div>
           </div>
-        </div>
 
-        {currentLoungeAd && (
           <SponsoredAdCard
             ad={currentLoungeAd}
-            layout="banner"
+            layout="compact"
             onOpenDetails={(ad) => setSelectedAdForModal(ad)}
+            onDismiss={() => setIsLoungeAdDismissed(true)}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Messages Stream */}
       <div className="space-y-3">
