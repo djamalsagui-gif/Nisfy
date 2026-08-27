@@ -18,6 +18,7 @@ import {
 import { UserProfile, ProfileVideo } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { datingSounds } from '../utils/soundEffects';
+import { getReliableVideoUrl } from '../utils/videoHelpers';
 
 interface NisfyStoriesViewerProps {
   users: UserProfile[];
@@ -188,7 +189,7 @@ export function NisfyStoriesViewer({
         <div className="relative flex-1 w-full bg-black flex items-center justify-center cursor-pointer" onClick={togglePlay}>
           <video
             ref={videoRef}
-            src={currentVideo.url}
+            src={getReliableVideoUrl(currentVideo.url)}
             muted={isMuted}
             playsInline
             autoPlay

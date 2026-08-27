@@ -38,6 +38,7 @@ import { LiveTrafficMapView } from './components/LiveTrafficMapView';
 import { LiveStreamView } from './components/LiveStreamView';
 import { MyProfileView } from './components/MyProfileView';
 import { ChefNadjetView } from './components/chef-nadjet/ChefNadjetView';
+import { AdminAdvertisersView } from './components/admin/AdminAdvertisersView';
 import { SocialFeed } from './components/feed/SocialFeed';
 import { CustomsGuideView } from './components/CustomsGuideView';
 import { WeddingMarketplaceView } from './components/WeddingMarketplaceView';
@@ -504,6 +505,7 @@ export default function App() {
           {activeTab === 'feed' && (
             <div className="-mt-6 -mx-4 sm:-mx-6 lg:-mx-8 h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)]">
               <SocialFeed 
+                currentUser={currentUser}
                 onSelectUser={(userId) => {
                   const target = registeredUsers.find((u) => u.id === userId);
                   if (target) {
@@ -605,6 +607,13 @@ export default function App() {
           {activeTab === 'chef_nadjet' && (
             <ChefNadjetView
               onBackToDiscover={() => setActiveTab('discover')}
+            />
+          )}
+
+          {activeTab === 'admin' && (
+            <AdminAdvertisersView
+              currentUser={currentUser}
+              onBack={() => setActiveTab('discover')}
             />
           )}
         </main>

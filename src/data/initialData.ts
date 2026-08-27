@@ -20,7 +20,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_leila_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-with-her-phone-41448-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
         title: 'Salam ! Ma présentation en vidéo 🌺',
         thumbnail: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
         duration: 15,
@@ -77,7 +77,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_mehdi_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-walking-outdoors-and-talking-on-a-video-call-41445-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
         title: 'Un coucou depuis Lyon (69) 🦁',
         thumbnail: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80',
         duration: 12,
@@ -133,7 +133,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_amina_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-smiling-woman-having-a-video-call-with-her-smartphone-41447-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
         title: 'Présentation & Sourire d’El Bahia 🌊',
         thumbnail: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
         duration: 10,
@@ -191,7 +191,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_yacine_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-man-talking-on-a-video-call-with-his-smartphone-41444-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
         title: 'Vue sur les gorges du Rhummel 🌉',
         thumbnail: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80',
         duration: 14,
@@ -247,7 +247,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_kenza_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-with-her-phone-41448-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
         title: 'Azul & Salam du Djurdjura 🌿',
         thumbnail: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
         duration: 12,
@@ -385,7 +385,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_meriem_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-with-her-phone-41448-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
         title: 'Salam d’Alger la Blanche ! 🌸',
         thumbnail: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
         duration: 11,
@@ -425,7 +425,7 @@ export const INITIAL_USERS: UserProfile[] = [
     videos: [
       {
         id: 'vid_ryad_1',
-        url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-walking-outdoors-and-talking-on-a-video-call-41445-large.mp4',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
         title: 'Direct de la baie d’Alger 🌊',
         thumbnail: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=500&auto=format&fit=crop&q=80',
         duration: 13,
@@ -574,7 +574,7 @@ export const INITIAL_LIVES: LiveSession[] = [
     likesCount: 328,
     isLive: true,
     startedAt: 'Il y a 12 min',
-    previewVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-with-her-phone-41448-large.mp4',
+    previewVideoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
     tags: ['Alger', 'Mariage', 'Chaâbi', 'Échange sincère'],
     pinnedNotice: 'Bienvenue à tous ! Respect et politesse dans les commentaires 🌸',
   },
@@ -590,7 +590,7 @@ export const INITIAL_LIVES: LiveSession[] = [
     likesCount: 215,
     isLive: true,
     startedAt: 'Il y a 25 min',
-    previewVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-walking-outdoors-and-talking-on-a-video-call-41445-large.mp4',
+    previewVideoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     tags: ['Lyon', 'Diaspora', 'Zawaj', 'Tech'],
     pinnedNotice: 'Salam alaykoum ! Posez vos questions pour échanger en direct 🤝',
   },
@@ -606,7 +606,7 @@ export const INITIAL_LIVES: LiveSession[] = [
     likesCount: 184,
     isLive: true,
     startedAt: 'Il y a 8 min',
-    previewVideoUrl: 'https://assets.mixkit.co/videos/preview/mixkit-smiling-woman-having-a-video-call-with-her-smartphone-41447-large.mp4',
+    previewVideoUrl: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     tags: ['Oran', 'Santé', 'Famille', 'Sourire'],
     pinnedNotice: 'Merci pour vos cadeaux et vos messages d’encouragement ! ✨',
   },

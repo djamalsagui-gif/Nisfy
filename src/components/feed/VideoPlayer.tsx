@@ -1,19 +1,24 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, Play, MessageSquarePlus, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, Play, MessageSquarePlus, Sparkles, CheckCircle2, Disc } from 'lucide-react';
 import { SocialPost, UserProfile } from '../../types';
 import { useAppStore } from '../../stores/appStore';
 import confetti from 'canvas-confetti';
 import { datingSounds } from '../../utils/soundEffects';
+import { MusicShareModal } from '../music/MusicShareModal';
+import { getTrackById, NISFY_MUSIC_CATALOG } from '../../data/musicThemes';
+import { getReliableVideoUrl } from '../../utils/videoHelpers';
 
 interface VideoPlayerProps {
   post: SocialPost;
   isActive: boolean;
   onOpenComments: () => void;
   onSelectUser?: (userId: string) => void;
+  currentUser?: UserProfile;
+  onCreateStoryFromClip?: (post: SocialPost) => void;
 }
 
-export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser }: VideoPlayerProps) {
+export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, currentUser, onCreateStoryFromClip }: VideoPlayerProps) {
   const { ref, inView } = useInView({
     threshold: 0.6,
   });
@@ -27,7 +32,12 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser }: Vi
   const [progress, setProgress] = useState(0);
   const [showHeartAnim, setShowHeartAnim] = useState(false);
   const [showShareToast, setShowShareToast] = useState(false);
+  const [isMusicModalOpen, setIsMusicModalOpen] = useState(false);
   const lastTapRef = useRef<number>(0);
+
+  const matchedTrack = post.musicThemeId
+    ? getTrackById(post.musicThemeId)
+    : NISFY_MUSIC_CATALOG.find((t) => post.musicTitle?.includes(t.title) || post.musicTitle?.includes(t.artist)) || NISFY_MUSIC_CATALOG[0];
 
   const addXp = useAppStore((state) => state.addXp);
 
@@ -157,7 +167,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser }: Vi
         ) : (
           <video
             ref={videoRef}
-            src={post.videoUrl}
+            src={getReliableVideoUrl(post.videoUrl)}
             poster={post.posterUrl}
             className="w-full h-full object-cover"
             loop
@@ -232,6 +242,21 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser }: Vi
           <span className="text-white text-[11px] font-black drop-shadow-md">{post.commentsCount || (post.comments ? post.comments.length : 0)}</span>
         </div>
 
+        {/* Music / Story Button */}
+        <div 
+          className="flex flex-col items-center gap-1 cursor-pointer group" 
+          onClick={(e) => {
+            e.stopPropagation();
+            setIsMusicModalOpen(true);
+          }}
+          title="Musique & Story"
+        >
+          <div className="w-12 h-12 bg-gradient-to-tr from-amber-500/80 to-rose-500/80 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-amber-300/40 shadow-lg hover:scale-105">
+            <Disc className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '6s' }} />
+          </div>
+          <span className="text-amber-300 text-[10px] font-black drop-shadow-md">Son / Story</span>
+        </div>
+
         {/* Share Button */}
         <div className="flex flex-col items-center gap-1 cursor-pointer group" onClick={handleShare}>
           <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
@@ -283,11 +308,23 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser }: Vi
           </div>
         </div>
 
-        {/* Music / Audio Title */}
-        {post.musicTitle && (
-          <div className="flex items-center gap-2 text-white/90 bg-black/40 w-max max-w-full px-3 py-1 rounded-full backdrop-blur-md border border-white/10 mt-0.5 pointer-events-auto">
-            <Music className="w-3 h-3 text-amber-400 shrink-0 animate-spin" style={{ animationDuration: '4s' }} />
-            <span className="text-[11px] font-semibold truncate max-w-[200px] sm:max-w-[300px]">{post.musicTitle}</span>
+        {/* Music / Audio Title - Clickable */}
+        {(post.musicTitle || matchedTrack) && (
+          <div 
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMusicModalOpen(true);
+            }}
+            className="flex items-center gap-2 text-white/90 bg-black/50 hover:bg-amber-950/60 w-max max-w-full px-3.5 py-1.5 rounded-full backdrop-blur-md border border-amber-400/30 mt-0.5 pointer-events-auto cursor-pointer transition-all hover:scale-102"
+            title="Écouter, Partager ou Créer une Story"
+          >
+            <Music className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-spin" style={{ animationDuration: '4s' }} />
+            <span className="text-[11px] font-bold truncate max-w-[200px] sm:max-w-[300px]">
+              {matchedTrack ? `${matchedTrack.title} • ${matchedTrack.artist}` : post.musicTitle}
+            </span>
+            <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300">
+              DZ
+            </span>
           </div>
         )}
       </div>
@@ -302,6 +339,20 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser }: Vi
 
       {/* Overlay gradient bottom to top */}
       <div className="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none z-10" />
+
+      {/* Music & Story Modal */}
+      {isMusicModalOpen && matchedTrack && (
+        <MusicShareModal
+          isOpen={isMusicModalOpen}
+          onClose={() => setIsMusicModalOpen(false)}
+          track={matchedTrack}
+          currentUser={currentUser}
+          onCreateStory={() => {
+            setIsMusicModalOpen(false);
+            onCreateStoryFromClip?.(post);
+          }}
+        />
+      )}
     </div>
   );
 }

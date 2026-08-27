@@ -129,26 +129,26 @@ export function Navbar({
 
   return (
     <>
-    <header className="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-xs">
+    <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 sticky top-0 z-40 shadow-xs transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Brand Logo */}
         <div
           onClick={() => onSelectTab('discover')}
           className="flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none group shrink-0"
         >
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-rose-500 via-pink-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-rose-500/20 group-hover:scale-105 transition-transform">
+          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-rose-500 flex items-center justify-center text-white shadow-md shadow-rose-600/25 group-hover:scale-105 transition-transform">
             <Heart className="w-5 h-5 fill-white" />
           </div>
           <div>
             <div className="flex items-center gap-1.5">
-              <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900 bg-gradient-to-r from-rose-600 to-indigo-600 bg-clip-text text-transparent">
+              <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
                 {t.appName}
               </span>
-              <span className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 text-emerald-800 border border-emerald-200">
+              <span className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
                 {t.wilayasBadge}
               </span>
             </div>
-            <p className="text-[10px] text-slate-400 font-medium hidden md:block">
+            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden md:block">
               {t.appSubtitle}
             </p>
           </div>
@@ -165,12 +165,12 @@ export function Navbar({
               if (activeTab !== 'discover') onSelectTab('discover');
             }}
             placeholder={isArabic ? 'بحث بالاسم، الولاية، المهنة...' : 'Recherche par nom, wilaya, métier...'}
-            className="w-full pl-9 pr-8 py-1.5 rounded-2xl bg-slate-100 border border-slate-200 text-xs font-semibold text-slate-800 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:bg-white transition-all"
+            className="w-full pl-9 pr-8 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:bg-white dark:focus:bg-slate-800/90 transition-all"
           />
           {searchQuery ? (
             <button
               onClick={() => onSearchChange?.('')}
-              className="absolute right-7 p-1 text-slate-400 hover:text-slate-600"
+              className="absolute right-7 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
             >
               <X className="w-3.5 h-3.5" />
             </button>
@@ -178,7 +178,7 @@ export function Navbar({
           <button
             onClick={handleVoiceSearch}
             className={`absolute right-2 p-1 rounded-lg transition-colors ${
-              isListening ? 'text-rose-600 animate-pulse bg-rose-50' : 'text-slate-400 hover:text-rose-500'
+              isListening ? 'text-rose-600 animate-pulse bg-rose-50 dark:bg-rose-950/50' : 'text-slate-400 hover:text-rose-500'
             }`}
             title="Recherche vocale"
           >
@@ -193,8 +193,8 @@ export function Navbar({
             onClick={() => onSelectTab('discover')}
             className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'discover'
-                ? 'bg-rose-50 text-rose-600 border border-rose-200/80 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
           >
             <Compass className="w-4 h-4 text-rose-500" />
@@ -204,16 +204,16 @@ export function Navbar({
           {/* Boutique E-Commerce (Nisfy Shop) */}
           <button
             onClick={() => onSelectTab('shop')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'shop'
-                ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md shadow-emerald-500/25'
-                : 'text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 border border-slate-200'
+                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
             title="Boutique & Trousseau Mariage (E-Commerce)"
           >
-            <ShoppingBag className={`w-4 h-4 ${activeTab === 'shop' ? 'text-white' : 'text-emerald-600'}`} />
+            <ShoppingBag className="w-4 h-4 text-emerald-600" />
             <span>{isArabic ? 'متجر الأعراس' : 'Boutique'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'shop' ? 'bg-white text-emerald-700' : 'bg-emerald-100 text-emerald-800'}`}>
+            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'shop' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300'}`}>
               SHOP
             </span>
           </button>
@@ -223,14 +223,14 @@ export function Navbar({
             onClick={() => onSelectTab('marketplace')}
             className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'marketplace'
-                ? 'bg-gradient-to-r from-amber-600 to-rose-600 text-white shadow-md shadow-amber-500/25'
-                : 'text-slate-700 hover:text-amber-700 hover:bg-amber-50/60 border border-slate-200'
+                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
             title="Prestataires & Salles des Fêtes"
           >
-            <Store className={`w-4 h-4 ${activeTab === 'marketplace' ? 'text-white' : 'text-amber-600'}`} />
+            <Store className="w-4 h-4 text-amber-600" />
             <span>{isArabic ? 'سوق الأعراس' : 'Marketplace'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'marketplace' ? 'bg-white text-rose-600' : 'bg-amber-100 text-amber-800'}`}>
+            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'marketplace' ? 'bg-amber-600 text-white' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300'}`}>
               DZ
             </span>
           </button>
@@ -238,16 +238,16 @@ export function Navbar({
           {/* Social Feed (Reels 69 Wilayas) */}
           <button
             onClick={() => onSelectTab('feed')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'feed'
-                ? 'bg-gradient-to-r from-purple-600 to-rose-600 text-white shadow-md shadow-purple-500/25'
-                : 'text-slate-700 hover:text-purple-600 hover:bg-purple-50/50'
+                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
           >
-            <Film className="w-4 h-4 text-amber-400" />
-            <span className="hidden md:inline">{isArabic ? 'خلاصة الفيديوهات' : 'Social Feed'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'feed' ? 'bg-white text-purple-700' : 'bg-purple-100 text-purple-700'}`}>
-              REELS
+            <Film className="w-4 h-4 text-rose-500" />
+            <span className="hidden md:inline">{isArabic ? 'خلاصة الفيديوهات' : 'Reels'}</span>
+            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'feed' ? 'bg-rose-600 text-white' : 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300'}`}>
+              DZ
             </span>
           </button>
 
@@ -256,8 +256,8 @@ export function Navbar({
             onClick={() => onSelectTab('live')}
             className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'live'
-                ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md shadow-rose-500/30'
-                : 'text-slate-700 hover:text-rose-600 hover:bg-rose-50/50'
+                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
           >
             <div className="relative">
@@ -265,7 +265,7 @@ export function Navbar({
               <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping" />
             </div>
             <span className="hidden md:inline">{t.tabLive}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'live' ? 'bg-white text-rose-600' : 'bg-rose-100 text-rose-700'}`}>
+            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'live' ? 'bg-white text-rose-600' : 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300'}`}>
               LIVE
             </span>
           </button>
@@ -275,8 +275,8 @@ export function Navbar({
             onClick={() => onSelectTab('matches')}
             className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'matches'
-                ? 'bg-rose-50 text-rose-600 border border-rose-200/80 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
           >
             <Sparkles className="w-4 h-4 text-amber-500" />
@@ -293,11 +293,11 @@ export function Navbar({
             onClick={() => onSelectTab('chat')}
             className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'chat'
-                ? 'bg-indigo-50 text-indigo-600 border border-indigo-200/80 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
           >
-            <MessageCircle className="w-4 h-4 text-indigo-500" />
+            <MessageCircle className="w-4 h-4 text-rose-500" />
             <span className="hidden md:inline">{t.tabChat}</span>
             {unreadCount > 0 && (
               <span className="px-1.5 py-0.2 bg-rose-600 text-white rounded-full text-[10px] font-extrabold animate-pulse">
@@ -311,11 +311,11 @@ export function Navbar({
             onClick={() => onSelectTab('lounge')}
             className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'lounge'
-                ? 'bg-emerald-50 text-emerald-700 border border-emerald-200/80 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
+                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
           >
-            <Users className="w-4 h-4 text-emerald-500" />
+            <Users className="w-4 h-4 text-emerald-600" />
             <span className="hidden lg:inline">{t.tabLounge}</span>
           </button>
 
@@ -324,29 +324,46 @@ export function Navbar({
             onClick={() => onSelectTab('customs')}
             className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'customs'
-                ? 'bg-emerald-700 text-white shadow-md shadow-emerald-700/25'
-                : 'text-emerald-800 hover:text-emerald-950 bg-emerald-50/90 hover:bg-emerald-100/80 border border-emerald-200/80'
+                ? 'bg-emerald-700 text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
             title="Guide des Coutumes & Mariage des 69 Wilayas"
           >
             <BookOpen className={`w-4 h-4 ${activeTab === 'customs' ? 'text-white' : 'text-emerald-600'}`} />
-            <span className="hidden lg:inline">{isArabic ? 'تقاليد 69 ولاية' : 'Coutumes 69 Wilayas'}</span>
+            <span className="hidden lg:inline">{isArabic ? 'تقاليد 69 ولاية' : 'Coutumes'}</span>
           </button>
 
           {/* Chef Nadjet Pâtisserie & Mariage Tab */}
           <button
             onClick={() => onSelectTab('chef_nadjet')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-black transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
               activeTab === 'chef_nadjet'
-                ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-md shadow-amber-500/25'
-                : 'text-amber-800 hover:text-amber-950 bg-amber-50/90 hover:bg-amber-100/80 border border-amber-200/80'
+                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
             }`}
             title="Espace Chef Nadjet - Gâteaux & Recettes Mariage"
           >
-            <Cake className={`w-4 h-4 ${activeTab === 'chef_nadjet' ? 'text-white' : 'text-amber-600'}`} />
+            <Cake className="w-4 h-4 text-amber-600" />
             <span className="hidden lg:inline">{isArabic ? 'الشيف نجاة' : 'Chef Nadjet'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'chef_nadjet' ? 'bg-white text-amber-800' : 'bg-amber-200 text-amber-900'}`}>
+            <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
               👑
+            </span>
+          </button>
+
+          {/* Admin Annonceurs & Campagnes Pub (Direct Access) */}
+          <button
+            onClick={() => onSelectTab('admin')}
+            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+              activeTab === 'admin'
+                ? 'bg-slate-900 dark:bg-slate-100 text-amber-300 dark:text-slate-900 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+            }`}
+            title="Gestion des Campagnes, Annonces & Contrats Publicitaires"
+          >
+            <ShieldCheck className="w-4 h-4 text-amber-500" />
+            <span className="inline">{isArabic ? 'إدارة الإعلانات' : 'Campagnes'}</span>
+            <span className="px-1.5 py-0.2 rounded-full bg-amber-400/20 dark:bg-amber-400/30 text-amber-700 dark:text-amber-400 text-[9px] font-black">
+              PRO
             </span>
           </button>
 
@@ -356,8 +373,8 @@ export function Navbar({
               onClick={() => onSelectTab('map')}
               className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
                 activeTab === 'map'
-                  ? 'bg-slate-900 text-rose-400 border border-rose-500/50 shadow-xs ring-1 ring-rose-500/30'
-                  : 'text-slate-700 hover:text-slate-900 bg-slate-100/80 hover:bg-slate-200/80 border border-slate-200'
+                  ? 'bg-slate-900 dark:bg-slate-800 text-rose-400 border border-rose-500/50 shadow-xs'
+                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
               }`}
               title={t.mapTitle}
             >
@@ -370,10 +387,10 @@ export function Navbar({
           ) : (
             <button
               onClick={() => onToggleMapEnabled(true)}
-              className="px-2 sm:px-2.5 py-1.5 rounded-2xl text-[11px] font-bold text-slate-500 hover:text-indigo-600 hover:bg-indigo-50/70 border border-dashed border-slate-300 hover:border-indigo-300 transition-all flex items-center gap-1 shrink-0 cursor-pointer"
+              className="px-2 sm:px-2.5 py-1.5 rounded-2xl text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/70 dark:hover:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1 shrink-0 cursor-pointer"
               title={t.mapOptionHint}
             >
-              <Globe className="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500" />
+              <Globe className="w-3.5 h-3.5 text-slate-400" />
               <span className="hidden lg:inline">{t.activateMapBtn}</span>
               <span className="lg:hidden">+ 🗺️</span>
             </button>
@@ -403,7 +420,7 @@ export function Navbar({
           {/* Mute Audio Toggle */}
           <button
             onClick={onToggleMute}
-            className="p-2 text-slate-400 hover:text-slate-600 hover:bg-slate-100 rounded-xl transition-colors cursor-pointer"
+            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
             title={isMuted ? t.muteOn : t.muteOff}
           >
             {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-rose-500" />}
@@ -413,7 +430,7 @@ export function Navbar({
           {onOpenPremium && (
             <button
               onClick={onOpenPremium}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 hover:from-amber-600 hover:to-rose-600 text-white text-xs font-black shadow-sm transition-all hover:scale-105 cursor-pointer"
+              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white text-xs font-black shadow-xs transition-all hover:scale-105 cursor-pointer"
             >
               <Crown className="w-3.5 h-3.5 text-amber-200" />
               <span>VIP</span>
@@ -426,8 +443,8 @@ export function Navbar({
               onClick={() => setShowUserMenu(!showUserMenu)}
               className={`p-1 pl-2 pr-2.5 rounded-2xl border flex items-center gap-1.5 transition-all cursor-pointer ${
                 activeTab === 'profile' || showUserMenu
-                  ? 'border-rose-300 bg-rose-50/80 ring-2 ring-rose-200'
-                  : 'border-slate-200 bg-slate-50 hover:bg-slate-100'
+                  ? 'border-rose-300 bg-rose-50/80 dark:border-rose-900/80 dark:bg-rose-950/50 ring-2 ring-rose-200 dark:ring-rose-900/40'
+                  : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
               <div className="relative">
@@ -435,11 +452,11 @@ export function Navbar({
                   src={currentUser.avatar}
                   alt={currentUser.pseudo}
                   referrerPolicy="no-referrer"
-                  className="w-7 h-7 rounded-full object-cover border border-slate-200"
+                  className="w-7 h-7 rounded-full object-cover border border-slate-200 dark:border-slate-700"
                 />
-                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white" />
+                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-slate-900" />
               </div>
-              <span className="text-xs font-extrabold text-slate-800 hidden md:block max-w-[85px] truncate">
+              <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 hidden md:block max-w-[85px] truncate">
                 {currentUser.pseudo}
               </span>
               <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
@@ -447,14 +464,14 @@ export function Navbar({
 
             {/* Dropdown Menu */}
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-60 bg-white rounded-2xl shadow-xl border border-slate-200 py-1.5 z-50 animate-in fade-in slide-in-from-top-2">
-                <div className="px-3 py-2 border-b border-slate-100 flex items-center justify-between">
+              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in slide-in-from-top-2">
+                <div className="px-3.5 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
                   <div>
-                    <p className="text-xs font-black text-slate-900 truncate">{currentUser.pseudo}</p>
+                    <p className="text-xs font-black text-slate-900 dark:text-white truncate">{currentUser.pseudo}</p>
                     <p className="text-[11px] text-slate-400 font-medium truncate">{currentUser.city}</p>
                   </div>
                   {currentUser.verified ? (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black">
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
                       ✓ DZ69
                     </span>
                   ) : null}
@@ -466,7 +483,7 @@ export function Navbar({
                       onOpenPremium();
                       setShowUserMenu(false);
                     }}
-                    className="w-full px-3 py-2 text-left text-xs font-black bg-gradient-to-r from-amber-50 to-rose-50 hover:from-amber-100 hover:to-rose-100 text-rose-700 flex items-center gap-2 transition-colors cursor-pointer"
+                    className="w-full px-3.5 py-2 text-left text-xs font-black bg-gradient-to-r from-amber-50 to-rose-50 dark:from-amber-950/40 dark:to-rose-950/40 hover:from-amber-100 hover:to-rose-100 dark:hover:from-amber-950/60 dark:hover:to-rose-950/60 text-rose-700 dark:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <Crown className="w-4 h-4 text-amber-500" />
                     <span>{isArabic ? 'باقات VIP واشتراكات الذهب 👑' : 'Abonnements Nisfy VIP & Gold 👑'}</span>
@@ -479,7 +496,7 @@ export function Navbar({
                       onOpenVerification();
                       setShowUserMenu(false);
                     }}
-                    className="w-full px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-emerald-50 hover:text-emerald-700 flex items-center gap-2 transition-colors cursor-pointer"
+                    className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <ShieldCheck className="w-4 h-4 text-emerald-600" />
                     <span>{isArabic ? 'توثيق الحساب (Selfie DZ69)' : 'Vérification Selfie & CNI 🇩🇿'}</span>
@@ -491,7 +508,7 @@ export function Navbar({
                     onSelectTab('profile');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <User className="w-4 h-4 text-slate-400" />
                   <span>{isArabic ? 'الملف الشخصي' : 'Mon Profil'}</span>
@@ -502,7 +519,7 @@ export function Navbar({
                     onSelectTab('profile');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Sliders className="w-4 h-4 text-slate-400" />
                   <span>{isArabic ? 'معايير الزواج (Zawaj)' : 'Mes Critères Zawaj'}</span>
@@ -514,7 +531,7 @@ export function Navbar({
                       onOpenStories();
                       setShowUserMenu(false);
                     }}
-                    className="w-full px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 flex items-center gap-2 transition-colors cursor-pointer"
+                    className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
                   >
                     <Film className="w-4 h-4 text-rose-500" />
                     <span>{isArabic ? 'قصص وستوري NISFY' : 'NISFY Stories Vidéos'}</span>
@@ -526,7 +543,7 @@ export function Navbar({
                     onSelectTab('matches');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-slate-700 hover:bg-rose-50 hover:text-rose-600 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Flower2 className="w-4 h-4 text-amber-500" />
                   <span>{isArabic ? 'الياسمين والاشتراكات' : 'Mes Jasmins & Matchs'}</span>
@@ -537,7 +554,7 @@ export function Navbar({
                     onSelectTab('customs');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <BookOpen className="w-4 h-4 text-emerald-600" />
                   <span>{isArabic ? 'دليل تقاليد وتراث 69 ولاية' : 'Guide Coutumes 69 Wilayas'}</span>
@@ -548,7 +565,7 @@ export function Navbar({
                     onSelectTab('shop');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-emerald-800 hover:bg-emerald-50 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <ShoppingBag className="w-4 h-4 text-emerald-600" />
                   <span>{isArabic ? 'متجر الأعراس (E-Commerce)' : 'Boutique & Trousseau Nisfy'}</span>
@@ -559,7 +576,7 @@ export function Navbar({
                     onSelectTab('marketplace');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-amber-900 hover:bg-amber-50 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-amber-900 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Store className="w-4 h-4 text-amber-600" />
                   <span>{isArabic ? 'سوق وقاعات الأعراس (Marketplace)' : 'Prestataires & Salles Mariage'}</span>
@@ -570,10 +587,27 @@ export function Navbar({
                     onSelectTab('chef_nadjet');
                     setShowUserMenu(false);
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-amber-800 hover:bg-amber-50 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Cake className="w-4 h-4 text-amber-600" />
                   <span>{isArabic ? 'صفحة الشيف نجاة (حلويات الأعراس)' : 'Chef Nadjet (Recettes & Mariage)'}</span>
+                </button>
+
+                {/* Espace Administrateur Annonceurs */}
+                <button
+                  onClick={() => {
+                    onSelectTab('admin');
+                    setShowUserMenu(false);
+                  }}
+                  className="w-full px-3.5 py-2.5 text-left text-xs font-black bg-slate-900 dark:bg-slate-800 hover:bg-slate-950 dark:hover:bg-slate-700 text-amber-300 flex items-center justify-between transition-all cursor-pointer rounded-xl my-1 shadow-xs"
+                >
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-amber-400" />
+                    <span>{isArabic ? 'لوحة تحكم المعلنين (Admin)' : 'Admin Annonceurs & Pubs'}</span>
+                  </div>
+                  <span className="px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-mono font-bold">
+                    PRO
+                  </span>
                 </button>
 
                 <button
@@ -585,20 +619,20 @@ export function Navbar({
                       window.location.href = 'mailto:contact@nisfy.app?subject=[NISFY]%20Demande%20ou%20Assistance';
                     }
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-rose-700 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <Mail className="w-4 h-4 text-rose-500" />
                   <span>{isArabic ? 'الدعم الفني والإدارة الرسمية' : 'Contact & Support Nisfy'}</span>
                 </button>
 
-                <div className="border-t border-slate-100 my-1"></div>
+                <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
 
                 <button
                   onClick={() => {
                     setShowUserMenu(false);
                     onLogout();
                   }}
-                  className="w-full px-3 py-2 text-left text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 transition-colors cursor-pointer"
                 >
                   <LogOut className="w-4 h-4 text-rose-500" />
                   <span>{t.logout}</span>
@@ -612,7 +646,7 @@ export function Navbar({
 
     {/* Mobile Fixed Bottom Navigation Bar (Visible only on mobile devices < sm) */}
     <nav
-      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200 px-2 py-1.5 flex items-center justify-around shadow-lg"
+      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-2 py-1.5 flex items-center justify-around shadow-lg transition-colors duration-200"
       dir={isArabic ? 'rtl' : 'ltr'}
     >
       {/* 1. Découvrir */}
@@ -621,11 +655,11 @@ export function Navbar({
         onClick={() => onSelectTab('discover')}
         className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
           activeTab === 'discover'
-            ? 'text-rose-600 font-black'
-            : 'text-slate-500 hover:text-slate-800 font-bold'
+            ? 'text-rose-600 dark:text-rose-400 font-black'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
         }`}
       >
-        <div className={`p-1 rounded-xl transition-colors ${activeTab === 'discover' ? 'bg-rose-50 text-rose-600' : ''}`}>
+        <div className={`p-1 rounded-xl transition-colors ${activeTab === 'discover' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : ''}`}>
           <Compass className="w-5 h-5" />
         </div>
         <span className="text-[10px] tracking-tight mt-0.5">{t.tabDiscover}</span>
@@ -637,11 +671,11 @@ export function Navbar({
         onClick={() => onSelectTab('shop')}
         className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
           activeTab === 'shop'
-            ? 'text-emerald-700 font-black'
-            : 'text-slate-500 hover:text-slate-800 font-bold'
+            ? 'text-emerald-700 dark:text-emerald-400 font-black'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
         }`}
       >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'shop' ? 'bg-emerald-50 text-emerald-700' : ''}`}>
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'shop' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400' : ''}`}>
           <ShoppingBag className="w-5 h-5" />
           <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-emerald-600 text-white rounded-full text-[8px] font-black">
             SHOP
@@ -656,11 +690,11 @@ export function Navbar({
         onClick={() => onSelectTab('marketplace')}
         className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
           activeTab === 'marketplace'
-            ? 'text-amber-700 font-black'
-            : 'text-slate-500 hover:text-slate-800 font-bold'
+            ? 'text-amber-700 dark:text-amber-400 font-black'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
         }`}
       >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'marketplace' ? 'bg-amber-50 text-amber-700' : ''}`}>
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'marketplace' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400' : ''}`}>
           <Store className="w-5 h-5" />
           <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-amber-600 text-white rounded-full text-[8px] font-black">
             DZ
@@ -675,11 +709,11 @@ export function Navbar({
         onClick={() => onSelectTab('feed')}
         className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
           activeTab === 'feed'
-            ? 'text-purple-700 font-black'
-            : 'text-slate-500 hover:text-slate-800 font-bold'
+            ? 'text-rose-600 dark:text-rose-400 font-black'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
         }`}
       >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'feed' ? 'bg-purple-50 text-purple-700' : ''}`}>
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'feed' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : ''}`}>
           <Film className="w-5 h-5" />
         </div>
         <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'ريلز' : 'Reels'}</span>
@@ -691,11 +725,11 @@ export function Navbar({
         onClick={() => onSelectTab('chat')}
         className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
           activeTab === 'chat'
-            ? 'text-indigo-600 font-black'
-            : 'text-slate-500 hover:text-slate-800 font-bold'
+            ? 'text-rose-600 dark:text-rose-400 font-black'
+            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
         }`}
       >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'chat' ? 'bg-indigo-50 text-indigo-600' : ''}`}>
+        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'chat' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : ''}`}>
           <MessageCircle className="w-5 h-5" />
           {unreadCount > 0 && (
             <span className="absolute -top-1 -right-1.5 px-1 py-0.2 bg-rose-600 text-white rounded-full text-[8px] font-black animate-pulse">

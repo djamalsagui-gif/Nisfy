@@ -1,3 +1,6 @@
+export type SubscriptionPlan = '1_mois' | '3_mois' | '6_mois' | '1_an' | 'partenaire_officiel';
+export type PaymentStatus = 'paid' | 'pending' | 'overdue' | 'expired';
+
 export interface Advertisement {
   id: string;
   brandName: string;
@@ -25,9 +28,112 @@ export interface Advertisement {
   featuresAr: string[];
   websiteUrl?: string;
   priceStartingFrom?: string;
+  address?: string;
+  addressAr?: string;
+  googleMapsUrl?: string;
+  city?: string;
+  country?: string;
+
+  // Media Quotas & Uploaded Assets (for Contract & Ads Display)
+  photosQuota?: number;
+  videosQuota?: number;
+  videoUrls?: string[];
+  uploadedMediaFiles?: {
+    id: string;
+    name: string;
+    type: 'photo' | 'video';
+    url: string;
+    sizeFormatted?: string;
+    uploadedAt?: string;
+  }[];
+
+  // Thematic Music Audio Soundtrack
+  musicThemeId?: string;
+  musicThemeTitle?: string;
+  musicThemeGenre?: string;
+  musicThemeUrl?: string;
+
+  // Management & Subscription Tracking
+  isActive: boolean;
+  advertiserContactPerson?: string;
+  advertiserEmail?: string;
+  subscriptionPlan?: SubscriptionPlan;
+  subscriptionPlanLabel?: string;
+  monthlyFee?: string;
+  startDate?: string;
+  endDate?: string;
+  paymentDueDate?: string;
+  paymentStatus?: PaymentStatus;
+  lastPaymentDate?: string;
+  internalNotes?: string;
 }
 
 export const SPONSORED_ADS: Advertisement[] = [
+  {
+    id: 'ad-don-jeovani-denia',
+    brandName: 'Restaurant DON-JEOVANI • Chef Djamel-Michel 🇪🇸',
+    brandNameAr: 'مطعم دون جيوفاني • الشيف جمال ميشيل (إسبانيا)',
+    category: 'catering',
+    categoryLabel: 'Gastronomie Espagnole & Paella Méditerranéenne',
+    categoryLabelAr: 'فنون الطهي الإسباني والبايا المتوسطية',
+    tagline: 'Le Chef Djamel-Michel vous invite à déguster ses spécialités et sa fameuse Paella à Dénia',
+    taglineAr: 'الشيف جمال ميشيل يدعوكم لتذوق أشهى أطباق البايا والمأكولات الإسبانية في دينيا',
+    description: 'Le Chef Djamel-Michel vous ouvre chaleureusement les portes du restaurant DON-JEOVANI à Dénia (Espagne). Maître de la gastronomie espagnole authentique : Paella Valenciana au feu de bois, Paella de Marisco aux fruits de mer frais de la Méditerranée, Arroz a Banda, Tapas ibériques raffinées et poissons grillés. Une expérience culinaire inoubliable pour vos séjours, dîners en amoureux, réceptions privées et lunes de miel sur la Costa Blanca.',
+    descriptionAr: 'يستقبلكم الشيف جمال ميشيل في مطعمه الشهير دون جيوفاني بمدينة دينيا الساحلية بإسبانيا. تشكيلة ملكية من أطباق البايا الإسبانية الأصيلة (بايا ثمار البحر، بايا فالنسيانا، أرز أ باندا)، مقبلات التاباس الإيبيرية والأسماك الطازجة. دعوة مميزة لرحلاتكم وعطلاتكم بأجواء متوسطية ساحرة.',
+    bannerImage: 'https://images.unsplash.com/photo-1534080564583-6be75777b70a?auto=format&fit=crop&w=1000&q=80',
+    logoImage: 'https://images.unsplash.com/photo-1577219491135-ce391730fb2c?auto=format&fit=crop&w=300&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1534080564583-6be75777b70a?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1515443961218-a51367888e4b?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=1000&q=80',
+      'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1000&q=80'
+    ],
+    promoCode: 'NISFY-DENIA15',
+    discountBadge: '-15% + Dessert du Chef Offert',
+    discountBadgeAr: 'تخفيض 15% + تحلية الشيف مجانية',
+    wilayas: ['Dénia (Alicante - Espagne 🇪🇸)', 'International & Diaspora'],
+    address: 'Restaurant DON-JEOVANI, Dénia, Alicante, Costa Blanca, Espagne 🇪🇸',
+    addressAr: 'مطعم دون جيوفاني، دينيا، أليكانتي، كوستا بلانكا، إسبانيا 🇪🇸',
+    googleMapsUrl: 'https://www.google.com/maps/search/?api=1&query=Restaurant+DON+JEOVANI+Denia+Alicante+Spain',
+    city: 'Dénia',
+    country: 'Espagne',
+    phone: '+34 965 78 00 00',
+    whatsapp: '+34600123456',
+    rating: 5.0,
+    reviewsCount: 189,
+    featured: true,
+    priceStartingFrom: '18 € / menu',
+    features: [
+      'Paella artisanale géante & Fruits de mer frais',
+      'Accueil chaleureux par le Chef Djamel-Michel',
+      'Terrasse d’ambiance méditerranéenne à Dénia',
+      'Réservations tables VIP pour couples & familles'
+    ],
+    featuresAr: [
+      'بايا إسبانية طازجة ومأكولات بحرية يومية',
+      'استقبال مميز وخاص من الشيف جمال ميشيل',
+      'جلسات راقية بإطلالة متوسطية في دينيا',
+      'حجوزات طاولات VIP للعائلات والعرسان'
+    ],
+    // Thematic background soundtrack
+    musicThemeId: 'track-lounge-denia',
+    musicThemeTitle: 'Costa Blanca Breeze • Lounge Gastronomie Don-Jeovani',
+    musicThemeGenre: 'Lounge Méditerranéen',
+    // Subscription details
+    isActive: true,
+    advertiserContactPerson: 'Chef Djamel-Michel',
+    advertiserEmail: 'contact@donjeovani-denia.es',
+    subscriptionPlan: '1_an',
+    subscriptionPlanLabel: 'Pack Prestige International (12 Mois)',
+    monthlyFee: '120 € / mois',
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    paymentDueDate: '2026-09-01',
+    paymentStatus: 'paid',
+    lastPaymentDate: '2026-08-01',
+    internalNotes: 'Partenaire VIP Espagne - Renouvellement automatique avec réduction membre.'
+  },
   {
     id: 'ad-palais-el-bahia',
     brandName: 'Palais El-Bahia • قصر الباهية',
@@ -68,7 +174,22 @@ export const SPONSORED_ADS: Advertisement[] = [
       'خدمة إطعام راقية متكاملة',
       'جناح فاخر مخصص للعروسين',
       'أحدث أنظمة الإضاءة والصوتيات'
-    ]
+    ],
+    musicThemeId: 'track-zorna-cortege',
+    musicThemeTitle: 'Zorna & Bendir • Cortège Impérial DZ',
+    musicThemeGenre: 'Zorna & Percussions',
+    isActive: true,
+    advertiserContactPerson: 'M. Amine Reda (Gérant)',
+    advertiserEmail: 'contact@palais-elbahia.dz',
+    subscriptionPlan: '6_mois',
+    subscriptionPlanLabel: 'Pack Salle Royale (6 Mois)',
+    monthlyFee: '40 000 DZD / mois',
+    startDate: '2026-03-01',
+    endDate: '2026-08-31',
+    paymentDueDate: '2026-08-30',
+    paymentStatus: 'pending',
+    lastPaymentDate: '2026-07-28',
+    internalNotes: 'Échéance mensuelle à surveiller pour fin août.'
   },
   {
     id: 'ad-dar-el-caftan',
@@ -108,7 +229,22 @@ export const SPONSORED_ADS: Advertisement[] = [
       'جلسة قياس وتجربة خاصة',
       'إكسسوارات وخيط الروح هدية',
       'توصيل سريع ومضمون'
-    ]
+    ],
+    musicThemeId: 'track-andalou-malouf',
+    musicThemeTitle: 'Nouba Royale • Malouf & Violon Andalou',
+    musicThemeGenre: 'Andalou & Malouf',
+    isActive: true,
+    advertiserContactPerson: 'Mme Meriem B.',
+    advertiserEmail: 'contact@dar-elcaftan.dz',
+    subscriptionPlan: '3_mois',
+    subscriptionPlanLabel: 'Pack Trousseau Prestige (3 Mois)',
+    monthlyFee: '25 000 DZD / mois',
+    startDate: '2026-06-01',
+    endDate: '2026-08-31',
+    paymentDueDate: '2026-08-20',
+    paymentStatus: 'overdue',
+    lastPaymentDate: '2026-07-15',
+    internalNotes: 'Paiement en retard de 4 jours. Rappel WhatsApp envoyé.'
   },
   {
     id: 'ad-safir-voyages',
@@ -148,7 +284,22 @@ export const SPONSORED_ADS: Advertisement[] = [
       'شامل التأشيرة والتأمين',
       'جلسة تصوير تذكارية مجانية',
       'تسهيلات في الدفع'
-    ]
+    ],
+    musicThemeId: 'track-chaabi-casbah',
+    musicThemeTitle: 'Nostalgie Chaâbi • Mandole & Qçid',
+    musicThemeGenre: 'Chaâbi Algérois',
+    isActive: true,
+    advertiserContactPerson: 'M. Karim Safir',
+    advertiserEmail: 'karim@safirvoyages.dz',
+    subscriptionPlan: '1_an',
+    subscriptionPlanLabel: 'Pack Agence Officielle (12 Mois)',
+    monthlyFee: '35 000 DZD / mois',
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    paymentDueDate: '2026-09-05',
+    paymentStatus: 'paid',
+    lastPaymentDate: '2026-08-04',
+    internalNotes: 'Client fidèle. Règlements par virement bancaire mensuel.'
   },
   {
     id: 'ad-studio-nour',
@@ -188,6 +339,21 @@ export const SPONSORED_ADS: Advertisement[] = [
       'تسليم في علبة خشبية أنيقة',
       'تيزر الفيديو في غضون 72 ساعة',
       'صور غير محدودة بدقة فائقة'
-    ]
+    ],
+    musicThemeId: 'track-romantic-piano',
+    musicThemeTitle: 'Douceur Éternelle • Piano & Cordes Romantiques',
+    musicThemeGenre: 'Romantique & Noces',
+    isActive: true,
+    advertiserContactPerson: 'Nour El Houda',
+    advertiserEmail: 'nour@studionour.dz',
+    subscriptionPlan: '1_mois',
+    subscriptionPlanLabel: 'Pack Mensuel Essentiel',
+    monthlyFee: '18 000 DZD / mois',
+    startDate: '2026-08-01',
+    endDate: '2026-08-31',
+    paymentDueDate: '2026-08-31',
+    paymentStatus: 'pending',
+    lastPaymentDate: '2026-07-30',
+    internalNotes: 'Pack test 1 mois.'
   }
 ];

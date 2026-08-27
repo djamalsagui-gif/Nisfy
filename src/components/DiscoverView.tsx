@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import {
   SlidersHorizontal,
@@ -22,7 +22,8 @@ import {
 } from 'lucide-react';
 import { UserProfile, SearchFilter, ProfileVideo } from '../types';
 import { WILAYAS_69 } from '../data/wilayas';
-import { SPONSORED_ADS, Advertisement } from '../data/advertisements';
+import { Advertisement } from '../data/advertisements';
+import { getActiveAdvertisements } from '../utils/adsManager';
 import { ProfileCard } from './discovery/ProfileCard';
 import { MatchingActions } from './discovery/MatchingActions';
 import { Filters } from './discovery/Filters';
@@ -99,12 +100,19 @@ export function DiscoverView({
   const [selectedInterest, setSelectedInterest] = useState('');
 
   // Advertising & Partner Modals state
+  const [activeAds, setActiveAds] = useState<Advertisement[]>(() => getActiveAdvertisements());
   const [selectedAdForModal, setSelectedAdForModal] = useState<Advertisement | null>(null);
   const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
   const [activeBannerAdIndex, setActiveBannerAdIndex] = useState(0);
 
-  // Rotate sponsored banner ad
-  const currentBannerAd = SPONSORED_ADS[activeBannerAdIndex % SPONSORED_ADS.length];
+  useEffect(() => {
+    const handleUpdate = () => setActiveAds(getActiveAdvertisements());
+    window.addEventListener('nisfy_ads_updated', handleUpdate);
+    return () => window.removeEventListener('nisfy_ads_updated', handleUpdate);
+  }, []);
+
+  // Rotate sponsored banner ad (from active ads only)
+  const currentBannerAd = activeAds.length > 0 ? activeAds[activeBannerAdIndex % activeAds.length] : null;
 
   // Filtered profiles (excluding current user and blocked users)
   const filteredUsers = useMemo(() => {
@@ -481,21 +489,23 @@ export function DiscoverView({
           </div>
         </div>
 
-        <SponsoredAdCard
-          ad={currentBannerAd}
-          layout="banner"
-          onOpenDetails={(ad) => setSelectedAdForModal(ad)}
-        />
+        {currentBannerAd && (
+          <SponsoredAdCard
+            ad={currentBannerAd}
+            layout="banner"
+            onOpenDetails={(ad) => setSelectedAdForModal(ad)}
+          />
+        )}
       </div>
 
       {/* Main View Mode: Card Swipe vs Grid */}
       {viewMode === 'card' ? (
         <div className="flex flex-col items-center justify-center py-4">
           {/* Periodic Sponsored Card every 4 swipes */}
-          {currentIndex > 0 && currentIndex % 4 === 0 ? (
+          {currentIndex > 0 && currentIndex % 4 === 0 && activeAds.length > 0 ? (
             <div className="w-full flex flex-col items-center space-y-3">
               <SponsoredAdCard
-                ad={SPONSORED_ADS[(Math.floor(currentIndex / 4) - 1) % SPONSORED_ADS.length]}
+                ad={activeAds[(Math.floor(currentIndex / 4) - 1) % activeAds.length]}
                 layout="card"
                 onOpenDetails={(ad) => setSelectedAdForModal(ad)}
                 onDismiss={() => setCurrentIndex((prev) => prev + 1)}
@@ -542,12 +552,12 @@ export function DiscoverView({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {filteredUsers.map((user, idx) => {
             const hasVideo = user.videos && user.videos.length > 0;
-            const shouldShowAd = idx > 0 && idx % 3 === 0;
-            const adToShow = SPONSORED_ADS[Math.floor(idx / 3) % SPONSORED_ADS.length];
+            const shouldShowAd = idx > 0 && idx % 3 === 0 && activeAds.length > 0;
+            const adToShow = activeAds.length > 0 ? activeAds[Math.floor(idx / 3) % activeAds.length] : null;
 
             return (
               <React.Fragment key={user.id}>
-                {shouldShowAd && (
+                {shouldShowAd && adToShow && (
                   <div className="bg-gradient-to-br from-slate-900 via-slate-800 to-rose-950 rounded-3xl overflow-hidden border border-amber-400/50 shadow-md p-4 text-white flex flex-col justify-between group">
                     <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-slate-950 mb-3">
                       <img

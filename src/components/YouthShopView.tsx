@@ -40,16 +40,26 @@ import {
 } from '../data/youthShopData';
 import { WILAYAS_LIST } from '../data/wilayas';
 import { useLanguage } from '../context/LanguageContext';
+import { getActiveShopProducts, addOrUpdateShopProduct } from '../utils/shopManager';
 
 export const YouthShopView: React.FC = () => {
   const { isArabic } = useLanguage();
 
-  // Products & Categories
-  const [products, setProducts] = useState<ShopProduct[]>(INITIAL_SHOP_PRODUCTS);
+  // Products & Categories (synced with admin shop manager)
+  const [products, setProducts] = useState<ShopProduct[]>(() => getActiveShopProducts());
   const [selectedCategory, setSelectedCategory] = useState<ShopProductCategory | 'all'>('all');
   const [selectedWilaya, setSelectedWilaya] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [sortBy, setSortBy] = useState<'popular' | 'price_asc' | 'price_desc' | 'rating'>('popular');
+
+  // Live Sync with Admin Advertiser / Shop Vendor changes
+  React.useEffect(() => {
+    const handleSync = () => {
+      setProducts(getActiveShopProducts());
+    };
+    window.addEventListener('nisfy_shop_updated', handleSync);
+    return () => window.removeEventListener('nisfy_shop_updated', handleSync);
+  }, []);
 
   // Product Details Modal
   const [activeProduct, setActiveProduct] = useState<ShopProduct | null>(null);
@@ -324,7 +334,7 @@ export const YouthShopView: React.FC = () => {
       deliveryEstimateDays: '48h à 72h',
     };
 
-    setProducts([newProd, ...products]);
+    addOrUpdateShopProduct(newProd);
     setNewProductSuccess(true);
     setTimeout(() => {
       setIsNewProductModalOpen(false);

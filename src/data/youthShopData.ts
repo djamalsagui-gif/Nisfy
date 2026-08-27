@@ -6,8 +6,43 @@ export type ShopProductCategory =
   | 'beaute_parfums' 
   | 'packs_jeunes';
 
+export type ShopPaymentStatus = 'paid' | 'pending' | 'overdue' | 'suspended';
+
+export type ShopSubscriptionPlan = 'starter_shop' | 'pro_shop' | 'vip_shop' | 'commission_only';
+
+export interface ShopVendor {
+  id: string;
+  name: string;
+  nameAr?: string;
+  category: ShopProductCategory;
+  categoryLabel?: string;
+  contactPerson?: string;
+  wilaya: string;
+  wilayaCode: string;
+  phone: string;
+  whatsapp?: string;
+  email?: string;
+  instagram?: string;
+  avatar: string;
+  isVerified: boolean;
+  isActive: boolean;
+  subscriptionPlan: ShopSubscriptionPlan;
+  subscriptionPlanLabel: string;
+  monthlyFee: string;
+  paymentStatus: ShopPaymentStatus;
+  paymentDueDate: string;
+  lastPaymentDate?: string;
+  startDate?: string;
+  endDate?: string;
+  rating: number;
+  salesCount: number;
+  productsCount: number;
+  internalNotes?: string;
+}
+
 export interface ShopProduct {
   id: string;
+  sellerId?: string;
   titleFr: string;
   titleAr: string;
   descriptionFr: string;
@@ -31,6 +66,7 @@ export interface ShopProduct {
   badges: string[];
   isTrending?: boolean;
   isHandmade?: boolean;
+  isActive?: boolean;
   sizes?: string[];
   colors?: { nameFr: string; nameAr: string; hex: string }[];
   allowPersonalization?: boolean;
@@ -369,3 +405,239 @@ export const INITIAL_SHOP_PRODUCTS: ShopProduct[] = [
     deliveryEstimateDays: '24h à 48h'
   }
 ];
+
+export const INITIAL_SHOP_VENDORS: ShopVendor[] = [
+  {
+    id: 'vendor-hdiya',
+    name: 'Atelier Dar El Hdiya',
+    nameAr: 'دار الهدية الجزائر',
+    category: 'box_hdiya',
+    categoryLabel: 'Box Hdiya & Cadeaux Personnalisés',
+    contactPerson: 'Amina Benali (Fondatrice)',
+    wilaya: 'Alger (16)',
+    wilayaCode: '16',
+    phone: '+213 555 12 34 56',
+    whatsapp: '213555123456',
+    email: 'contact@darelhdiya-dz.com',
+    instagram: '@dar_elhdiya_dz',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'pro_shop',
+    subscriptionPlanLabel: 'Pack Pro E-Shop (Catalogue Illimité)',
+    monthlyFee: '25 000 DZD / mois',
+    paymentStatus: 'paid',
+    paymentDueDate: '2026-09-15',
+    lastPaymentDate: '2026-08-15',
+    startDate: '2026-01-15',
+    endDate: '2026-12-31',
+    rating: 4.9,
+    salesCount: 142,
+    productsCount: 6,
+    internalNotes: 'Partenaire fidèle certifié. Paiement virement BaridiMob toujours ponctuel.',
+  },
+  {
+    id: 'vendor-sarah',
+    name: 'Maison Sarah Haute Couture',
+    nameAr: 'دار سارة للأزياء الراقية',
+    category: 'trousseau_mode',
+    categoryLabel: 'Karakous, Caftans & Trousseau Mariée',
+    contactPerson: 'Sarah Khelifi (Styliste & Créatrice)',
+    wilaya: 'Alger (16)',
+    wilayaCode: '16',
+    phone: '+213 550 78 90 12',
+    whatsapp: '213550789012',
+    email: 'atelier@sarahcouture.dz',
+    instagram: '@sarah_couture_dz',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'vip_shop',
+    subscriptionPlanLabel: 'Pack VIP Créateur & Mise en Avant',
+    monthlyFee: '40 000 DZD / mois',
+    paymentStatus: 'paid',
+    paymentDueDate: '2026-09-20',
+    lastPaymentDate: '2026-08-20',
+    startDate: '2026-02-01',
+    endDate: '2027-02-01',
+    rating: 5.0,
+    salesCount: 98,
+    productsCount: 12,
+    internalNotes: 'Artisane d\'excellence. Sur-mesure très sollicité par la communauté Nisfy.',
+  },
+  {
+    id: 'vendor-elqods',
+    name: 'Bijouterie El Qods',
+    nameAr: 'مجوهرات القدس وهران',
+    category: 'bijoux_alliances',
+    categoryLabel: 'Alliances & Solitaires Argent 925 / Or',
+    contactPerson: 'Hadj Mourad Guennoun',
+    wilaya: 'Oran (31)',
+    wilayaCode: '31',
+    phone: '+213 540 22 33 44',
+    whatsapp: '213540223344',
+    email: 'elqods.oran.bijoux@gmail.com',
+    instagram: '@elqods_bijoux_oran',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'pro_shop',
+    subscriptionPlanLabel: 'Pack Pro E-Shop',
+    monthlyFee: '25 000 DZD / mois',
+    paymentStatus: 'overdue',
+    paymentDueDate: '2026-08-10',
+    lastPaymentDate: '2026-07-10',
+    startDate: '2026-03-01',
+    endDate: '2026-09-01',
+    rating: 4.8,
+    salesCount: 76,
+    productsCount: 8,
+    internalNotes: '⚠️ Retard de paiement mensuel de 14 jours. Relance WhatsApp effectuée. Suspendre si aucun règlement d\'ici 48h.',
+  },
+  {
+    id: 'vendor-henne',
+    name: 'Henné & Secrets d’Orient',
+    nameAr: 'حناء وأسرار الشرق تلمسان',
+    category: 'beaute_parfums',
+    categoryLabel: 'Poudres Naturelles, Soins Mariée & Henné',
+    contactPerson: 'Lilia Bouanani',
+    wilaya: 'Tlemcen (13)',
+    wilayaCode: '13',
+    phone: '+213 560 99 88 77',
+    whatsapp: '213560998877',
+    email: 'lilia.henne@outlook.com',
+    instagram: '@henne_tlemcen_bio',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'starter_shop',
+    subscriptionPlanLabel: 'Pack Starter Boutique',
+    monthlyFee: '15 000 DZD / mois',
+    paymentStatus: 'paid',
+    paymentDueDate: '2026-09-05',
+    lastPaymentDate: '2026-08-05',
+    startDate: '2026-04-01',
+    endDate: '2026-10-01',
+    rating: 4.9,
+    salesCount: 165,
+    productsCount: 5,
+    internalNotes: 'Très forte demande sur le kit rituel henné.',
+  },
+  {
+    id: 'vendor-blanche',
+    name: 'Maison Blanche Home Textile',
+    nameAr: 'البيت الأبيض للأفرشة والديكور',
+    category: 'maison_deco',
+    categoryLabel: 'Linge de Lit Satin & Décoration Foyer',
+    contactPerson: 'Karim Meziane',
+    wilaya: 'Sétif (19)',
+    wilayaCode: '19',
+    phone: '+213 552 44 55 66',
+    whatsapp: '213552445566',
+    email: 'contact@maisonblanche-dz.com',
+    instagram: '@maisonblanche_setif',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'starter_shop',
+    subscriptionPlanLabel: 'Pack Starter Boutique',
+    monthlyFee: '15 000 DZD / mois',
+    paymentStatus: 'pending',
+    paymentDueDate: '2026-08-28',
+    lastPaymentDate: '2026-07-28',
+    startDate: '2026-03-15',
+    endDate: '2026-09-15',
+    rating: 4.7,
+    salesCount: 52,
+    productsCount: 7,
+    internalNotes: 'Échéance mensuelle dans quelques jours.',
+  },
+  {
+    id: 'vendor-albaraa',
+    name: 'Boutique Al-Baraa Couture',
+    nameAr: 'محلات البراء للأناقة الرجالية',
+    category: 'trousseau_mode',
+    categoryLabel: 'Qamis Émiratis, Jabador & Costumes Homme',
+    contactPerson: 'Baraa Belkacem',
+    wilaya: 'Constantine (25)',
+    wilayaCode: '25',
+    phone: '+213 558 11 22 33',
+    whatsapp: '213558112233',
+    email: 'albaraa.constantine@gmail.com',
+    instagram: '@albaraa_homme_dz',
+    avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'pro_shop',
+    subscriptionPlanLabel: 'Pack Pro E-Shop',
+    monthlyFee: '25 000 DZD / mois',
+    paymentStatus: 'paid',
+    paymentDueDate: '2026-09-10',
+    lastPaymentDate: '2026-08-10',
+    startDate: '2026-02-10',
+    endDate: '2026-11-10',
+    rating: 4.9,
+    salesCount: 88,
+    productsCount: 9,
+    internalNotes: 'Fournisseur exclusif Qamis pour les fiançailles.',
+  },
+  {
+    id: 'vendor-nomad',
+    name: 'Nomad Couple DZ',
+    nameAr: 'نوماد كابل - مستلزمات شهر العسل',
+    category: 'packs_jeunes',
+    categoryLabel: 'Packs Lune de Miel & Bagagerie Cuir',
+    contactPerson: 'Sofiane & Yasmine Chergui',
+    wilaya: 'Batna (05)',
+    wilayaCode: '05',
+    phone: '+213 549 77 66 55',
+    whatsapp: '213549776655',
+    email: 'contact@nomadcouple.dz',
+    instagram: '@nomad_couple_dz',
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'starter_shop',
+    subscriptionPlanLabel: 'Pack Starter Boutique',
+    monthlyFee: '15 000 DZD / mois',
+    paymentStatus: 'paid',
+    paymentDueDate: '2026-09-18',
+    lastPaymentDate: '2026-08-18',
+    startDate: '2026-05-01',
+    endDate: '2026-11-01',
+    rating: 4.8,
+    salesCount: 45,
+    productsCount: 4,
+    internalNotes: 'Créateurs jeunes mariés avec de très bons avis.',
+  },
+  {
+    id: 'vendor-bakhour',
+    name: 'Ambiance & Bakhour DZ',
+    nameAr: 'أجواء وبخور الجزائر بجاية',
+    category: 'maison_deco',
+    categoryLabel: 'Diffuseurs Électriques & Oud Artisanal',
+    contactPerson: 'Zahra Oualid',
+    wilaya: 'Béjaïa (06)',
+    wilayaCode: '06',
+    phone: '+213 556 33 22 11',
+    whatsapp: '213556332211',
+    email: 'ambiance.bakhour@gmail.com',
+    instagram: '@bakhour_bejaia_shop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=80',
+    isVerified: true,
+    isActive: true,
+    subscriptionPlan: 'starter_shop',
+    subscriptionPlanLabel: 'Pack Starter Boutique',
+    monthlyFee: '15 000 DZD / mois',
+    paymentStatus: 'paid',
+    paymentDueDate: '2026-09-02',
+    lastPaymentDate: '2026-08-02',
+    startDate: '2026-03-01',
+    endDate: '2026-12-01',
+    rating: 4.9,
+    salesCount: 110,
+    productsCount: 5,
+    internalNotes: 'Fournisseur direct sans intermédiaire.',
+  },
+];
+

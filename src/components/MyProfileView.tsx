@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import {
   User,
   MapPin,
@@ -20,6 +20,11 @@ import {
   Upload,
   Zap,
   Mail,
+  Music,
+  Volume2,
+  VolumeX,
+  Share2,
+  Disc,
 } from 'lucide-react';
 import { UserProfile, Gender, LookingFor, ProfileVideo } from '../types';
 import { WILAYAS_69 } from '../data/wilayas';
@@ -27,6 +32,16 @@ import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
 import { MediaViewerModal } from './MediaViewerModal';
 import { PublishVideoModal } from './PublishVideoModal';
+import {
+  NISFY_MUSIC_CATALOG,
+  getAllAvailableTracks,
+  getTrackById,
+  MusicTrack,
+} from '../data/musicThemes';
+import { musicAudioEngine } from '../utils/musicAudioEngine';
+import { MusicShareModal } from './music/MusicShareModal';
+import { MusicSelector } from './music/MusicSelector';
+import { YouTubeMusicImportModal } from './music/YouTubeMusicImportModal';
 import {
   getRememberedAccount,
   saveRememberedAccount,
@@ -55,17 +70,17 @@ const AVATAR_SELECTION = [
 const SAMPLE_VIDEOS = [
   {
     title: 'Présentation Décontractée 🌺',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-with-her-phone-41448-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
   },
   {
     title: 'Salutations d’Extérieur 🦁',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-walking-outdoors-and-talking-on-a-video-call-41445-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80',
   },
   {
     title: 'Sourire & Présentation 🌊',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-smiling-woman-having-a-video-call-with-her-smartphone-41447-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
   },
 ];
@@ -107,6 +122,25 @@ export function MyProfileView({
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+
+  // 🎵 Wedding Music Theme & Sharing State
+  const [weddingThemeMusicId, setWeddingThemeMusicId] = useState<string>(
+    currentUser.weddingThemeMusicId || 'track-zorna-cortege'
+  );
+  const [previewMusicTrackId, setPreviewMusicTrackId] = useState<string | null>(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [isYouTubeMusicModalOpen, setIsYouTubeMusicModalOpen] = useState(false);
+  const [allTracks, setAllTracks] = useState<MusicTrack[]>([]);
+
+  useEffect(() => {
+    setAllTracks(getAllAvailableTracks());
+    const handleUpdate = () => {
+      setAllTracks(getAllAvailableTracks());
+    };
+    window.addEventListener('nisfy_custom_tracks_updated', handleUpdate);
+    return () => window.removeEventListener('nisfy_custom_tracks_updated', handleUpdate);
+  }, []);
+  const [selectedTrackForShare, setSelectedTrackForShare] = useState<MusicTrack | null>(null);
 
   // Video recording state
   const [isRecordingVideo, setIsRecordingVideo] = useState(false);
@@ -319,6 +353,7 @@ export function MyProfileView({
       photos: photos.length > 0 ? photos : [avatar],
       videos,
       interests,
+      weddingThemeMusicId,
       hidePhotoInitially,
     };
 
@@ -454,10 +489,10 @@ export function MyProfileView({
             <button
               type="button"
               onClick={() => setIsPublishModalOpen(true)}
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 text-white hover:opacity-95 text-xs font-black shadow-md transition-all flex items-center gap-1.5 cursor-pointer active:scale-95"
+              className="px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/30 hover:bg-rose-100 dark:hover:bg-rose-900/40 text-rose-700 dark:text-rose-300 text-xs font-semibold border border-rose-200/80 dark:border-rose-800/40 shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer"
             >
-              <Film className="w-4 h-4" />
-              <span>{isArabic ? '+ نشر فيديو وقصة' : '+ Publier Reel / Story'}</span>
+              <Film className="w-4 h-4 text-rose-500" />
+              <span>{isArabic ? 'نشر فيديو وقصة' : 'Publier une vidéo / Story'}</span>
             </button>
           </div>
         </div>
@@ -582,19 +617,71 @@ export function MyProfileView({
                     </div>
                   </div>
 
-                  <div className="p-3 bg-slate-900 flex items-center justify-between text-white">
-                    <div className="truncate pr-2">
-                      <h5 className="font-bold text-xs truncate">{vid.title}</h5>
-                      <span className="text-[10px] text-slate-400">{vid.createdAt}</span>
+                  <div className="p-3 bg-slate-900 flex flex-col gap-2 text-white">
+                    <div className="flex items-center justify-between">
+                      <div className="truncate pr-2">
+                        <h5 className="font-bold text-xs truncate">{vid.title}</h5>
+                        <div className="flex items-center gap-2 mt-0.5">
+                          <span className="text-[10px] text-slate-400">{vid.createdAt}</span>
+                          {vid.isStoryOnWall && (
+                            <span className="px-1.5 py-0.2 rounded-md bg-purple-500/30 text-purple-300 text-[9px] font-black">
+                              Story Mur
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => deleteVideo(vid.id)}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-rose-600 text-white transition-colors shrink-0"
+                        title="Supprimer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
                     </div>
-                    <button
-                      type="button"
-                      onClick={() => deleteVideo(vid.id)}
-                      className="p-1.5 rounded-lg bg-white/10 hover:bg-rose-600 text-white transition-colors"
-                      title="Supprimer"
-                    >
-                      <Trash2 className="w-3.5 h-3.5" />
-                    </button>
+
+                    {/* Clip Actions: Story on Wall & Music Share */}
+                    <div className="flex items-center gap-2 pt-1 border-t border-slate-800">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const updated = videos.map((v) =>
+                            v.id === vid.id ? { ...v, isStoryOnWall: !v.isStoryOnWall } : v
+                          );
+                          setVideos(updated);
+                          onUpdateProfile({
+                            ...currentUser,
+                            videos: updated,
+                          });
+                        }}
+                        className={`flex-1 py-1 px-2 rounded-lg text-[10px] font-black transition-all flex items-center justify-center gap-1 cursor-pointer ${
+                          vid.isStoryOnWall
+                            ? 'bg-purple-600 text-white shadow-xs'
+                            : 'bg-slate-800 hover:bg-purple-950 text-purple-300 border border-purple-800/40'
+                        }`}
+                      >
+                        <Sparkles className="w-3 h-3 text-purple-300" />
+                        <span>{vid.isStoryOnWall ? (isArabic ? 'قصة معروضة' : 'Story active') : (isArabic ? 'تحويل لستوري' : 'Mettre en Story')}</span>
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          const track = (vid.musicThemeId ? getTrackById(vid.musicThemeId) : null) || getTrackById(weddingThemeMusicId) || NISFY_MUSIC_CATALOG[0];
+                          if (track) {
+                            setSelectedTrackForShare(track);
+                            setIsShareModalOpen(true);
+                          }
+                        }}
+                        className="py-1 px-2.5 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-500/30 text-[10px] font-black flex items-center gap-1 cursor-pointer"
+                        title="Partager la musique"
+                      >
+                        <Share2 className="w-3 h-3 text-amber-400" />
+                        <span>Musique</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -815,6 +902,20 @@ export function MyProfileView({
             </label>
           </div>
 
+          {/* 🎵 THÈME MUSICAL & AMBIANCE MARIAGE PERSONNEL (Choix, Partage & Story) */}
+          <div className="p-5 rounded-3xl bg-gradient-to-br from-amber-500/10 via-rose-500/10 to-indigo-500/10 border border-amber-200/80 dark:border-slate-700 space-y-4">
+            <MusicSelector
+              selectedTrackId={weddingThemeMusicId}
+              onSelectTrack={(track) => setWeddingThemeMusicId(track.id)}
+              onShareTrack={(track) => {
+                setSelectedTrackForShare(track);
+                setIsShareModalOpen(true);
+              }}
+              currentUserPseudo={currentUser.pseudo}
+              title={isArabic ? '🎵 الموسيقى والجو المميز لملفي الشخصي' : '🎵 Mon Thème Musical & Ambiance Mariage'}
+            />
+          </div>
+
           {/* Mémorisation du compte & Connexion Rapide (1-Clic) */}
           <div className="p-4 rounded-2xl bg-gradient-to-r from-amber-50 via-rose-50 to-orange-50 dark:from-slate-800 dark:to-slate-800/80 border border-amber-200/80 dark:border-slate-700 space-y-3">
             <div className="flex items-start justify-between gap-4">
@@ -959,6 +1060,34 @@ export function MyProfileView({
           }}
         />
       )}
+
+      {/* Music Share & Story Modal */}
+      {isShareModalOpen && selectedTrackForShare && (
+        <MusicShareModal
+          isOpen={isShareModalOpen}
+          onClose={() => {
+            setIsShareModalOpen(false);
+            setSelectedTrackForShare(null);
+          }}
+          track={selectedTrackForShare}
+          currentUser={currentUser}
+          onCreateStory={() => {
+            setIsShareModalOpen(false);
+            setIsPublishModalOpen(true);
+          }}
+        />
+      )}
+
+      {/* YouTube Music Import Modal */}
+      <YouTubeMusicImportModal
+        isOpen={isYouTubeMusicModalOpen}
+        onClose={() => setIsYouTubeMusicModalOpen(false)}
+        onSelectTrack={(importedTrack) => {
+          setAllTracks(getAllAvailableTracks());
+          setWeddingThemeMusicId(importedTrack.id);
+        }}
+        currentUserPseudo={currentUser.pseudo}
+      />
     </div>
   );
 }

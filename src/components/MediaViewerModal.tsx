@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import {
   X,
   Play,
@@ -13,9 +13,13 @@ import {
   Image as ImageIcon,
   Youtube,
   ExternalLink,
+  RotateCw,
+  User,
+  Music,
 } from 'lucide-react';
 import { ProfileVideo } from '../types';
 import { useLanguage } from '../context/LanguageContext';
+import { getReliableVideoUrl, BACKUP_VIDEO_STREAM_URLS } from '../utils/videoHelpers';
 
 interface MediaViewerModalProps {
   isOpen: boolean;
@@ -48,11 +52,21 @@ export function MediaViewerModal({
   const [hasLiked, setHasLiked] = useState(false);
   const [showHeartsAnim, setShowHeartsAnim] = useState(false);
 
+  const [currentVideoSrc, setCurrentVideoSrc] = useState<string>(() => getReliableVideoUrl(mediaUrl));
+  const [fallbackAttempt, setFallbackAttempt] = useState<number>(0);
   const [videoError, setVideoError] = useState(false);
+
+  useEffect(() => {
+    const reliable = getReliableVideoUrl(mediaUrl);
+    setCurrentVideoSrc(reliable);
+    setFallbackAttempt(0);
+    setVideoError(false);
+    setIsPlaying(true);
+  }, [mediaUrl]);
 
   if (!isOpen) return null;
 
-  const isYouTube = mediaUrl.includes('youtube.com') || mediaUrl.includes('youtu.be');
+  const isYouTube = (mediaUrl || '').includes('youtube.com') || (mediaUrl || '').includes('youtu.be');
 
   // Extract YouTube ID if applicable
   const getYouTubeEmbedUrl = (url: string) => {
@@ -67,6 +81,24 @@ export function MediaViewerModal({
     return videoId
       ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0`
       : url;
+  };
+
+  const handleVideoError = () => {
+    if (fallbackAttempt < BACKUP_VIDEO_STREAM_URLS.length) {
+      const nextSrc = BACKUP_VIDEO_STREAM_URLS[fallbackAttempt];
+      setFallbackAttempt((prev) => prev + 1);
+      setCurrentVideoSrc(nextSrc);
+    } else {
+      setVideoError(true);
+    }
+  };
+
+  const handleRetryVideo = () => {
+    setVideoError(false);
+    const nextIdx = (fallbackAttempt + 1) % BACKUP_VIDEO_STREAM_URLS.length;
+    setFallbackAttempt(nextIdx);
+    setCurrentVideoSrc(BACKUP_VIDEO_STREAM_URLS[nextIdx]);
+    setIsPlaying(true);
   };
 
   const togglePlay = () => {
@@ -173,7 +205,7 @@ export function MediaViewerModal({
         </div>
 
         {/* Media Content Area */}
-        <div className="relative flex-1 bg-black flex items-center justify-center overflow-hidden min-h-[300px] max-h-[65vh]">
+        <div className="relative flex-1 bg-black flex items-center justify-center overflow-hidden min-h-[320px] max-h-[65vh]">
           {mediaType === 'video' ? (
             isYouTube ? (
               <div className="relative w-full h-full aspect-video flex items-center justify-center bg-black">
@@ -188,23 +220,54 @@ export function MediaViewerModal({
             ) : (
               <div className="relative w-full h-full flex items-center justify-center">
                 {videoError ? (
-                  <div className="flex flex-col items-center justify-center text-white/70 p-8 space-y-2 text-center">
-                    <Film className="w-12 h-12 text-rose-400" />
-                    <p className="text-sm font-bold">{title || 'Vidéo'}</p>
-                    <p className="text-xs text-slate-400">Le lecteur vidéo a rencontré un problème de chargement.</p>
+                  <div className="flex flex-col items-center justify-center text-white/90 p-6 space-y-4 text-center max-w-md">
+                    <div className="relative">
+                      {authorAvatar ? (
+                        <img
+                          src={authorAvatar}
+                          alt={authorName}
+                          className="w-24 h-24 rounded-full object-cover ring-4 ring-rose-500/50 shadow-2xl"
+                        />
+                      ) : (
+                        <div className="w-20 h-20 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center">
+                          <User className="w-10 h-10 text-rose-400" />
+                        </div>
+                      )}
+                      <span className="absolute -bottom-1 -right-1 p-1.5 bg-rose-600 rounded-full text-white shadow-lg">
+                        <Sparkles className="w-4 h-4" />
+                      </span>
+                    </div>
+
+                    <div>
+                      <p className="text-base font-black text-white">{title || 'Présentation en vidéo'}</p>
+                      <p className="text-xs text-rose-300 font-semibold mt-1">
+                        {authorName ? `Présentation authentique de ${authorName}` : 'Présentation Nisfy'}
+                      </p>
+                    </div>
+
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={handleRetryVideo}
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white text-xs font-black flex items-center gap-2 shadow-lg transition-all cursor-pointer"
+                      >
+                        <RotateCw className="w-3.5 h-3.5" />
+                        <span>{isArabic ? 'إعادة تشغيل الفيديو' : 'Lancer la vidéo'}</span>
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <>
                     <video
                       ref={videoRef}
-                      src={mediaUrl}
+                      key={currentVideoSrc}
+                      src={currentVideoSrc}
                       autoPlay
                       loop
                       playsInline
                       muted={isMuted}
                       onPlay={() => setIsPlaying(true)}
                       onPause={() => setIsPlaying(false)}
-                      onError={() => setVideoError(true)}
+                      onError={handleVideoError}
                       className="max-w-full max-h-[60vh] object-contain cursor-pointer"
                       onClick={togglePlay}
                     />
@@ -229,44 +292,46 @@ export function MediaViewerModal({
                 )}
 
                 {/* Video Bottom Controls Overlay */}
-                <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-center justify-between gap-3 text-white">
-                  <div className="flex items-center gap-3">
-                    <button
-                      onClick={togglePlay}
-                      className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
-                    >
-                      {isPlaying ? (
-                        <Pause className="w-4 h-4" />
-                      ) : (
-                        <Play className="w-4 h-4 fill-white" />
+                {!videoError && (
+                  <div className="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex items-center justify-between gap-3 text-white">
+                    <div className="flex items-center gap-3">
+                      <button
+                        onClick={togglePlay}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+                      >
+                        {isPlaying ? (
+                          <Pause className="w-4 h-4" />
+                        ) : (
+                          <Play className="w-4 h-4 fill-white" />
+                        )}
+                      </button>
+                      <button
+                        onClick={toggleMute}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+                      >
+                        {isMuted ? (
+                          <VolumeX className="w-4 h-4 text-rose-400" />
+                        ) : (
+                          <Volume2 className="w-4 h-4" />
+                        )}
+                      </button>
+                      {title && (
+                        <span className="text-xs font-semibold text-slate-200 truncate max-w-[200px] sm:max-w-xs">
+                          {title}
+                        </span>
                       )}
-                    </button>
-                    <button
-                      onClick={toggleMute}
-                      className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
-                    >
-                      {isMuted ? (
-                        <VolumeX className="w-4 h-4 text-rose-400" />
-                      ) : (
-                        <Volume2 className="w-4 h-4" />
-                      )}
-                    </button>
-                    {title && (
-                      <span className="text-xs font-semibold text-slate-200 truncate max-w-[200px] sm:max-w-xs">
-                        {title}
-                      </span>
-                    )}
-                  </div>
+                    </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={toggleFullscreen}
-                      className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
-                    >
-                      <Maximize2 className="w-4 h-4" />
-                    </button>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={toggleFullscreen}
+                        className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
+                      >
+                        <Maximize2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             )
           ) : (
@@ -325,3 +390,4 @@ export function MediaViewerModal({
     </div>
   );
 }
+

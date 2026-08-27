@@ -15,6 +15,10 @@ export interface ProfileVideo {
   duration?: number;
   createdAt: string;
   isPresentation?: boolean;
+  musicThemeId?: string;
+  musicThemeTitle?: string;
+  musicThemeArtist?: string;
+  isStoryOnWall?: boolean;
 }
 
 export interface UserProfile {
@@ -32,6 +36,11 @@ export interface UserProfile {
   videos?: ProfileVideo[];
   audioBioUrl?: string; // 30s Audio Bio
   audioBioDuration?: number;
+  // Personal Wedding Music Anthem / Signature Track
+  weddingThemeMusicId?: string;
+  weddingThemeMusicTitle?: string;
+  weddingThemeMusicGenre?: string;
+  weddingThemeMusicArtist?: string;
   bio: string;
   interests: string[];
   occupation: string;
@@ -154,7 +163,20 @@ export interface LikeAction {
   timestamp: string;
 }
 
-export type ActiveTab = 'discover' | 'feed' | 'customs' | 'marketplace' | 'shop' | 'matches' | 'chat' | 'lounge' | 'map' | 'profile' | 'live' | 'chef_nadjet';
+export type ActiveTab =
+  | 'discover'
+  | 'feed'
+  | 'customs'
+  | 'marketplace'
+  | 'shop'
+  | 'matches'
+  | 'chat'
+  | 'lounge'
+  | 'map'
+  | 'profile'
+  | 'live'
+  | 'chef_nadjet'
+  | 'admin';
 
 export interface WilayaCustom {
   id: string;
@@ -273,6 +295,10 @@ export interface SocialPost {
   createdAt: string;
   duration?: number;
   musicTitle?: string;
+  musicThemeId?: string;
+  musicThemeArtist?: string;
+  musicThemeUrl?: string;
+  isStoryOnWall?: boolean;
   comments?: SocialComment[];
 }
 

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   X,
   Sparkles,
@@ -17,9 +17,21 @@ import {
   Layers,
   Calendar,
   Gift,
+  ExternalLink,
+  Navigation,
+  Utensils,
+  Music,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Share2,
 } from 'lucide-react';
 import { Advertisement } from '../data/advertisements';
 import { useLanguage } from '../context/LanguageContext';
+import { getTrackById, getDefaultTrackForCategory, MusicTrack } from '../data/musicThemes';
+import { musicAudioEngine } from '../utils/musicAudioEngine';
+import { MusicShareModal } from './music/MusicShareModal';
 
 interface SponsoredAdModalProps {
   ad: Advertisement | null;
@@ -34,6 +46,25 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
   const [contactName, setContactName] = useState('');
   const [contactPhone, setContactPhone] = useState('');
   const [contactNote, setContactNote] = useState('');
+  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const musicTrack: MusicTrack | null = ad
+    ? getTrackById(ad.musicThemeId) || getDefaultTrackForCategory(ad.category)
+    : null;
+
+  useEffect(() => {
+    if (!musicTrack) return;
+    const unsub = musicAudioEngine.subscribe((track, state) => {
+      setIsPlayingMusic(track?.id === musicTrack.id && state === 'playing');
+    });
+    return unsub;
+  }, [musicTrack?.id]);
+
+  const handleToggleMusic = () => {
+    if (!musicTrack) return;
+    musicAudioEngine.togglePlay(musicTrack);
+  };
 
   if (!ad) return null;
 
@@ -185,7 +216,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
           </div>
         </div>
 
-        {/* 2. THUMBNAIL SELECTOR STRIP (Cleanly displayed right under the hero) */}
+        {/* 2. THUMBNAIL SELECTOR STRIP */}
         {allImages.length > 1 && (
           <div className="p-3 bg-slate-100 border-b border-slate-200">
             <div className="flex items-center justify-between mb-1.5 px-1">
@@ -221,7 +252,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
 
         {/* 3. CONTENT BODY */}
         <div className="p-5 sm:p-6 space-y-6 flex-1">
-          {/* OFFRE SPÉCIALE MEMBRES NISFY (Clean, dedicated promo card with zero occlusion) */}
+          {/* OFFRE SPÉCIALE MEMBRES NISFY */}
           <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-emerald-500/10 border-2 border-amber-300 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-3.5 w-full sm:w-auto">
               <div className="w-12 h-12 rounded-2xl bg-amber-500 text-slate-950 flex items-center justify-center shrink-0 shadow-md font-black">
@@ -262,7 +293,77 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
             </div>
           </div>
 
-          {/* Description */}
+          {/* 🎵 AMBIANCE MUSICALE DU SPONSOR & PARTAGE (NOUVEAUTÉ NISFY) */}
+          {musicTrack && (
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white border border-amber-400/30 shadow-md flex flex-col sm:flex-row items-center justify-between gap-3.5">
+              <div className="flex items-center gap-3 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={handleToggleMusic}
+                  className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 transition-all cursor-pointer shadow-md ${
+                    isPlayingMusic
+                      ? 'bg-amber-400 text-slate-950 ring-4 ring-amber-300/40 scale-105'
+                      : 'bg-white/10 hover:bg-white/20 text-white'
+                  }`}
+                  title={isPlayingMusic ? 'Mettre en pause' : 'Écouter'}
+                >
+                  {isPlayingMusic ? (
+                    <Pause className="w-5 h-5 fill-slate-950" />
+                  ) : (
+                    <Play className="w-5 h-5 fill-white ml-0.5" />
+                  )}
+                </button>
+
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[10px] uppercase font-black tracking-wider text-amber-400 flex items-center gap-1">
+                      <Music className="w-3 h-3" />
+                      {isArabic ? 'الموسيقى التصويرية الرسمية للمعلن' : 'Ambiance Musicale Thématique'}
+                    </span>
+                    {isPlayingMusic && (
+                      <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 animate-pulse">
+                        {isArabic ? 'قيد التشغيل' : 'Lecture en cours'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-sm font-bold text-white mt-0.5 flex items-center gap-1.5">
+                    <span>{musicTrack.icon}</span>
+                    <span>{isArabic ? musicTrack.titleAr : musicTrack.title}</span>
+                  </div>
+                  <div className="text-xs text-slate-300">
+                    {isArabic ? musicTrack.genreLabelAr : musicTrack.genreLabel} • {musicTrack.bpm} BPM
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <button
+                  type="button"
+                  onClick={handleToggleMusic}
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer ${
+                    isPlayingMusic
+                      ? 'bg-amber-400 text-slate-950'
+                      : 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
+                  }`}
+                >
+                  {isPlayingMusic ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
+                  <span>{isPlayingMusic ? (isArabic ? 'إيقاف' : 'Pause') : (isArabic ? 'استماع' : 'Écouter')}</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setIsShareModalOpen(true)}
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-white text-xs font-black flex items-center gap-1.5 shadow-md hover:brightness-110 transition-all cursor-pointer"
+                  title="Partager cette musique ou créer une story"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span>{isArabic ? 'مشاركة وقصة' : 'Partager / Story'}</span>
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Description & Invitation */}
           <div>
             <h3 className="text-lg font-black text-slate-900 mb-2">
               {isArabic ? ad.taglineAr : ad.tagline}
@@ -272,11 +373,48 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
             </p>
           </div>
 
+          {/* LOCALISATION & ITINÉRAIRE GOOGLE MAPS (SPÉCIAL RESTAURANT / LIEU) */}
+          {(ad.address || ad.googleMapsUrl) && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-indigo-500/30 shadow-md">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/30">
+                    <MapPin className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                      <Navigation className="w-3.5 h-3.5" />
+                      {isArabic ? 'الموقع والعنوان الجغرافي' : 'Localisation & Adresse du Restaurant'}
+                    </div>
+                    <div className="text-sm font-black text-white mt-1">
+                      {isArabic ? (ad.addressAr || ad.address) : ad.address}
+                    </div>
+                    <div className="text-xs text-slate-300 mt-0.5">
+                      {ad.city && `${ad.city}, `}{ad.country || 'International'}
+                    </div>
+                  </div>
+                </div>
+
+                {ad.googleMapsUrl && (
+                  <a
+                    href={ad.googleMapsUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-slate-950 font-black text-xs shadow-md hover:shadow-lg transition-all shrink-0 cursor-pointer"
+                  >
+                    <ExternalLink className="w-4 h-4" />
+                    <span>{isArabic ? 'فتح في خرائط Google' : 'Ouvrir sur Google Maps'}</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          )}
+
           {/* Key Features & Benefits */}
           <div className="bg-slate-50 p-4 sm:p-5 rounded-2xl border border-slate-200/80">
             <h4 className="text-xs font-black text-slate-600 uppercase tracking-wider mb-3 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              {isArabic ? 'أبرز مميزات الخدمة والضمانات' : 'Ce qui est inclus & Avantages'}
+              {isArabic ? 'أبرز مميزات الخدمة والضمانات' : 'Ce qui est inclus & Spécialités'}
             </h4>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
               {(isArabic ? ad.featuresAr : ad.features).map((feat, i) => (
@@ -292,12 +430,12 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
           <div className="border border-slate-200 rounded-2xl p-4 sm:p-5 bg-white shadow-xs">
             <h4 className="text-sm font-black text-slate-900 mb-1 flex items-center gap-2">
               <Send className="w-4 h-4 text-emerald-600" />
-              {isArabic ? 'طلب اتصال أو حجز موعد سريع' : 'Demande de rappel & Devis express'}
+              {isArabic ? 'طلب اتصال أو حجز موعد / طاولة' : 'Réservation de Table & Contact Direct'}
             </h4>
             <p className="text-xs text-slate-500 mb-3.5">
               {isArabic
-                ? 'اترك رقمك وسيتواصل معك ممثل الخدمة خلال ساعات قليلة'
-                : 'Laissez vos coordonnées pour recevoir la brochure complète et un devis personnalisé'}
+                ? 'اترك رقمك وسيتواصل معك المطعم لتأكيد حجزك وتقديم الخصم'
+                : 'Laissez vos coordonnées pour réserver votre table ou organiser un repas de groupe avec réduction'}
             </p>
 
             {messageSent ? (
@@ -305,8 +443,8 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                 <Check className="w-5 h-5 text-emerald-600 shrink-0" />
                 <span>
                   {isArabic
-                    ? 'شكراً لك! تم إرسال طلبك إلى الشريك بنجاح وسيتم الاتصال بك قريباً.'
-                    : 'Votre demande a été transmise au partenaire. Vous serez contacté très rapidement !'}
+                    ? 'شكراً لك! تم إرسال طلبك بنجاح وسيتم الاتصال بك قريباً.'
+                    : 'Votre demande a été transmise avec succès !'}
                 </span>
               </div>
             ) : (
@@ -322,7 +460,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                   />
                   <input
                     type="tel"
-                    placeholder={isArabic ? 'رقم الهاتف (05/06/07)' : 'Téléphone (05xx / 06xx / 07xx)'}
+                    placeholder={isArabic ? 'رقم الهاتف (+34 / 05xx / 06xx)' : 'Téléphone / WhatsApp (+34... / 05xx...)'}
                     value={contactPhone}
                     onChange={(e) => setContactPhone(e.target.value)}
                     className="w-full px-3.5 py-2.5 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500"
@@ -331,7 +469,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                 </div>
                 <textarea
                   rows={2}
-                  placeholder={isArabic ? 'ملاحظة أو تاريخ الحفل المرتقب (اختياري)...' : 'Précisions ou date souhaitée (optionnel)...'}
+                  placeholder={isArabic ? 'عدد الأشخاص، تاريخ القدوم أو ملاحظة خاصة...' : 'Nombre de convives, date souhaitée ou remarque...'}
                   value={contactNote}
                   onChange={(e) => setContactNote(e.target.value)}
                   className="w-full px-3.5 py-2 text-sm border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 resize-none"
@@ -341,7 +479,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                   className="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
-                  {isArabic ? 'إرسال طلب الاستفسار مجاناً' : 'Envoyer ma demande gratuitement'}
+                  {isArabic ? 'إرسال طلب الحجز' : 'Envoyer la demande de réservation'}
                 </button>
               </form>
             )}
@@ -377,8 +515,17 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
             </a>
           </div>
         </div>
+
+        {musicTrack && (
+          <MusicShareModal
+            track={musicTrack}
+            isOpen={isShareModalOpen}
+            onClose={() => setIsShareModalOpen(false)}
+          />
+        )}
       </div>
     </div>
   );
 }
+
 

@@ -21,16 +21,31 @@ import {
   Heart,
   Eye,
   Layers,
+  Music,
+  Volume2,
+  VolumeX,
+  Radio,
 } from 'lucide-react';
 import { UserProfile, ProfileVideo } from '../types';
 import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
+import {
+  NISFY_MUSIC_CATALOG,
+  getAllAvailableTracks,
+  getTrackById,
+  MusicTrack,
+} from '../data/musicThemes';
+import { musicAudioEngine } from '../utils/musicAudioEngine';
+import { YouTubeMusicImportModal } from './music/YouTubeMusicImportModal';
+import { MusicSelector } from './music/MusicSelector';
 
 interface PublishVideoModalProps {
   currentUser: UserProfile;
   isOpen: boolean;
   onClose: () => void;
   onPublishVideo: (newVideo: ProfileVideo) => void;
+  initialTrackId?: string;
+  initialIsStory?: boolean;
 }
 
 const TEMPLATE_VIDEOS = [
@@ -38,7 +53,7 @@ const TEMPLATE_VIDEOS = [
     id: 'tpl_1',
     title: 'Présentation Spontanée & Charme DZ 🌺',
     description: 'Une présentation chaleureuse en 15 secondes pour exprimer ma personnalité.',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-young-woman-talking-on-video-call-with-her-phone-41448-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyBlazes.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
     duration: 15,
     tag: '#Présentation',
@@ -47,7 +62,7 @@ const TEMPLATE_VIDEOS = [
     id: 'tpl_2',
     title: 'Salutations d’Extérieur & Démarche Sérieuse 🦁',
     description: 'Message franc et sincère tourné en extérieur pour une démarche matrimoniale.',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-young-man-walking-outdoors-and-talking-on-a-video-call-41445-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80',
     duration: 12,
     tag: '#MariageDZ',
@@ -56,7 +71,7 @@ const TEMPLATE_VIDEOS = [
     id: 'tpl_3',
     title: 'Sourire d’El Bahia & Ambition 🌊',
     description: 'Énergie positive, présentation de mes passions et de mes valeurs familiales.',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-smiling-woman-having-a-video-call-with-her-smartphone-41447-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=500&auto=format&fit=crop&q=80',
     duration: 10,
     tag: '#Sourire',
@@ -65,7 +80,7 @@ const TEMPLATE_VIDEOS = [
     id: 'tpl_4',
     title: 'Vue des Ponts & Discussion Malouf 🌉',
     description: 'Partage d’un instant culturel et recherche d’une personne posée.',
-    url: 'https://assets.mixkit.co/videos/preview/mixkit-man-talking-on-a-video-call-with-his-smartphone-41444-large.mp4',
+    url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFun.mp4',
     thumbnail: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80',
     duration: 14,
     tag: '#CultureDZ',
@@ -88,6 +103,8 @@ export function PublishVideoModal({
   isOpen,
   onClose,
   onPublishVideo,
+  initialTrackId,
+  initialIsStory = false,
 }: PublishVideoModalProps) {
   const { t, isArabic } = useLanguage();
 
@@ -98,11 +115,29 @@ export function PublishVideoModal({
   const [videoUrl, setVideoUrl] = useState<string>('');
   const [videoThumbnail, setVideoThumbnail] = useState<string>(currentUser.avatar);
   const [title, setTitle] = useState<string>('');
-  const [selectedTag, setSelectedTag] = useState<string>('#MariageDZ');
+  const [selectedTag, setSelectedTag] = useState<string>(initialIsStory ? '#StoryWall' : '#MariageDZ');
   const [duration, setDuration] = useState<number>(15);
   const [isPrimaryPresentation, setIsPrimaryPresentation] = useState<boolean>(
     !currentUser.videos || currentUser.videos.length === 0
   );
+
+  // 🎵 Music & Story on Wall State
+  const [selectedMusicThemeId, setSelectedMusicThemeId] = useState<string>(
+    initialTrackId || currentUser.weddingThemeMusicId || 'track-zorna-cortege'
+  );
+  const [isStoryOnWall, setIsStoryOnWall] = useState<boolean>(initialIsStory);
+  const [previewTrackPlayingId, setPreviewTrackPlayingId] = useState<string | null>(null);
+  const [isYouTubeModalOpen, setIsYouTubeModalOpen] = useState<boolean>(false);
+  const [allTracks, setAllTracks] = useState<MusicTrack[]>([]);
+
+  useEffect(() => {
+    setAllTracks(getAllAvailableTracks());
+    const handleUpdate = () => {
+      setAllTracks(getAllAvailableTracks());
+    };
+    window.addEventListener('nisfy_custom_tracks_updated', handleUpdate);
+    return () => window.removeEventListener('nisfy_custom_tracks_updated', handleUpdate);
+  }, []);
 
   // Live recording state
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -284,6 +319,8 @@ export function PublishVideoModal({
         ? `قصة وستوري ${currentUser.pseudo} 🇩🇿`
         : `Présentation vidéo de ${currentUser.pseudo} 🇩🇿`);
 
+    const chosenTrack = getTrackById(selectedMusicThemeId);
+
     const newVideo: ProfileVideo = {
       id: `vid_${Date.now()}_${Math.random().toString(36).substring(7)}`,
       url: videoUrl,
@@ -292,6 +329,9 @@ export function PublishVideoModal({
       duration: duration || 15,
       createdAt: 'À l’instant',
       isPresentation: isPrimaryPresentation,
+      musicThemeId: selectedMusicThemeId,
+      musicThemeArtist: chosenTrack ? `${chosenTrack.title} - ${chosenTrack.artist}` : undefined,
+      isStoryOnWall: isStoryOnWall,
     };
 
     onPublishVideo(newVideo);
@@ -650,6 +690,38 @@ export function PublishVideoModal({
               </div>
             </div>
 
+            {/* 🎵 CHOIX DE LA MUSIQUE / AMBIANCE DU CLIP */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 border border-amber-300 dark:border-amber-700/50 space-y-2">
+              <MusicSelector
+                selectedTrackId={selectedMusicThemeId}
+                onSelectTrack={(track) => setSelectedMusicThemeId(track.id)}
+                currentUserPseudo={currentUser.pseudo}
+                compact={true}
+                title={isArabic ? '🎵 إضافة موسيقى للمقطع / الستوري' : '🎵 Musique & Ambiance Thématique du Clip'}
+              />
+            </div>
+
+            {/* Story on Wall Toggle (Faire d'un clip une story sur son mur) */}
+            <label className="flex items-center gap-2.5 p-3 rounded-2xl bg-gradient-to-r from-purple-50 to-pink-50 border border-purple-200/80 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={isStoryOnWall}
+                onChange={(e) => setIsStoryOnWall(e.target.checked)}
+                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-400 cursor-pointer"
+              />
+              <div>
+                <span className="text-xs font-black text-purple-950 flex items-center gap-1.5">
+                  <span>✨ {isArabic ? 'نشر كستوري على حائطي وواجهتي' : 'Publier en Story sur mon Mur & Feed'}</span>
+                  <span className="px-2 py-0.5 rounded-full bg-purple-200 text-purple-900 text-[10px] font-black">Story 24h</span>
+                </span>
+                <span className="text-[11px] text-purple-700 block">
+                  {isArabic
+                    ? 'سيظهر المقطع في شريط الستوري الدائري العلوي لجميع المتابعين والأعضاء مع الموسيقى'
+                    : 'Le clip apparaîtra dans la barre des Stories Nisfy en haut du fil d’actualité.'}
+                </span>
+              </div>
+            </label>
+
             {/* Primary Presentation Toggle */}
             <label className="flex items-center gap-2.5 p-3 rounded-2xl bg-amber-50/70 border border-amber-200/80 cursor-pointer">
               <input
@@ -707,6 +779,17 @@ export function PublishVideoModal({
           </button>
         </div>
       </div>
+
+      {/* YouTube Music Import Modal */}
+      <YouTubeMusicImportModal
+        isOpen={isYouTubeModalOpen}
+        onClose={() => setIsYouTubeModalOpen(false)}
+        onSelectTrack={(importedTrack) => {
+          setAllTracks(getAllAvailableTracks());
+          setSelectedMusicThemeId(importedTrack.id);
+        }}
+        currentUserPseudo={currentUser.pseudo}
+      />
     </div>
   );
 }

@@ -20,7 +20,8 @@ import {
 } from 'lucide-react';
 import { UserProfile, CommunityMessage } from '../types';
 import { THEMATIC_ROOMS, ThematicRoom } from '../data/thematicRooms';
-import { SPONSORED_ADS, Advertisement } from '../data/advertisements';
+import { Advertisement } from '../data/advertisements';
+import { getActiveAdvertisements } from '../utils/adsManager';
 import { SponsoredAdCard } from './SponsoredAdCard';
 import { SponsoredAdModal } from './SponsoredAdModal';
 import { BecomePartnerModal } from './BecomePartnerModal';
@@ -53,10 +54,18 @@ export function CommunityLoungeView({
   const [roomReactions, setRoomReactions] = useState<{ id: number; emoji: string }[]>([]);
 
   // Ads state
+  const [activeAds, setActiveAds] = useState<Advertisement[]>(() => getActiveAdvertisements());
   const [selectedAdForModal, setSelectedAdForModal] = useState<Advertisement | null>(null);
   const [isBecomePartnerOpen, setIsBecomePartnerOpen] = useState(false);
-  const [loungeAdIndex, setLoungeAdIndex] = useState(1); // dar el caftan
-  const currentLoungeAd = SPONSORED_ADS[loungeAdIndex % SPONSORED_ADS.length];
+  const [loungeAdIndex, setLoungeAdIndex] = useState(1);
+
+  React.useEffect(() => {
+    const handleSync = () => setActiveAds(getActiveAdvertisements());
+    window.addEventListener('nisfy_ads_updated', handleSync);
+    return () => window.removeEventListener('nisfy_ads_updated', handleSync);
+  }, []);
+
+  const currentLoungeAd = activeAds.length > 0 ? activeAds[loungeAdIndex % activeAds.length] : null;
 
   const handlePost = (e: React.FormEvent) => {
     e.preventDefault();
@@ -447,11 +456,13 @@ export function CommunityLoungeView({
           </div>
         </div>
 
-        <SponsoredAdCard
-          ad={currentLoungeAd}
-          layout="banner"
-          onOpenDetails={(ad) => setSelectedAdForModal(ad)}
-        />
+        {currentLoungeAd && (
+          <SponsoredAdCard
+            ad={currentLoungeAd}
+            layout="banner"
+            onOpenDetails={(ad) => setSelectedAdForModal(ad)}
+          />
+        )}
       </div>
 
       {/* Messages Stream */}

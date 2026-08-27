@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SocialPostCategory, SocialPost, SocialComment } from '../../types';
+import { SocialPostCategory, SocialPost, SocialComment, UserProfile } from '../../types';
 import { CategoryTabs } from './CategoryTabs';
 import { VideoPlayer } from './VideoPlayer';
 import { PublishVideoModal } from './PublishVideoModal';
@@ -10,15 +10,18 @@ import { useLanguage } from '../../context/LanguageContext';
 interface SocialFeedProps {
   onSelectUser?: (userId: string) => void;
   onNavigateToDiscover?: () => void;
+  currentUser?: UserProfile;
 }
 
-export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedProps) {
+export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: SocialFeedProps) {
   const { isArabic } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<SocialPostCategory | 'all'>('all');
   const [posts, setPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [publishInitialTrackId, setPublishInitialTrackId] = useState<string | undefined>(undefined);
+  const [publishInitialIsStory, setPublishInitialIsStory] = useState<boolean>(false);
   const [newCommentText, setNewCommentText] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -85,17 +88,17 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedPro
   const handlePublish = (data: any) => {
     const newPost: SocialPost = {
       id: `post-${Date.now()}`,
-      authorId: 'me',
-      authorPseudo: 'Vous 🌟',
-      authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
-      authorCity: 'Alger (16)',
+      authorId: currentUser?.id || 'me',
+      authorPseudo: currentUser?.pseudo || 'Vous 🌟',
+      authorAvatar: currentUser?.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400',
+      authorCity: currentUser?.city ? `${currentUser.city} (${currentUser.wilayaCode || '16'})` : 'Alger (16)',
       authorVerified: true,
       category: data.category || 'mariage',
-      videoUrl: data.videoUrl || 'https://assets.mixkit.co/videos/preview/mixkit-young-man-walking-outdoors-in-the-city-41712-large.mp4',
+      videoUrl: data.videoUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
       posterUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=600',
       title: data.title || 'Mon nouveau moment Nisfy',
       description: data.description || 'Moment de vie authentique partagé sur Nisfy.',
-      tags: ['#NisfyDZ', '#ZawajSincere'],
+      tags: data.isStoryOnWall ? ['#StoryWall', '#NisfyDZ', '#ZawajDZ'] : ['#NisfyDZ', '#ZawajSincere'],
       likesCount: 1,
       commentsCount: 0,
       sharesCount: 0,
@@ -105,10 +108,15 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedPro
       createdAt: 'À l’instant',
       duration: 30,
       comments: [],
+      musicTitle: data.musicTitle,
+      musicThemeId: data.musicThemeId,
+      musicThemeUrl: data.musicThemeUrl,
     };
     setPosts([newPost, ...posts]);
     setActivePostId(newPost.id);
     setIsPublishModalOpen(false);
+    setPublishInitialTrackId(undefined);
+    setPublishInitialIsStory(false);
     scrollToIndex(0);
   };
 
@@ -186,6 +194,12 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedPro
                 isActive={activePostId === post.id} 
                 onOpenComments={() => setIsCommentsOpen(true)}
                 onSelectUser={onSelectUser}
+                currentUser={currentUser}
+                onCreateStoryFromClip={(p) => {
+                  setPublishInitialTrackId(p.musicThemeId);
+                  setPublishInitialIsStory(true);
+                  setIsPublishModalOpen(true);
+                }}
               />
             </div>
           ))
@@ -196,9 +210,9 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedPro
             <p className="text-xs text-white/60 mt-1">Soyez le premier à publier un moment Nisfy !</p>
             <button
               onClick={() => setIsPublishModalOpen(true)}
-              className="mt-4 px-5 py-2.5 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-2xl text-xs font-bold shadow-lg"
+              className="mt-4 px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 rounded-xl text-xs font-semibold border border-rose-400/30 shadow-sm transition-colors cursor-pointer"
             >
-              Publier une vidéo
+              {isArabic ? 'نشر فيديو' : 'Publier une vidéo'}
             </button>
           </div>
         )}
@@ -216,20 +230,21 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedPro
         </button>
         <button
           onClick={handleNextVideo}
-          className="w-11 h-11 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 hover:opacity-95 text-white flex items-center justify-center transition-all shadow-xl active:scale-90"
+          className="w-11 h-11 rounded-full bg-slate-800/90 hover:bg-slate-700 text-white flex items-center justify-center transition-all shadow-xl active:scale-90 border border-white/10"
           title="Vidéo suivante (Touche Bas)"
         >
           <ChevronDown className="w-6 h-6" />
         </button>
       </div>
 
-      {/* Floating Action Button (Publish) */}
+      {/* Bouton doux & discret : Publier une vidéo */}
       <button 
         onClick={() => setIsPublishModalOpen(true)}
-        className="absolute bottom-20 sm:bottom-6 right-3 sm:right-6 z-30 w-13 h-13 bg-gradient-to-tr from-amber-500 to-rose-500 rounded-full flex items-center justify-center shadow-2xl hover:scale-105 active:scale-95 transition-transform border-2 border-white/20 cursor-pointer"
-        title="Publier un Reel Nisfy"
+        className="absolute bottom-20 sm:bottom-6 right-3 sm:right-6 z-30 px-3.5 py-2 bg-rose-950/75 hover:bg-rose-900/90 text-rose-100 text-xs font-semibold rounded-xl border border-rose-500/30 backdrop-blur-md shadow-md flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+        title="Publier une vidéo"
       >
-        <Plus className="w-7 h-7 text-white" />
+        <Plus className="w-4 h-4 text-rose-300" />
+        <span>{isArabic ? 'نشر فيديو' : 'Publier une vidéo'}</span>
       </button>
 
       {/* Interactive Comments Drawer */}
@@ -304,8 +319,14 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover }: SocialFeedPro
       {/* Publish Modal */}
       {isPublishModalOpen && (
         <PublishVideoModal 
-          onClose={() => setIsPublishModalOpen(false)} 
+          onClose={() => {
+            setIsPublishModalOpen(false);
+            setPublishInitialTrackId(undefined);
+            setPublishInitialIsStory(false);
+          }} 
           onPublish={handlePublish}
+          initialTrackId={publishInitialTrackId}
+          initialIsStory={publishInitialIsStory}
         />
       )}
     </div>

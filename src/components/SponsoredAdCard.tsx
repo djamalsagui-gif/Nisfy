@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Sparkles,
   Tag,
@@ -12,9 +12,18 @@ import {
   ArrowRight,
   Camera,
   Layers,
+  Music,
+  Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Share2,
 } from 'lucide-react';
 import { Advertisement } from '../data/advertisements';
 import { useLanguage } from '../context/LanguageContext';
+import { getTrackById, getDefaultTrackForCategory, MusicTrack } from '../data/musicThemes';
+import { musicAudioEngine } from '../utils/musicAudioEngine';
+import { MusicShareModal } from './music/MusicShareModal';
 
 interface SponsoredAdCardProps {
   ad: Advertisement;
@@ -32,6 +41,28 @@ export function SponsoredAdCard({
   const { isArabic } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [cardImgIndex, setCardImgIndex] = useState(0);
+  const [isPlayingMusic, setIsPlayingMusic] = useState(false);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+
+  const musicTrack: MusicTrack =
+    getTrackById(ad.musicThemeId) || getDefaultTrackForCategory(ad.category);
+
+  useEffect(() => {
+    const unsub = musicAudioEngine.subscribe((track, state) => {
+      setIsPlayingMusic(track?.id === musicTrack.id && state === 'playing');
+    });
+    return unsub;
+  }, [musicTrack.id]);
+
+  const handleToggleMusic = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    musicAudioEngine.togglePlay(musicTrack);
+  };
+
+  const handleOpenShare = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsShareModalOpen(true);
+  };
 
   const allImages = [
     ad.bannerImage,
@@ -102,6 +133,21 @@ export function SponsoredAdCard({
           </div>
 
           <div className="flex items-center gap-2 self-end sm:self-center">
+            {/* Music pill on banner */}
+            <button
+              type="button"
+              onClick={handleToggleMusic}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1.5 backdrop-blur-sm transition-all cursor-pointer ${
+                isPlayingMusic
+                  ? 'bg-amber-400 text-slate-950 shadow-md ring-2 ring-amber-300'
+                  : 'bg-white/10 hover:bg-white/20 text-white'
+              }`}
+              title={isPlayingMusic ? 'Mettre en pause la musique' : 'Écouter le thème musical du sponsor'}
+            >
+              {isPlayingMusic ? <Pause className="w-3.5 h-3.5 fill-slate-950" /> : <Play className="w-3.5 h-3.5 fill-white" />}
+              <span className="hidden sm:inline">{musicTrack.icon} {isArabic ? musicTrack.genreLabelAr : musicTrack.genreLabel}</span>
+            </button>
+
             <button
               onClick={handleCopy}
               className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center gap-1.5 backdrop-blur-sm transition-colors cursor-pointer"
@@ -118,6 +164,12 @@ export function SponsoredAdCard({
             </button>
           </div>
         </div>
+
+        <MusicShareModal
+          track={musicTrack}
+          isOpen={isShareModalOpen}
+          onClose={() => setIsShareModalOpen(false)}
+        />
       </div>
     );
   }
@@ -203,6 +255,44 @@ export function SponsoredAdCard({
           <p className="text-xs text-slate-200 mt-1 line-clamp-2 leading-relaxed">
             {isArabic ? ad.taglineAr : ad.tagline}
           </p>
+
+          {/* 🎵 Floating Music Theme Tag on Hero Photo */}
+          <div className="mt-2.5 flex items-center gap-2">
+            <button
+              type="button"
+              onClick={handleToggleMusic}
+              className={`px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 backdrop-blur-md border transition-all cursor-pointer shadow-lg ${
+                isPlayingMusic
+                  ? 'bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950 border-amber-300 ring-2 ring-amber-300/50 scale-105'
+                  : 'bg-black/60 hover:bg-black/80 text-white border-white/20'
+              }`}
+            >
+              {isPlayingMusic ? (
+                <Pause className="w-3.5 h-3.5 fill-slate-950" />
+              ) : (
+                <Play className="w-3.5 h-3.5 fill-white" />
+              )}
+              <span className="truncate max-w-[140px]">
+                {musicTrack.icon} {isArabic ? musicTrack.titleAr : musicTrack.title}
+              </span>
+              {isPlayingMusic && (
+                <span className="flex items-end gap-0.5 h-2.5 ml-0.5">
+                  <span className="w-0.75 bg-slate-950 rounded-full animate-bounce h-full" />
+                  <span className="w-0.75 bg-slate-950 rounded-full animate-bounce h-2/3" />
+                  <span className="w-0.75 bg-slate-950 rounded-full animate-bounce h-4/5" />
+                </span>
+              )}
+            </button>
+
+            <button
+              type="button"
+              onClick={handleOpenShare}
+              title={isArabic ? 'مشاركة الموسيقى والقصة' : 'Partager la musique'}
+              className="p-1.5 rounded-full bg-black/60 hover:bg-black/80 text-white backdrop-blur-md border border-white/20 transition-all cursor-pointer"
+            >
+              <Share2 className="w-3.5 h-3.5 text-amber-300" />
+            </button>
+          </div>
         </div>
       </div>
 
@@ -266,6 +356,12 @@ export function SponsoredAdCard({
           )}
         </div>
       </div>
+
+      <MusicShareModal
+        track={musicTrack}
+        isOpen={isShareModalOpen}
+        onClose={() => setIsShareModalOpen(false)}
+      />
     </div>
   );
 }

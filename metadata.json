@@ -1,6 +1,6 @@
 {
   "name": "Nisfy - Zawaj Algérie & Diaspora",
-  "description": "Application de rencontre et mariage respectueuse pour les célibataires des 69 Wilayas d'Algérie et de la Diaspora.",
+  "description": "Application de rencontre et mariage pour les 69 Wilayas d'Algérie et la Diaspora, avec gestion complète des annonceurs, médiathèque, conventions et paiements.",
   "requestFramePermissions": [
     "camera",
     "microphone"
