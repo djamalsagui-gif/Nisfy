@@ -60,7 +60,7 @@ export function LanguageSwitcher({ className = '', size = 'sm', variant = 'toggl
         onClick={() => handleSelect('fr')}
         className={`${basePadding} rounded-lg font-black transition-all flex items-center gap-1 cursor-pointer ${
           language === 'fr'
-            ? 'bg-white text-rose-600 shadow-2xs ring-1 ring-rose-200'
+            ? 'bg-white text-[#FF3823] shadow-2xs ring-1 ring-[#FF3823]/25'
             : 'text-slate-500 hover:text-slate-800'
         }`}
         title="Passer en Français"

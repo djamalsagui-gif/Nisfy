@@ -208,7 +208,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                 {ad.reviewsCount} {isArabic ? 'تقييم زبائن' : 'avis certifiés'}
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1 text-rose-300 font-medium">
+              <span className="flex items-center gap-1 text-orange-300 font-medium">
                 <MapPin className="w-3.5 h-3.5" />
                 {ad.wilayas.join(', ')}
               </span>
@@ -353,7 +353,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                 <button
                   type="button"
                   onClick={() => setIsShareModalOpen(true)}
-                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-white text-xs font-black flex items-center gap-1.5 shadow-md hover:brightness-110 transition-all cursor-pointer"
+                  className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white text-xs font-black flex items-center gap-1.5 shadow-md shadow-orange-500/20 hover:opacity-95 transition-all cursor-pointer"
                   title="Partager cette musique ou créer une story"
                 >
                   <Share2 className="w-4 h-4" />
@@ -378,7 +378,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
             <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-slate-900 to-indigo-950 text-white border border-indigo-500/30 shadow-md">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex items-start gap-3">
-                  <div className="w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center shrink-0 border border-rose-500/30">
+                  <div className="w-10 h-10 rounded-xl bg-orange-500/20 text-[#FF6B35] flex items-center justify-center shrink-0 border border-orange-500/30">
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
@@ -400,7 +400,7 @@ export function SponsoredAdModal({ ad, onClose }: SponsoredAdModalProps) {
                     href={ad.googleMapsUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-slate-950 font-black text-xs shadow-md hover:shadow-lg transition-all shrink-0 cursor-pointer"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white font-black text-xs shadow-md shadow-orange-500/20 transition-all shrink-0 cursor-pointer"
                   >
                     <ExternalLink className="w-4 h-4" />
                     <span>{isArabic ? 'فتح في خرائط Google' : 'Ouvrir sur Google Maps'}</span>

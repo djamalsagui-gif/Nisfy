@@ -91,13 +91,13 @@ export function MusicSelector({
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-amber-500 to-rose-500 flex items-center justify-center text-white shadow-xs">
+          <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] flex items-center justify-center text-white shadow-xs">
             <Music className="w-3.5 h-3.5" />
           </div>
           <div>
             <h3 className="text-sm font-black text-slate-900 dark:text-white flex items-center gap-1.5">
               {title || (isArabic ? 'موسيقى وخلفيات الأعراس' : 'Catalogue Musical & Thèmes')}
-              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-orange-100 dark:bg-orange-950 text-orange-800 dark:text-orange-300">
                 Audio DZ
               </span>
             </h3>
@@ -109,7 +109,7 @@ export function MusicSelector({
           <button
             type="button"
             onClick={() => setIsYouTubeModalOpen(true)}
-            className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-700 hover:to-rose-700 text-white text-[11px] font-black flex items-center gap-1.5 shadow-sm transition-transform active:scale-95 cursor-pointer"
+            className="px-2.5 py-1 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-[11px] font-black flex items-center gap-1.5 shadow-sm transition-transform active:scale-95 cursor-pointer"
             title={isArabic ? 'استيراد موسيقى من يوتيوب' : 'Importer depuis YouTube'}
           >
             <svg className="w-3.5 h-3.5 fill-white" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ export function MusicSelector({
             className="px-2 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold flex items-center gap-1 transition-colors cursor-pointer"
             title={isMuted ? 'Activer le son' : 'Couper le son'}
           >
-            {isMuted ? <VolumeX className="w-3.5 h-3.5 text-rose-500" /> : <Volume2 className="w-3.5 h-3.5 text-emerald-600" />}
+            {isMuted ? <VolumeX className="w-3.5 h-3.5 text-[#FF3823]" /> : <Volume2 className="w-3.5 h-3.5 text-[#38BDF8]" />}
           </button>
         </div>
       </div>
@@ -139,7 +139,7 @@ export function MusicSelector({
               onClick={() => setActiveGenre(g.id)}
               className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all flex items-center gap-1 cursor-pointer ${
                 activeGenre === g.id
-                  ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-xs scale-105'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs scale-105'
                   : 'bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300'
               }`}
             >
@@ -162,7 +162,7 @@ export function MusicSelector({
               onClick={() => onSelectTrack(track)}
               className={`relative group rounded-2xl p-3 border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                 isSelected
-                  ? 'bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 border-amber-500/80 shadow-md ring-2 ring-amber-400/40'
+                  ? 'bg-gradient-to-r from-[#FF6B35]/10 via-[#FF3823]/10 to-[#38BDF8]/10 border-[#FF3823] shadow-md ring-2 ring-[#FF6B35]/30'
                   : 'bg-white dark:bg-slate-850 hover:bg-slate-50 dark:hover:bg-slate-800 border-slate-200/90 dark:border-slate-800 shadow-xs'
               }`}
             >
@@ -200,7 +200,7 @@ export function MusicSelector({
                     </h4>
                   </div>
                   <p className="text-[11px] text-slate-500 dark:text-slate-400 truncate mt-0.5">
-                    {track.artist} • <span className="font-semibold text-rose-600 dark:text-rose-400">{isArabic ? track.genreLabelAr : track.genreLabel}</span>
+                    {track.artist} • <span className="font-semibold text-[#FF3823]">{isArabic ? track.genreLabelAr : track.genreLabel}</span>
                   </p>
 
                   <div className="flex items-center gap-2 mt-0.5">
@@ -213,11 +213,11 @@ export function MusicSelector({
                     {/* Visual Equalizer if Playing */}
                     {isCurrentPlaying && (
                       <div className="flex items-end gap-0.5 h-3">
-                        <span className="w-1 bg-rose-500 rounded-full animate-pulse h-full" />
-                        <span className="w-1 bg-amber-500 rounded-full animate-pulse h-2/3" />
-                        <span className="w-1 bg-indigo-500 rounded-full animate-pulse h-4/5" />
-                        <span className="w-1 bg-rose-400 rounded-full animate-pulse h-1/2" />
-                        <span className="text-[9px] font-bold text-amber-600 ml-1">En direct</span>
+                        <span className="w-1 bg-[#FF3823] rounded-full animate-pulse h-full" />
+                        <span className="w-1 bg-[#FF6B35] rounded-full animate-pulse h-2/3" />
+                        <span className="w-1 bg-[#38BDF8] rounded-full animate-pulse h-4/5" />
+                        <span className="w-1 bg-[#FF3823]/60 rounded-full animate-pulse h-1/2" />
+                        <span className="text-[9px] font-bold text-[#FF6B35] ml-1">En direct</span>
                       </div>
                     )}
                   </div>
@@ -254,7 +254,7 @@ export function MusicSelector({
                 <div
                   className={`w-7 h-7 rounded-full flex items-center justify-center font-black text-xs transition-all ${
                     isSelected
-                      ? 'bg-amber-500 text-slate-950 shadow-xs'
+                      ? 'bg-[#FF3823] text-white shadow-xs'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-400 group-hover:text-slate-600'
                   }`}
                 >

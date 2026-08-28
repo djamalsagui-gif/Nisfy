@@ -30,13 +30,13 @@ export function NisfyStoriesBar({
     <div className="w-full bg-white rounded-3xl p-3 sm:p-4 border border-slate-200/80 shadow-xs mb-4 select-none">
       <div className="flex items-center justify-between mb-2.5 px-1">
         <div className="flex items-center gap-2">
-          <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-rose-500 to-pink-500 flex items-center justify-center text-white">
+          <div className="w-6 h-6 rounded-lg bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] flex items-center justify-center text-white shadow-xs">
             <Film className="w-3.5 h-3.5" />
           </div>
           <div>
-            <h2 className="text-xs sm:text-sm font-black text-slate-900 flex items-center gap-1.5">
+            <h2 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white flex items-center gap-1.5">
               {isArabic ? 'فيديوهات وقصص نصفي DZ69' : 'Vidéos & Stories des Adhérents NISFY'}
-              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-100 text-rose-700 uppercase">
+              <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-orange-100 dark:bg-orange-950/80 text-[#FF3823] dark:text-[#FF6B35] uppercase">
                 Reels DZ
               </span>
             </h2>
@@ -47,9 +47,9 @@ export function NisfyStoriesBar({
           <button
             type="button"
             onClick={onAddStory}
-            className="px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-semibold flex items-center gap-1.5 border border-rose-200/80 shadow-xs transition-colors cursor-pointer"
+            className="px-2.5 py-1.5 rounded-xl bg-orange-50 dark:bg-orange-950/50 hover:bg-orange-100 dark:hover:bg-orange-950 text-[#FF3823] dark:text-[#FF6B35] text-xs font-semibold flex items-center gap-1.5 border border-orange-200 dark:border-orange-800/60 shadow-xs transition-colors cursor-pointer"
           >
-            <Camera className="w-3.5 h-3.5 text-rose-500" />
+            <Camera className="w-3.5 h-3.5 text-[#FF3823] dark:text-[#FF6B35]" />
             <span>{isArabic ? 'نشر فيديو' : 'Publier une vidéo'}</span>
           </button>
         </div>
@@ -62,9 +62,9 @@ export function NisfyStoriesBar({
             {hasUserVideos ? (
               <div
                 onClick={() => onOpenStory(currentUser, 0)}
-                className="w-full h-full rounded-full p-0.5 bg-gradient-to-tr from-emerald-400 via-teal-500 to-indigo-600 group-hover:scale-105 transition-transform"
+                className="w-full h-full rounded-full p-0.5 bg-gradient-to-tr from-[#FF6B35] via-[#FF3823] to-[#38BDF8] group-hover:scale-105 transition-transform shadow-xs"
               >
-                <div className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-slate-900">
+                <div className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 overflow-hidden bg-slate-900">
                   <img
                     src={currentUserVideos[0]?.thumbnail || currentUser.avatar}
                     alt={currentUser.pseudo}
@@ -76,7 +76,7 @@ export function NisfyStoriesBar({
             ) : (
               <div
                 onClick={onAddStory}
-                className="w-full h-full rounded-full border-2 border-dashed border-rose-300 group-hover:border-rose-500 transition-all flex items-center justify-center p-0.5"
+                className="w-full h-full rounded-full border-2 border-dashed border-orange-300 dark:border-orange-700/60 group-hover:border-[#FF3823] transition-all flex items-center justify-center p-0.5"
               >
                 <img
                   src={currentUser.avatar}
@@ -95,14 +95,14 @@ export function NisfyStoriesBar({
                 onAddStory();
               }}
               title={isArabic ? 'نشر فيديو جديد' : 'Ajouter une nouvelle vidéo'}
-              className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center text-xs font-black shadow-md transition-transform hover:scale-110 cursor-pointer ring-2 ring-white"
+              className="absolute bottom-0 right-0 w-5 h-5 rounded-full bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] hover:brightness-110 text-white flex items-center justify-center text-xs font-black shadow-md transition-transform hover:scale-110 cursor-pointer ring-2 ring-white dark:ring-slate-900"
             >
               <Plus className="w-3.5 h-3.5" />
             </button>
           </div>
           <span
             onClick={hasUserVideos ? () => onOpenStory(currentUser, 0) : onAddStory}
-            className="text-[10px] sm:text-[11px] font-bold text-slate-800 max-w-[68px] truncate text-center cursor-pointer group-hover:text-rose-600 transition-colors"
+            className="text-[10px] sm:text-[11px] font-bold text-slate-800 dark:text-slate-200 max-w-[68px] truncate text-center cursor-pointer group-hover:text-[#FF3823] transition-colors"
           >
             {hasUserVideos ? (isArabic ? 'قصتي' : 'Ma Story') : (isArabic ? 'نشر +' : 'Ajouter +')}
           </span>
@@ -117,8 +117,8 @@ export function NisfyStoriesBar({
               className="flex flex-col items-center gap-1 shrink-0 cursor-pointer group"
               onClick={() => onOpenStory(user, 0)}
             >
-              <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full p-0.75 bg-gradient-to-tr from-amber-400 via-rose-500 to-indigo-600 group-hover:scale-105 transition-transform shadow-xs">
-                <div className="w-full h-full rounded-full border-2 border-white overflow-hidden bg-slate-900">
+              <div className="relative w-14 h-14 sm:w-16 sm:h-16 rounded-full p-0.75 bg-gradient-to-tr from-[#FF6B35] via-[#FF3823] to-[#38BDF8] group-hover:scale-105 transition-transform shadow-xs">
+                <div className="w-full h-full rounded-full border-2 border-white dark:border-slate-900 overflow-hidden bg-slate-900">
                   <img
                     src={user.videos?.[0]?.thumbnail || user.avatar}
                     alt={user.pseudo}
@@ -131,7 +131,7 @@ export function NisfyStoriesBar({
                   <span>{videoCount}</span>
                 </div>
               </div>
-              <span className="text-[10px] sm:text-[11px] font-bold text-slate-800 max-w-[68px] truncate text-center group-hover:text-rose-600 transition-colors">
+              <span className="text-[10px] sm:text-[11px] font-bold text-slate-800 dark:text-slate-200 max-w-[68px] truncate text-center group-hover:text-[#FF3823] transition-colors">
                 {user.pseudo.split(' ')[0]}
               </span>
             </div>

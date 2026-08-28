@@ -144,9 +144,9 @@ export function MusicShareModal({
               <button
                 type="button"
                 onClick={togglePreview}
-                className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-400 to-rose-500 hover:scale-105 transition-transform flex items-center justify-center text-slate-950 shadow-lg cursor-pointer shrink-0"
+                className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] hover:scale-105 transition-transform flex items-center justify-center text-white shadow-lg cursor-pointer shrink-0"
               >
-                {isPlaying ? <Pause className="w-6 h-6 fill-slate-950" /> : <Play className="w-6 h-6 fill-slate-950 ml-0.5" />}
+                {isPlaying ? <Pause className="w-6 h-6 fill-white" /> : <Play className="w-6 h-6 fill-white ml-0.5" />}
               </button>
               <div>
                 <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-400 text-slate-950 uppercase tracking-wider">
@@ -155,7 +155,7 @@ export function MusicShareModal({
                 <h3 className="text-base font-black text-white truncate max-w-[240px] sm:max-w-xs mt-0.5">
                   {isArabic ? track.titleAr : track.title}
                 </h3>
-                <p className="text-xs text-rose-200 truncate">{track.artist}</p>
+                <p className="text-xs text-orange-200 truncate">{track.artist}</p>
               </div>
             </div>
           </div>
@@ -178,7 +178,7 @@ export function MusicShareModal({
           </div>
 
           {/* 🌟 1-CLICK STORY CREATOR BUTTON (Primary action) */}
-          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-rose-500 via-pink-600 to-indigo-600 text-white shadow-md flex items-center justify-between gap-3">
+          <div className="p-3.5 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white shadow-md flex items-center justify-between gap-3">
             <div className="flex items-center gap-2.5">
               <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0">
                 <Film className="w-5 h-5 text-amber-300" />
@@ -187,7 +187,7 @@ export function MusicShareModal({
                 <h4 className="text-xs sm:text-sm font-black leading-tight">
                   {isArabic ? 'إنشاء قصة أو مقطع (Story) على حائطي' : 'Créer une Story / Clip sur mon Mur'}
                 </h4>
-                <p className="text-[11px] text-rose-100 opacity-90 leading-tight mt-0.5">
+                <p className="text-[11px] text-orange-100 opacity-90 leading-tight mt-0.5">
                   {isArabic ? 'دمج الموسيقى مع فيديو أو صورة ونشرها لمتابعيك' : 'Associer ce thème musical à votre clip vidéo'}
                 </p>
               </div>
@@ -195,9 +195,9 @@ export function MusicShareModal({
             <button
               type="button"
               onClick={handleStoryCreate}
-              className="px-3.5 py-2 rounded-xl bg-white text-slate-950 hover:bg-amber-100 text-xs font-black shrink-0 transition-transform active:scale-95 shadow-md cursor-pointer flex items-center gap-1"
+              className="px-3.5 py-2 rounded-xl bg-white text-slate-950 hover:bg-orange-100 text-xs font-black shrink-0 transition-transform active:scale-95 shadow-md cursor-pointer flex items-center gap-1"
             >
-              <Sparkles className="w-3.5 h-3.5 text-rose-600" />
+              <Sparkles className="w-3.5 h-3.5 text-[#FF3823]" />
               <span>{isArabic ? 'إنشاء +' : 'Créer'}</span>
             </button>
           </div>
@@ -226,13 +226,13 @@ export function MusicShareModal({
               <button
                 type="button"
                 onClick={handlePostToWall}
-                className="flex flex-col items-center justify-center p-3 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-800 border border-rose-200 transition-transform hover:scale-102 cursor-pointer"
+                className="flex flex-col items-center justify-center p-3 rounded-2xl bg-orange-50 hover:bg-orange-100 text-orange-900 border border-orange-200 transition-transform hover:scale-102 cursor-pointer"
               >
-                <div className="w-8 h-8 rounded-full bg-rose-500 text-white flex items-center justify-center mb-1 shadow-xs">
+                <div className="w-8 h-8 rounded-full bg-[#FF3823] text-white flex items-center justify-center mb-1 shadow-xs">
                   <Send className="w-4 h-4" />
                 </div>
                 <span className="text-xs font-bold">{isArabic ? 'متابعيني' : 'Mes Abonnés'}</span>
-                <span className="text-[10px] text-rose-600">{isArabic ? 'حائط نصفي' : 'Mur Nisfy'}</span>
+                <span className="text-[10px] text-[#FF3823]">{isArabic ? 'حائط نصفي' : 'Mur Nisfy'}</span>
               </button>
 
               {/* Instagram / Story */}

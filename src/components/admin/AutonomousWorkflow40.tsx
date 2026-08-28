@@ -347,12 +347,12 @@ export function AutonomousWorkflow40({ ads, onViewPublicAd, onRefreshAds }: Auto
           </div>
 
           <div className="p-3 rounded-2xl bg-white/5 border border-white/10 flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center font-black">
+            <div className="w-8 h-8 rounded-xl bg-[#FF3823]/20 text-[#FF3823] flex items-center justify-center font-black">
               🚨
             </div>
             <div>
               <p className="text-[10px] text-slate-400 uppercase font-bold">Impayés (Art. 7)</p>
-              <p className="text-sm font-black text-rose-300">Coupure API Immédiate</p>
+              <p className="text-sm font-black text-orange-200">Coupure API Immédiate</p>
             </div>
           </div>
 
@@ -416,7 +416,7 @@ export function AutonomousWorkflow40({ ads, onViewPublicAd, onRefreshAds }: Auto
               : 'bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-400 border-slate-200 dark:border-slate-800 hover:bg-slate-50'
           }`}
         >
-          <Zap className="w-4 h-4 text-rose-500" />
+          <Zap className="w-4 h-4 text-[#FF3823]" />
           <span>4. Simulateur Webhook (BaridiMob/CIB)</span>
         </button>
 

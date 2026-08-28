@@ -560,10 +560,10 @@ export function LiveTrafficMapView({
                 onToggleMap(false);
                 if (onCloseMap) onCloseMap();
               }}
-              className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+              className="px-3.5 py-2 rounded-xl bg-orange-50 hover:bg-orange-100 text-[#FF3823] border border-orange-200 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
               title={t.deactivateMapBtn}
             >
-              <EyeOff className="w-4 h-4 text-rose-600" />
+              <EyeOff className="w-4 h-4 text-[#FF3823]" />
               <span>{t.deactivateMapBtn}</span>
             </button>
           )}
@@ -572,17 +572,17 @@ export function LiveTrafficMapView({
 
       {/* Header Info Banner */}
       <div className="bg-slate-900 text-white rounded-3xl p-5 sm:p-7 border border-slate-800 shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-rose-600/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-1/3 -mb-12 w-60 h-60 bg-indigo-600/15 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-72 h-72 bg-[#FF3823]/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-1/3 -mb-12 w-60 h-60 bg-[#38BDF8]/15 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shadow-xs">
-                <span className="w-2 h-2 rounded-full bg-rose-400 animate-ping inline-block" />
+              <span className="px-3 py-1 bg-[#FF3823]/20 text-orange-200 border border-[#FF3823]/40 rounded-full text-[11px] font-extrabold flex items-center gap-1.5 shadow-xs">
+                <span className="w-2 h-2 rounded-full bg-[#FF3823] animate-ping inline-block" />
                 {t.radarLive}
               </span>
-              <span className="px-2.5 py-1 bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 rounded-full text-[11px] font-bold">
+              <span className="px-2.5 py-1 bg-[#38BDF8]/20 text-sky-300 border border-[#38BDF8]/40 rounded-full text-[11px] font-bold">
                 {t.appName}
               </span>
               <span className="text-xs text-slate-400 flex items-center gap-1">
@@ -592,7 +592,7 @@ export function LiveTrafficMapView({
             </div>
 
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2">
-              <Globe className="w-7 h-7 text-rose-500" />
+              <Globe className="w-7 h-7 text-[#FF3823]" />
               {t.worldMapBanner}
             </h1>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl">
@@ -605,7 +605,7 @@ export function LiveTrafficMapView({
             {/* Total Connectés */}
             <div className="p-2">
               <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-semibold">
-                <Users className="w-3.5 h-3.5 text-rose-400" />
+                <Users className="w-3.5 h-3.5 text-[#38BDF8]" />
                 Total Connectés
               </div>
               <div className="text-xl sm:text-2xl font-black text-white mt-0.5">
@@ -620,28 +620,28 @@ export function LiveTrafficMapView({
             <div className="p-2 border-l border-slate-800">
               <div className="flex items-center justify-between text-[11px] font-bold text-slate-300">
                 <span className="flex items-center gap-1">
-                  <span className="text-indigo-400">👨 H:</span> {totalActiveMen.toLocaleString()}
+                  <span className="text-sky-400">👨 H:</span> {totalActiveMen.toLocaleString()}
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="text-rose-400">👩 F:</span> {totalActiveWomen.toLocaleString()}
+                  <span className="text-[#FF6B35]">👩 F:</span> {totalActiveWomen.toLocaleString()}
                 </span>
               </div>
               {/* Ratio Bar */}
               <div className="w-full bg-slate-800 h-2.5 rounded-full overflow-hidden flex mt-2 shadow-inner border border-slate-700/60">
                 <div
                   style={{ width: `${percentMen}%` }}
-                  className="bg-indigo-500 h-full transition-all duration-500"
+                  className="bg-sky-500 h-full transition-all duration-500"
                   title={`Hommes (H): ${percentMen}%`}
                 />
                 <div
                   style={{ width: `${percentWomen}%` }}
-                  className="bg-rose-500 h-full transition-all duration-500"
+                  className="bg-[#FF3823] h-full transition-all duration-500"
                   title={`Femmes (F): ${percentWomen}%`}
                 />
               </div>
               <div className="flex items-center justify-between text-[9px] text-slate-400 font-extrabold mt-1">
-                <span className="text-indigo-300">{percentMen}% Hommes</span>
-                <span className="text-rose-300">{percentWomen}% Femmes</span>
+                <span className="text-sky-300">{percentMen}% Hommes</span>
+                <span className="text-orange-300">{percentWomen}% Femmes</span>
               </div>
             </div>
 
@@ -660,13 +660,13 @@ export function LiveTrafficMapView({
             {/* Pôle Nº1 */}
             <div className="p-2 border-l border-slate-800">
               <div className="flex items-center gap-1.5 text-slate-400 text-[11px] font-semibold">
-                <Flame className="w-3.5 h-3.5 text-rose-500" />
+                <Flame className="w-3.5 h-3.5 text-[#FF3823]" />
                 Pôle Nº1
               </div>
-              <div className="text-sm sm:text-base font-black text-rose-400 mt-0.5 truncate">
+              <div className="text-sm sm:text-base font-black text-[#FF6B35] mt-0.5 truncate">
                 Alger & Lyon 69
               </div>
-              <span className="text-[10px] text-rose-300/80">Cœur de réseau</span>
+              <span className="text-[10px] text-orange-300/80">Cœur de réseau</span>
             </div>
           </div>
         </div>
@@ -684,7 +684,7 @@ export function LiveTrafficMapView({
                   onClick={() => setZoomFocus('mediterranean')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     zoomFocus === 'mediterranean'
-                      ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
+                      ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-md shadow-orange-500/30'
                       : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                   }`}
                 >
@@ -694,7 +694,7 @@ export function LiveTrafficMapView({
                   onClick={() => setZoomFocus('world')}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                     zoomFocus === 'world'
-                      ? 'bg-rose-600 text-white shadow-md shadow-rose-600/30'
+                      ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-md shadow-orange-500/30'
                       : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
                   }`}
                 >
@@ -1196,7 +1196,7 @@ export function LiveTrafficMapView({
               {onExploreZoneFilter && (
                 <button
                   onClick={() => onExploreZoneFilter(selectedZone.name)}
-                  className="w-full py-2.5 px-4 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-600 hover:to-indigo-700 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                  className="w-full py-2.5 px-4 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#38BDF8] hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                 >
                   <span>Filtrer les profils de {selectedZone.name}</span>
                   <ArrowUpRight className="w-4 h-4" />
@@ -1212,7 +1212,7 @@ export function LiveTrafficMapView({
           {/* Search & Category Filter List */}
           <div className="bg-slate-900 rounded-3xl p-4 sm:p-5 border border-slate-800 shadow-xl space-y-3">
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-300 flex items-center gap-1.5">
-              <Filter className="w-3.5 h-3.5 text-rose-500" />
+              <Filter className="w-3.5 h-3.5 text-[#FF3823]" />
               Classement des Zones & Connectés H / F
             </h3>
 
@@ -1220,32 +1220,32 @@ export function LiveTrafficMapView({
             <div className="grid grid-cols-4 gap-1 p-1 bg-slate-950 rounded-xl border border-slate-800 text-[10px]">
               <button
                 onClick={() => setFilterCategory('all')}
-                className={`py-1 rounded-lg font-bold transition-colors ${
-                  filterCategory === 'all' ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-white'
+                className={`py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                  filterCategory === 'all' ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 Tous
               </button>
               <button
                 onClick={() => setFilterCategory('dz')}
-                className={`py-1 rounded-lg font-bold transition-colors ${
-                  filterCategory === 'dz' ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-white'
+                className={`py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                  filterCategory === 'dz' ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 🇩🇿 Algérie
               </button>
               <button
                 onClick={() => setFilterCategory('france')}
-                className={`py-1 rounded-lg font-bold transition-colors ${
-                  filterCategory === 'france' ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-white'
+                className={`py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                  filterCategory === 'france' ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 🇫🇷 DZ69
               </button>
               <button
                 onClick={() => setFilterCategory('diaspora')}
-                className={`py-1 rounded-lg font-bold transition-colors ${
-                  filterCategory === 'diaspora' ? 'bg-rose-600 text-white' : 'text-slate-400 hover:text-white'
+                className={`py-1 rounded-lg font-bold transition-colors cursor-pointer ${
+                  filterCategory === 'diaspora' ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs' : 'text-slate-400 hover:text-white'
                 }`}
               >
                 🌍 Monde
@@ -1260,7 +1260,7 @@ export function LiveTrafficMapView({
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Rechercher une ville, wilaya..."
-                className="w-full pl-8 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
+                className="w-full pl-8 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FF3823]"
               />
             </div>
 
@@ -1282,7 +1282,7 @@ export function LiveTrafficMapView({
                     onClick={() => handleSelectZone(zone)}
                     className={`p-2.5 rounded-xl border flex items-center justify-between cursor-pointer transition-all ${
                       isSelected
-                        ? 'bg-rose-950/40 border-rose-600 shadow-md ring-1 ring-rose-500'
+                        ? 'bg-orange-950/40 border-[#FF3823] shadow-md ring-1 ring-[#FF3823]'
                         : 'bg-slate-950/60 border-slate-800 hover:border-slate-700'
                     }`}
                   >
@@ -1456,7 +1456,7 @@ export function LiveTrafficMapView({
                     ? `بحث في ${selectedZone.arabicName}...`
                     : `Rechercher à ${selectedZone.name}...`
                 }
-                className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-rose-500"
+                className="w-full pl-9 pr-3 py-2 bg-slate-950 border border-slate-800 rounded-xl text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FF3823]"
               />
             </div>
           </div>
@@ -1472,7 +1472,7 @@ export function LiveTrafficMapView({
                 return (
                   <div
                     key={user.id}
-                    className="bg-slate-950/90 rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-rose-500/50 transition-all flex flex-col justify-between space-y-4 shadow-lg group relative overflow-hidden"
+                    className="bg-slate-950/90 rounded-2xl p-4 sm:p-5 border border-slate-800 hover:border-[#FF3823]/50 transition-all flex flex-col justify-between space-y-4 shadow-lg group relative overflow-hidden"
                   >
                     {/* Top User Info Bar */}
                     <div className="flex items-start gap-3.5">
@@ -1481,7 +1481,7 @@ export function LiveTrafficMapView({
                           src={user.avatar}
                           alt={user.pseudo}
                           referrerPolicy="no-referrer"
-                          className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-slate-700 group-hover:border-rose-500 transition-colors shadow-md"
+                          className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl object-cover border-2 border-slate-700 group-hover:border-[#FF3823] transition-colors shadow-md"
                         />
                         {/* Pulsing online badge */}
                         <span
@@ -1573,7 +1573,7 @@ export function LiveTrafficMapView({
                       <button
                         type="button"
                         onClick={() => handleQuickChat(user)}
-                        className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-rose-500 hover:from-rose-500 hover:to-rose-600 text-white font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md hover:shadow-rose-600/30 cursor-pointer"
+                        className="flex-1 py-2.5 px-3 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white font-extrabold text-xs transition-all flex items-center justify-center gap-1.5 shadow-md shadow-orange-500/20 cursor-pointer"
                         title="Démarrer la discussion instantanée"
                       >
                         <MessageCircle className="w-4 h-4" />
@@ -1596,8 +1596,8 @@ export function LiveTrafficMapView({
                         onClick={() => handleSendJasmin(user)}
                         className={`p-2.5 rounded-xl transition-all cursor-pointer border ${
                           isJasminSent
-                            ? 'bg-rose-500 text-white border-rose-400 scale-110'
-                            : 'bg-slate-900 hover:bg-slate-800 text-rose-400 border-slate-800'
+                            ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white border-orange-400 scale-110'
+                            : 'bg-slate-900 hover:bg-slate-800 text-[#FF6B35] border-slate-800'
                         }`}
                         title="Offrir une fleur de Jasmin 🌸"
                       >
@@ -1755,7 +1755,7 @@ export function LiveTrafficMapView({
               <button
                 type="button"
                 onClick={handleSendCustomMessage}
-                className="px-5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-md cursor-pointer"
+                className="px-5 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-xs font-extrabold transition-all flex items-center gap-1.5 shadow-md cursor-pointer"
               >
                 <Send className="w-3.5 h-3.5" />
                 <span>{isArabic ? 'إرسال والبدء' : 'Envoyer et converser'}</span>
@@ -1809,7 +1809,7 @@ export function LiveTrafficMapView({
 
               {profileModalUser.icebreaker && (
                 <div className="p-3 bg-slate-950 rounded-xl border border-slate-800">
-                  <span className="text-[10px] text-rose-400 uppercase font-bold block mb-1">
+                  <span className="text-[10px] text-[#FF6B35] uppercase font-bold block mb-1">
                     Question brise-glace
                   </span>
                   <p className="text-slate-200">{profileModalUser.icebreaker}</p>
@@ -1836,7 +1836,7 @@ export function LiveTrafficMapView({
                   setProfileModalUser(null);
                   handleQuickChat(u);
                 }}
-                className="flex-1 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 py-2.5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white font-bold text-xs rounded-xl transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Discuter en privé</span>
@@ -1891,7 +1891,7 @@ export function LiveTrafficMapView({
                   setVideoModalUser(null);
                   handleQuickChat(u);
                 }}
-                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4" />
                 <span>Discuter avec {videoModalUser.pseudo}</span>

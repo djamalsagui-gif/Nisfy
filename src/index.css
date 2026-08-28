@@ -1,6 +1,31 @@
 @import "tailwindcss";
 
+@theme {
+  --color-nisfy-orange: #FF6B35;
+  --color-nisfy-red: #FF3823;
+  --color-nisfy-sky: #38BDF8;
+  --color-nisfy-ice: #BAE6FD;
+  --color-nisfy-deepsky: #0284C7;
+}
+
 @layer utilities {
+  .bg-nisfy-primary {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF3823 100%);
+  }
+  .bg-nisfy-gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF3823 50%, #38BDF8 100%);
+  }
+  .bg-nisfy-soft {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.08) 0%, rgba(56, 189, 248, 0.08) 100%);
+  }
+  .text-nisfy-gradient {
+    background: linear-gradient(135deg, #FF6B35 0%, #FF3823 55%, #0284C7 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .shadow-nisfy {
+    box-shadow: 0 10px 25px -5px rgba(255, 56, 35, 0.25), 0 8px 10px -6px rgba(56, 189, 248, 0.2);
+  }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

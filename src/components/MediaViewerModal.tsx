@@ -155,7 +155,7 @@ export function MediaViewerModal({
                 src={authorAvatar}
                 alt={authorName || 'Avatar'}
                 referrerPolicy="no-referrer"
-                className="w-10 h-10 rounded-full object-cover border border-rose-500/50"
+                className="w-10 h-10 rounded-full object-cover border border-[#FF3823]/50"
               />
             )}
             <div>
@@ -164,12 +164,12 @@ export function MediaViewerModal({
                   {authorName || 'Membre DZ69'}
                 </h4>
                 {mediaType === 'video' ? (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-500/20 text-rose-300 border border-rose-500/30">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#FF3823]/20 text-[#FF6B35] border border-[#FF3823]/30">
                     <Film className="w-3 h-3" />
                     <span>Vidéo HD</span>
                   </span>
                 ) : (
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#38BDF8]/20 text-[#38BDF8] border border-[#38BDF8]/30">
                     <ImageIcon className="w-3 h-3" />
                     <span>Photo</span>
                   </span>
@@ -226,21 +226,21 @@ export function MediaViewerModal({
                         <img
                           src={authorAvatar}
                           alt={authorName}
-                          className="w-24 h-24 rounded-full object-cover ring-4 ring-rose-500/50 shadow-2xl"
+                          className="w-24 h-24 rounded-full object-cover ring-4 ring-[#FF3823]/50 shadow-2xl"
                         />
                       ) : (
-                        <div className="w-20 h-20 rounded-full bg-rose-500/20 border border-rose-500/40 flex items-center justify-center">
-                          <User className="w-10 h-10 text-rose-400" />
+                        <div className="w-20 h-20 rounded-full bg-[#FF3823]/20 border border-[#FF3823]/40 flex items-center justify-center">
+                          <User className="w-10 h-10 text-[#FF6B35]" />
                         </div>
                       )}
-                      <span className="absolute -bottom-1 -right-1 p-1.5 bg-rose-600 rounded-full text-white shadow-lg">
+                      <span className="absolute -bottom-1 -right-1 p-1.5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] rounded-full text-white shadow-lg">
                         <Sparkles className="w-4 h-4" />
                       </span>
                     </div>
 
                     <div>
                       <p className="text-base font-black text-white">{title || 'Présentation en vidéo'}</p>
-                      <p className="text-xs text-rose-300 font-semibold mt-1">
+                      <p className="text-xs text-orange-300 font-semibold mt-1">
                         {authorName ? `Présentation authentique de ${authorName}` : 'Présentation Nisfy'}
                       </p>
                     </div>
@@ -248,7 +248,7 @@ export function MediaViewerModal({
                     <div className="flex items-center gap-3">
                       <button
                         onClick={handleRetryVideo}
-                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white text-xs font-black flex items-center gap-2 shadow-lg transition-all cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-xs font-black flex items-center gap-2 shadow-lg shadow-orange-500/20 transition-all cursor-pointer"
                       >
                         <RotateCw className="w-3.5 h-3.5" />
                         <span>{isArabic ? 'إعادة تشغيل الفيديو' : 'Lancer la vidéo'}</span>
@@ -276,7 +276,7 @@ export function MediaViewerModal({
                     {!isPlaying && (
                       <button
                         onClick={togglePlay}
-                        className="absolute p-4 rounded-full bg-rose-600/90 text-white shadow-2xl hover:scale-110 transition-transform cursor-pointer"
+                        className="absolute p-4 rounded-full bg-[#FF3823]/90 text-white shadow-2xl hover:scale-110 transition-transform cursor-pointer"
                       >
                         <Play className="w-8 h-8 fill-white ml-0.5" />
                       </button>
@@ -310,7 +310,7 @@ export function MediaViewerModal({
                         className="p-1.5 rounded-lg bg-white/10 hover:bg-white/20 transition-colors cursor-pointer"
                       >
                         {isMuted ? (
-                          <VolumeX className="w-4 h-4 text-rose-400" />
+                          <VolumeX className="w-4 h-4 text-[#FF3823]" />
                         ) : (
                           <Volume2 className="w-4 h-4" />
                         )}
@@ -377,7 +377,7 @@ export function MediaViewerModal({
               onClick={handleLike}
               className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                 hasLiked
-                  ? 'bg-rose-600 text-white shadow-lg shadow-rose-600/30'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-lg shadow-orange-500/30'
                   : 'bg-white/10 text-white hover:bg-white/20'
               }`}
             >

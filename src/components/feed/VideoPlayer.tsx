@@ -105,7 +105,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
         particleCount: 25,
         spread: 60,
         origin: { y: 0.5, x: 0.5 },
-        colors: ['#f43f5e', '#fb7185', '#fda4af']
+        colors: ['#FF3823', '#FF6B35', '#38BDF8']
       });
       try {
         datingSounds.playLikeSound();
@@ -132,7 +132,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
         particleCount: 30,
         spread: 50,
         origin: { y: 0.7, x: 0.8 },
-        colors: ['#ef4444', '#f59e0b']
+        colors: ['#FF3823', '#FF6B35', '#38BDF8']
       });
       
       try {
@@ -182,7 +182,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
       {/* Burst Heart Animation on Double Tap */}
       {showHeartAnim && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30 animate-in zoom-in-50 duration-200">
-          <div className="w-28 h-28 bg-rose-500/90 rounded-full flex items-center justify-center shadow-2xl shadow-rose-500/50">
+          <div className="w-28 h-28 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/50">
             <Heart className="w-16 h-16 fill-white text-white animate-bounce" />
           </div>
         </div>
@@ -221,7 +221,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
             alt={post.authorPseudo} 
             className="w-12 h-12 rounded-full border-2 border-white object-cover shadow-lg group-hover:scale-105 transition-transform" 
           />
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 bg-gradient-to-r from-rose-500 to-amber-500 rounded-full flex items-center justify-center text-white text-[10px] font-black border border-white shadow-xs">
+          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] rounded-full flex items-center justify-center text-white text-[10px] font-black border border-white shadow-xs">
             +
           </div>
         </div>
@@ -229,7 +229,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
         {/* Like Button */}
         <div className="flex flex-col items-center gap-1 cursor-pointer group" onClick={handleLike}>
           <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
-            <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'fill-rose-500 text-rose-500 scale-110' : 'text-white'}`} />
+            <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'fill-[#FF3823] text-[#FF3823] scale-110' : 'text-white'}`} />
           </div>
           <span className="text-white text-[11px] font-black drop-shadow-md">{likesCount}</span>
         </div>
@@ -251,10 +251,10 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           }}
           title="Musique & Story"
         >
-          <div className="w-12 h-12 bg-gradient-to-tr from-amber-500/80 to-rose-500/80 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-amber-300/40 shadow-lg hover:scale-105">
+          <div className="w-12 h-12 bg-gradient-to-tr from-[#FF6B35]/90 to-[#FF3823]/90 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-orange-300/40 shadow-lg hover:scale-105">
             <Disc className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '6s' }} />
           </div>
-          <span className="text-amber-300 text-[10px] font-black drop-shadow-md">Son / Story</span>
+          <span className="text-orange-200 text-[10px] font-black drop-shadow-md">Son / Story</span>
         </div>
 
         {/* Share Button */}
@@ -271,7 +271,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-black/70 transition-colors shadow-lg"
           title={isMuted ? 'Activer le son' : 'Couper le son'}
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-white/80" /> : <Volume2 className="w-4 h-4 text-amber-300 animate-pulse" />}
+          {isMuted ? <VolumeX className="w-4 h-4 text-white/80" /> : <Volume2 className="w-4 h-4 text-[#38BDF8] animate-pulse" />}
         </button>
       </div>
 
@@ -285,12 +285,12 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           >
             <span className="text-white font-bold text-xs drop-shadow-md">{post.authorPseudo}</span>
             {post.authorVerified && (
-              <span className="px-1.5 py-0.2 bg-rose-500/90 text-white rounded-full text-[9px] font-black">
+              <span className="px-1.5 py-0.2 bg-[#FF3823] text-white rounded-full text-[9px] font-black">
                 DZ69
               </span>
             )}
             {post.authorCity && (
-              <span className="text-amber-300 text-[10px] font-semibold">• {post.authorCity}</span>
+              <span className="text-[#38BDF8] text-[10px] font-semibold">• {post.authorCity}</span>
             )}
           </div>
         </div>
@@ -301,7 +301,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           <p className="text-xs sm:text-sm font-medium opacity-90 line-clamp-2 mt-1 drop-shadow-md">{post.description}</p>
           <div className="flex flex-wrap gap-1.5 mt-2">
             {post.tags?.map((tag) => (
-              <span key={tag} className="text-amber-300 font-bold text-[11px] pointer-events-auto hover:underline cursor-pointer">
+              <span key={tag} className="text-[#38BDF8] font-bold text-[11px] pointer-events-auto hover:underline cursor-pointer">
                 {tag}
               </span>
             ))}
@@ -315,14 +315,14 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
               e.stopPropagation();
               setIsMusicModalOpen(true);
             }}
-            className="flex items-center gap-2 text-white/90 bg-black/50 hover:bg-amber-950/60 w-max max-w-full px-3.5 py-1.5 rounded-full backdrop-blur-md border border-amber-400/30 mt-0.5 pointer-events-auto cursor-pointer transition-all hover:scale-102"
+            className="flex items-center gap-2 text-white/90 bg-black/50 hover:bg-orange-950/60 w-max max-w-full px-3.5 py-1.5 rounded-full backdrop-blur-md border border-orange-400/30 mt-0.5 pointer-events-auto cursor-pointer transition-all hover:scale-102"
             title="Écouter, Partager ou Créer une Story"
           >
-            <Music className="w-3.5 h-3.5 text-amber-400 shrink-0 animate-spin" style={{ animationDuration: '4s' }} />
+            <Music className="w-3.5 h-3.5 text-[#38BDF8] shrink-0 animate-spin" style={{ animationDuration: '4s' }} />
             <span className="text-[11px] font-bold truncate max-w-[200px] sm:max-w-[300px]">
               {matchedTrack ? `${matchedTrack.title} • ${matchedTrack.artist}` : post.musicTitle}
             </span>
-            <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-amber-400/20 text-amber-300">
+            <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-orange-500/20 text-orange-200">
               DZ
             </span>
           </div>
@@ -332,7 +332,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
       {/* Progress Bar (Bottom Line) */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-30">
         <div 
-          className="h-full bg-gradient-to-r from-rose-500 via-pink-500 to-amber-400 transition-all duration-100" 
+          className="h-full bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#38BDF8] transition-all duration-100" 
           style={{ width: `${progress}%` }} 
         />
       </div>

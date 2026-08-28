@@ -85,7 +85,7 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
             onClick={() => setSelectedChefTab('djamel')}
             className={`py-2.5 px-3 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
               selectedChefTab === 'djamel'
-                ? 'bg-rose-600 text-white shadow-md'
+                ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-md'
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
@@ -127,7 +127,7 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
                 <Sparkles className="w-3.5 h-3.5" />
                 {isArabic ? 'دعوة لتذوق البايا والمأكولات الإسبانية' : 'Gastronomie Espagnole • Paella'}
               </span>
-              <span className="px-3 py-1 rounded-full bg-rose-600 text-white font-bold text-xs shadow-md">
+              <span className="px-3 py-1 rounded-full bg-[#FF3823] text-white font-bold text-xs shadow-md">
                 🇪🇸 Dénia, Espagne
               </span>
             </div>
@@ -179,7 +179,7 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
 
           {/* INVITATION & SPECIALITES */}
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-5 sm:p-6 shadow-xs border border-slate-200 dark:border-slate-800 space-y-4">
-            <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400 font-black text-xs uppercase tracking-wider">
+            <div className="flex items-center gap-2 text-[#FF3823] font-black text-xs uppercase tracking-wider">
               <Utensils className="w-4 h-4" />
               <span>{isArabic ? 'دعوة خاصة من الشيف جمال ميشيل' : 'Invitation Gourmande du Chef Djamel-Michel'}</span>
             </div>
@@ -242,7 +242,7 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
                 href={donJeovaniAd.googleMapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-slate-950 font-black text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white font-black text-sm flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition-all cursor-pointer"
               >
                 <ExternalLink className="w-4 h-4" />
                 <span>{isArabic ? 'فتح موقع المطعم على Google Maps' : 'Ouvrir la Localisation sur Google Maps'}</span>
@@ -317,7 +317,7 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
               href={chefNadjet.youtubeChannelUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex-1 bg-rose-600 hover:bg-rose-700 text-white rounded-xl py-3 flex items-center justify-center gap-2 font-bold transition-colors shadow-xs cursor-pointer"
+              className="flex-1 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white rounded-xl py-3 flex items-center justify-center gap-2 font-bold transition-all shadow-md shadow-orange-500/20 cursor-pointer"
             >
               <Youtube className="w-5 h-5" />
               <span>{isArabic ? 'فتح في يوتيوب' : 'Ouvrir sur YouTube'}</span>

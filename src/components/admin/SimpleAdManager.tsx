@@ -810,8 +810,8 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
     <div className="space-y-6">
       {/* Toast Notification */}
       {successToast && (
-        <div className="fixed top-20 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-amber-400 animate-in slide-in-from-top-4 duration-300">
-          <CheckCircle2 className="w-5 h-5 text-amber-400 shrink-0" />
+        <div className="fixed top-20 right-6 z-50 bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-3 border border-[#FF3823] animate-in slide-in-from-top-4 duration-300">
+          <CheckCircle2 className="w-5 h-5 text-[#38BDF8] shrink-0" />
           <p className="text-sm font-bold">{successToast}</p>
         </div>
       )}
@@ -827,12 +827,12 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
               onClick={() => setActiveStep('step1_reception')}
               className={`p-3 rounded-2xl text-left transition-all flex items-center gap-2.5 cursor-pointer border ${
                 activeStep === 'step1_reception'
-                  ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md scale-[1.02]'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white border-transparent font-black shadow-md scale-[1.02]'
                   : 'bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
               }`}
             >
               <div className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
-                activeStep === 'step1_reception' ? 'bg-slate-950 text-amber-400' : 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                activeStep === 'step1_reception' ? 'bg-white text-[#FF3823]' : 'bg-orange-100 text-orange-800 dark:bg-orange-950 dark:text-orange-300'
               }`}>
                 1
               </div>
@@ -847,12 +847,12 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
               onClick={() => setActiveStep('step2_contrat')}
               className={`p-3 rounded-2xl text-left transition-all flex items-center gap-2.5 cursor-pointer border ${
                 activeStep === 'step2_contrat'
-                  ? 'bg-indigo-600 text-white border-indigo-500 font-black shadow-md scale-[1.02]'
+                  ? 'bg-[#38BDF8] text-white border-sky-400 font-black shadow-md scale-[1.02]'
                   : 'bg-slate-50 dark:bg-slate-800/60 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
               }`}
             >
               <div className={`w-7 h-7 rounded-xl flex items-center justify-center font-black text-xs shrink-0 ${
-                activeStep === 'step2_contrat' ? 'bg-white text-indigo-700' : 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-300'
+                activeStep === 'step2_contrat' ? 'bg-white text-sky-700' : 'bg-sky-100 text-sky-800 dark:bg-sky-950 dark:text-sky-300'
               }`}>
                 2
               </div>

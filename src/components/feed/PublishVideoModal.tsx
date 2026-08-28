@@ -66,7 +66,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
         <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800">
           <h2 className="text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <span>{isArabic ? 'نشر فيديو وستوري' : 'Publier une vidéo ou Story'}</span>
-            <span className="text-xs px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-500 font-extrabold">DZ</span>
+            <span className="text-xs px-2 py-0.5 rounded-full bg-[#FF3823]/10 text-[#FF3823] font-extrabold">DZ</span>
           </h2>
           <button onClick={onClose} className="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
             <X className="w-5 h-5 text-slate-500" />
@@ -78,7 +78,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
             
             {/* Dropzone */}
             <div className="w-full h-32 rounded-2xl border-2 border-dashed border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex flex-col items-center justify-center text-slate-500 gap-1 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer">
-              <Upload className="w-6 h-6 text-rose-500" />
+              <Upload className="w-6 h-6 text-[#FF3823]" />
               <p className="text-xs font-bold text-slate-700 dark:text-slate-300">
                 {isArabic ? 'اختر فيديو (15-60 ثانية)' : 'Sélectionner une vidéo (15-60s)'}
               </p>
@@ -86,16 +86,16 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
             </div>
 
             {/* 🎵 Music Selector */}
-            <div className="p-3 bg-amber-50/80 dark:bg-amber-950/30 rounded-2xl border border-amber-200 dark:border-amber-800/50 space-y-2">
+            <div className="p-3 bg-orange-50/80 dark:bg-orange-950/30 rounded-2xl border border-orange-200 dark:border-orange-800/50 space-y-2">
               <div className="flex items-center justify-between">
                 <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <Music className="w-3.5 h-3.5 text-amber-500" />
+                  <Music className="w-3.5 h-3.5 text-[#FF6B35]" />
                   <span>{isArabic ? 'الموسيقى المرافقة للمقطع' : 'Musique du Clip / Story'}</span>
                 </label>
                 <button
                   type="button"
                   onClick={() => setIsYouTubeModalOpen(true)}
-                  className="px-2 py-0.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-[10px] font-black flex items-center gap-1 shadow-xs cursor-pointer"
+                  className="px-2.5 py-1 rounded-lg bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-[10px] font-black flex items-center gap-1 shadow-xs cursor-pointer"
                 >
                   <svg className="w-3 h-3 fill-white" viewBox="0 0 24 24">
                     <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
@@ -115,7 +115,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
                       onClick={() => setSelectedMusicThemeId(track.id)}
                       className={`p-2 rounded-xl border text-xs transition-all cursor-pointer flex items-center justify-between gap-2 ${
                         isSelected
-                          ? 'bg-amber-500/20 border-amber-500 ring-1 ring-amber-400/40 text-slate-900 dark:text-white font-bold'
+                          ? 'bg-orange-500/20 border-[#FF3823] ring-1 ring-[#FF3823]/40 text-slate-900 dark:text-white font-bold'
                           : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300'
                       }`}
                     >
@@ -146,8 +146,8 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
                         }}
                         className={`p-1 rounded-lg text-xs transition-all shrink-0 ${
                           isPlaying
-                            ? 'bg-rose-500 text-white animate-pulse'
-                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-amber-400 hover:text-slate-950'
+                            ? 'bg-[#FF3823] text-white animate-pulse'
+                            : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-orange-400 hover:text-white'
                         }`}
                       >
                         {isPlaying ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
@@ -164,11 +164,11 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
                 type="checkbox"
                 checked={isStoryOnWall}
                 onChange={(e) => setIsStoryOnWall(e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-400 cursor-pointer"
+                className="w-4 h-4 text-[#FF3823] rounded focus:ring-[#FF3823] cursor-pointer"
               />
               <div>
                 <span className="text-xs font-black text-purple-950 dark:text-purple-200 flex items-center gap-1.5">
-                  <Sparkles className="w-3.5 h-3.5 text-purple-500" />
+                  <Sparkles className="w-3.5 h-3.5 text-[#FF6B35]" />
                   <span>{isArabic ? 'نشر كستوري على حائطي وواجهتي' : 'Publier comme Story sur mon mur'}</span>
                 </span>
                 <span className="text-[10px] text-purple-700 dark:text-purple-300 block">
@@ -184,7 +184,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
               <select 
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-rose-500 outline-none"
+                className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-[#FF3823] outline-none"
               >
                 <option value="mariage">💍 Mariage & Zawaj</option>
                 <option value="cuisine">🍳 Cuisine DZ</option>
@@ -203,7 +203,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
                 type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-rose-500 outline-none text-slate-900 dark:text-white"
+                className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-[#FF3823] outline-none text-slate-900 dark:text-white"
                 placeholder="Un titre accrocheur..."
               />
             </div>
@@ -217,7 +217,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
                 rows={2}
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-rose-500 outline-none text-slate-900 dark:text-white resize-none"
+                className="w-full p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:ring-2 focus:ring-[#FF3823] outline-none text-slate-900 dark:text-white resize-none"
                 placeholder="Racontez l'histoire de votre vidéo... #Nisfy"
               />
             </div>
@@ -241,7 +241,7 @@ export function PublishVideoModal({ onClose, onPublish, initialTrackId, initialI
             type="submit"
             form="publish-form"
             disabled={isUploading}
-            className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 text-white font-black shadow-lg hover:shadow-xl transition-all disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
+            className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white font-black shadow-lg hover:shadow-xl transition-all disabled:opacity-70 flex items-center justify-center gap-2 cursor-pointer"
           >
             {isUploading ? (
               <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />

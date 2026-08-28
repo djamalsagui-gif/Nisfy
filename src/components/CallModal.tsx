@@ -58,8 +58,8 @@ export function CallModal({ targetUser, onEndCall }: CallModalProps) {
       <div className="bg-slate-900 border border-slate-800 rounded-3xl w-full max-w-sm p-6 text-center text-white shadow-2xl space-y-6 animate-in zoom-in-95">
         {/* Top Status */}
         <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-rose-500/20 text-rose-300 text-xs font-bold border border-rose-500/30">
-            <Sparkles className="w-3.5 h-3.5 text-rose-400" />
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#FF3823]/20 text-orange-200 text-xs font-bold border border-[#FF3823]/40">
+            <Sparkles className="w-3.5 h-3.5 text-[#FF6B35]" />
             {callStatus === 'calling' ? (isArabic ? 'جارٍ الاتصال...' : 'Appel en cours...') : (isArabic ? 'مكالمة جارية' : 'En communication')}
           </span>
         </div>
@@ -67,20 +67,20 @@ export function CallModal({ targetUser, onEndCall }: CallModalProps) {
         {/* Avatar with pulse */}
         <div className="relative inline-block mx-auto">
           {callStatus === 'calling' && (
-            <span className="absolute -inset-3 rounded-full bg-rose-500/30 animate-ping" />
+            <span className="absolute -inset-3 rounded-full bg-[#FF3823]/30 animate-ping" />
           )}
           <img
             src={targetUser.avatar}
             alt={targetUser.pseudo}
             referrerPolicy="no-referrer"
-            className="w-24 h-24 rounded-full object-cover border-4 border-rose-500/80 shadow-2xl relative z-10"
+            className="w-24 h-24 rounded-full object-cover border-4 border-[#FF3823] shadow-2xl relative z-10"
           />
         </div>
 
         <div>
           <h3 className="text-xl font-black text-white">{targetUser.pseudo}</h3>
           <p className="text-xs text-slate-400 mt-1">{targetUser.city}</p>
-          <div className="text-sm font-mono font-bold text-rose-400 mt-2">
+          <div className="text-sm font-mono font-bold text-[#38BDF8] mt-2">
             {callStatus === 'calling' ? (isArabic ? 'رنين...' : 'Sonnerie...') : formatTimer(callDuration)}
           </div>
         </div>
@@ -93,7 +93,7 @@ export function CallModal({ targetUser, onEndCall }: CallModalProps) {
             type="button"
             onClick={() => setIsMuted(!isMuted)}
             className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-              isMuted ? 'bg-rose-500 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              isMuted ? 'bg-[#FF3823] text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
             title="Couper micro"
           >
@@ -107,7 +107,7 @@ export function CallModal({ targetUser, onEndCall }: CallModalProps) {
               datingSounds.playLikeSound();
               onEndCall();
             }}
-            className="w-14 h-14 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white flex items-center justify-center shadow-lg shadow-rose-600/40 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+            className="w-14 h-14 rounded-2xl bg-[#FF3823] hover:bg-[#FF3823]/90 text-white flex items-center justify-center shadow-lg shadow-[#FF3823]/40 hover:scale-105 active:scale-95 transition-all cursor-pointer"
             title="Raccrocher"
           >
             <PhoneOff className="w-6 h-6" />
@@ -118,7 +118,7 @@ export function CallModal({ targetUser, onEndCall }: CallModalProps) {
             type="button"
             onClick={() => setIsSpeakerOn(!isSpeakerOn)}
             className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${
-              isSpeakerOn ? 'bg-indigo-600 text-white' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
+              isSpeakerOn ? 'bg-[#38BDF8] text-slate-950 font-bold' : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
             }`}
             title="Haut-parleur"
           >

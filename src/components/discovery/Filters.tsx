@@ -20,12 +20,12 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
       <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-t-3xl sm:rounded-3xl shadow-2xl p-6 relative">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-2 text-slate-900 dark:text-white">
-            <SlidersHorizontal className="w-5 h-5 text-rose-500" />
+            <SlidersHorizontal className="w-5 h-5 text-[#FF3823]" />
             <h2 className="text-xl font-bold">Filtres de recherche</h2>
           </div>
           <button 
             onClick={onClose}
-            className="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-full transition-colors"
+            className="text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 p-2 rounded-full transition-colors cursor-pointer"
           >
             Fermer
           </button>
@@ -47,9 +47,9 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
                 <button
                   key={opt.id}
                   onClick={() => onChange('gender', opt.id)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all ${
+                  className={`flex-1 py-2 rounded-xl text-sm font-bold transition-all cursor-pointer ${
                     filters.gender === opt.id
-                      ? 'bg-rose-500 text-white shadow-md'
+                      ? 'bg-[#FF3823] text-white shadow-md'
                       : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                   }`}
                 >
@@ -68,7 +68,7 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
             <select
               value={filters.wilaya}
               onChange={(e) => onChange('wilaya', e.target.value)}
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500 outline-none"
+              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#FF3823] outline-none"
             >
               <option value="all">Toutes les wilayas</option>
               {WILAYAS_69.map(w => (
@@ -84,7 +84,7 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
                 <Calendar className="w-4 h-4 text-slate-400" />
                 Tranche d'âge
               </label>
-              <span className="text-sm font-bold text-rose-500">
+              <span className="text-sm font-bold text-[#FF3823]">
                 {filters.ageMin} - {filters.ageMax} ans
               </span>
             </div>
@@ -95,7 +95,7 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
                 max="99"
                 value={filters.ageMin}
                 onChange={(e) => onChange('ageMin', parseInt(e.target.value))}
-                className="w-full accent-rose-500"
+                className="w-full accent-[#FF3823]"
               />
               <input
                 type="range"
@@ -103,7 +103,7 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
                 max="99"
                 value={filters.ageMax}
                 onChange={(e) => onChange('ageMax', parseInt(e.target.value))}
-                className="w-full accent-rose-500"
+                className="w-full accent-[#FF3823]"
               />
             </div>
           </div>
@@ -117,7 +117,7 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
             <select
               value={filters.educationLevel}
               onChange={(e) => onChange('educationLevel', e.target.value)}
-              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-rose-500 outline-none"
+              className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-[#FF3823] outline-none"
             >
               <option value="all">Tous les niveaux</option>
               <option value="Universitaire">Universitaire</option>
@@ -130,7 +130,7 @@ export function Filters({ filters, onChange, onClose }: FiltersProps) {
 
         <button 
           onClick={onClose}
-          className="w-full mt-8 py-4 bg-gradient-to-r from-rose-500 to-amber-500 text-white rounded-xl font-bold shadow-lg shadow-rose-500/20 active:scale-95 transition-transform"
+          className="w-full mt-8 py-4 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-xl font-bold shadow-lg shadow-orange-500/20 active:scale-95 transition-transform cursor-pointer"
         >
           Appliquer les filtres
         </button>

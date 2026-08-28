@@ -83,7 +83,7 @@ export function AdminAdvertisersView({
   if (!isAuthenticated) {
     return (
       <div className="max-w-md mx-auto my-12 p-6 sm:p-8 bg-white dark:bg-slate-900 rounded-3xl shadow-xl border border-slate-200 dark:border-slate-800 text-center space-y-6">
-        <div className="w-16 h-16 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto ring-8 ring-amber-500/5">
+        <div className="w-16 h-16 rounded-2xl bg-[#FF3823]/10 text-[#FF3823] flex items-center justify-center mx-auto ring-8 ring-[#FF3823]/5">
           <Shield className="w-8 h-8" />
         </div>
 
@@ -99,7 +99,7 @@ export function AdminAdvertisersView({
         <form onSubmit={handlePinSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-bold text-slate-600 dark:text-slate-300 text-left mb-1.5 flex items-center gap-1.5">
-              <Key className="w-3.5 h-3.5 text-amber-500" />
+              <Key className="w-3.5 h-3.5 text-[#FF3823]" />
               <span>Code PIN d'Accès Sécurisé</span>
             </label>
             <input
@@ -108,13 +108,13 @@ export function AdminAdvertisersView({
               value={pinEntered}
               onChange={(e) => setPinEntered(e.target.value)}
               placeholder="Ex: 7788"
-              className="w-full text-center tracking-[0.3em] font-mono text-xl py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-amber-500 outline-none"
+              className="w-full text-center tracking-[0.3em] font-mono text-xl py-3 px-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-900 dark:text-white focus:ring-2 focus:ring-orange-500 outline-none"
               autoFocus
             />
           </div>
 
           {authError && (
-            <p className="text-xs font-bold text-rose-500 bg-rose-50 dark:bg-rose-950/40 p-2.5 rounded-xl border border-rose-200 dark:border-rose-900">
+            <p className="text-xs font-bold text-[#FF3823] bg-orange-50 dark:bg-orange-950/40 p-2.5 rounded-xl border border-orange-200 dark:border-orange-900">
               {authError}
             </p>
           )}
@@ -122,7 +122,7 @@ export function AdminAdvertisersView({
           <div className="pt-2 flex flex-col gap-2">
             <button
               type="submit"
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-slate-950 font-black text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+              className="w-full py-3 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white font-black text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <Lock className="w-4 h-4" />
               <span>Déverrouiller l'Espace Admin</span>
@@ -139,7 +139,7 @@ export function AdminAdvertisersView({
         </form>
 
         <div className="pt-3 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">
-          Code PIN par défaut : <span className="font-mono font-bold text-amber-600">7788</span>
+          Code PIN par défaut : <span className="font-mono font-bold text-[#FF3823]">7788</span>
         </div>
       </div>
     );
@@ -178,7 +178,7 @@ export function AdminAdvertisersView({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowResetConfirm(true)}
-            className="px-3 py-2 rounded-xl border border-rose-200 dark:border-rose-900 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 hover:bg-rose-100 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
+            className="px-3 py-2 rounded-xl border border-[#FF3823]/30 bg-orange-50 dark:bg-orange-950/30 text-[#FF3823] dark:text-[#FF6B35] hover:bg-orange-100 text-xs font-bold flex items-center gap-1.5 transition-all cursor-pointer"
             title="Vider les données pour repartir à zéro"
           >
             <RotateCcw className="w-3.5 h-3.5" />
@@ -206,8 +206,8 @@ export function AdminAdvertisersView({
       {/* Reset Confirmation Modal */}
       {showResetConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-rose-200 dark:border-rose-900 space-y-4 animate-in zoom-in-95">
-            <div className="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-950/50 text-rose-600 flex items-center justify-center mx-auto">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-[#FF3823]/30 space-y-4 animate-in zoom-in-95">
+            <div className="w-12 h-12 rounded-2xl bg-orange-100 dark:bg-orange-950/50 text-[#FF3823] flex items-center justify-center mx-auto">
               <AlertTriangle className="w-6 h-6" />
             </div>
 
@@ -229,7 +229,7 @@ export function AdminAdvertisersView({
               </button>
               <button
                 onClick={handleResetAllData}
-                className="flex-1 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
+                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white font-black text-xs shadow-md cursor-pointer flex items-center justify-center gap-1.5"
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Oui, tout réinitialiser</span>

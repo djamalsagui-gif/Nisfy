@@ -30,13 +30,13 @@ export function CategoryTabs({ selectedCategory, onSelectCategory }: CategoryTab
             <button
               key={cat.id}
               onClick={() => onSelectCategory(cat.id as SocialPostCategory | 'all')}
-              className={`snap-center shrink-0 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-all backdrop-blur-md border border-white/20 shadow-md ${
+              className={`snap-center shrink-0 px-4 py-2 rounded-full text-sm font-bold flex items-center gap-2 transition-all backdrop-blur-md border shadow-md ${
                 isSelected
-                  ? 'bg-white text-black shadow-white/25'
-                  : 'bg-black/40 text-white/90 hover:bg-black/60'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white border-transparent shadow-[#FF3823]/30 scale-105'
+                  : 'bg-black/40 text-white/90 hover:bg-black/60 border-white/20'
               }`}
             >
-              <Icon className={`w-4 h-4 ${isSelected ? 'text-black' : 'text-white/80'}`} />
+              <Icon className="w-4 h-4 text-white" />
               <span>{isArabic ? cat.labelAr : cat.labelFr}</span>
             </button>
           );

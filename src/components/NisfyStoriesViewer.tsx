@@ -154,7 +154,7 @@ export function NisfyStoriesViewer({
               src={currentUser.avatar}
               alt={currentUser.pseudo}
               referrerPolicy="no-referrer"
-              className="w-8 h-8 rounded-full object-cover border border-rose-500"
+              className="w-8 h-8 rounded-full object-cover border border-[#FF6B35]"
             />
             <div className="text-left">
               <div className="flex items-center gap-1">
@@ -174,7 +174,7 @@ export function NisfyStoriesViewer({
               onClick={() => setIsMuted(!isMuted)}
               className="p-2 rounded-full bg-black/40 backdrop-blur-md text-white hover:bg-black/60 transition-colors"
             >
-              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-rose-400" />}
+              {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-[#FF6B35]" />}
             </button>
             <button
               onClick={onClose}
@@ -247,7 +247,7 @@ export function NisfyStoriesViewer({
             {/* Jasmin Super-Like */}
             <button
               onClick={handleJasmin}
-              className="flex-1 py-2.5 px-3 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 text-white font-extrabold text-xs shadow-lg flex items-center justify-center gap-1.5 hover:scale-102 transition-transform cursor-pointer"
+              className="flex-1 py-2.5 px-3 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white font-extrabold text-xs shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5 hover:scale-102 transition-transform cursor-pointer"
             >
               <Flower2 className="w-4 h-4 text-white animate-spin-slow" />
               <span>{isArabic ? 'إرسال ياسمينة' : 'Offrir un Jasmin'}</span>
@@ -261,7 +261,7 @@ export function NisfyStoriesViewer({
               }}
               className="py-2.5 px-4 rounded-2xl bg-white/20 hover:bg-white/30 backdrop-blur-md text-white font-extrabold text-xs flex items-center justify-center gap-1.5 transition-colors cursor-pointer"
             >
-              <MessageCircle className="w-4 h-4 text-indigo-300" />
+              <MessageCircle className="w-4 h-4 text-[#38BDF8]" />
               <span>{isArabic ? 'دردشة' : 'Discuter'}</span>
             </button>
 
@@ -271,7 +271,7 @@ export function NisfyStoriesViewer({
                 datingSounds.playLikeSound();
                 onLike(currentUser);
               }}
-              className="p-2.5 rounded-2xl bg-rose-600/80 hover:bg-rose-600 text-white flex items-center justify-center transition-colors cursor-pointer shadow-md"
+              className="p-2.5 rounded-2xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white flex items-center justify-center transition-all cursor-pointer shadow-md shadow-orange-500/20"
               title="Aimer ce profil"
             >
               <Heart className="w-5 h-5 fill-white" />

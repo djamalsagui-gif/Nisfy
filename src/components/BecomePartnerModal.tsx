@@ -129,7 +129,7 @@ export function BecomePartnerModal({ isOpen, onClose }: BecomePartnerModalProps)
           <form onSubmit={handleProceedToPayment} className="space-y-6">
             {/* Header with Professional Badge */}
             <div className="flex items-start gap-3.5">
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-rose-500 to-rose-600 text-white flex items-center justify-center shadow-lg shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] text-white flex items-center justify-center shadow-lg shrink-0">
                 <Building2 className="w-7 h-7" />
               </div>
               <div>
@@ -254,7 +254,7 @@ export function BecomePartnerModal({ isOpen, onClose }: BecomePartnerModalProps)
             <div className="space-y-3">
               <div className="text-xs font-black text-slate-800 uppercase tracking-wider border-b border-slate-100 pb-1 flex items-center justify-between">
                 <span>2. {isArabic ? 'اختر الباقة الإعلانية المدفوعة' : 'Sélection du Forfait Publicitaire'}</span>
-                <span className="text-[11px] text-rose-600 font-bold">{isArabic ? 'دفع إلكتروني آمن' : 'Tarifs Hors Taxes'}</span>
+                <span className="text-[11px] text-[#FF3823] font-bold">{isArabic ? 'دفع إلكتروني آمن' : 'Tarifs Hors Taxes'}</span>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -269,7 +269,7 @@ export function BecomePartnerModal({ isOpen, onClose }: BecomePartnerModalProps)
                     }`}
                   >
                     {p.popular && (
-                      <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
+                      <span className="absolute -top-2.5 right-3 px-2 py-0.5 rounded-full bg-[#FF3823] text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
                         {isArabic ? 'الأكثر طلباً' : 'Recommandé'}
                       </span>
                     )}
@@ -355,7 +355,7 @@ export function BecomePartnerModal({ isOpen, onClose }: BecomePartnerModalProps)
             <button
               type="submit"
               disabled={!isAgreedTerms}
-              className="w-full py-3.5 bg-gradient-to-r from-amber-500 via-rose-500 to-rose-600 disabled:opacity-50 text-white font-extrabold text-sm rounded-xl shadow-lg hover:brightness-105 transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full py-3.5 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] disabled:opacity-50 text-white font-extrabold text-sm rounded-xl shadow-lg hover:brightness-105 transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <CreditCard className="w-4 h-4" />
               <span>
@@ -573,7 +573,7 @@ export function BecomePartnerModal({ isOpen, onClose }: BecomePartnerModalProps)
               </div>
               <div className="flex justify-between font-bold text-slate-800 border-t border-slate-200 pt-1">
                 <span>Contact Administration Nisfy :</span>
-                <span className="text-rose-600 font-mono">contact@nisfy.app</span>
+                <span className="text-[#FF3823] font-mono">contact@nisfy.app</span>
               </div>
             </div>
 

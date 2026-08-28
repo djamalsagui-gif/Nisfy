@@ -89,7 +89,7 @@ export const WeddingMarketplaceView: React.FC = () => {
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6 md:py-8 space-y-8">
       {/* Top Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-900 text-white p-6 md:p-10 shadow-2xl">
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#881337] text-white p-6 md:p-10 shadow-2xl">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/20 text-amber-100 text-xs font-bold uppercase tracking-wider backdrop-blur-md">
@@ -460,8 +460,8 @@ export const WeddingMarketplaceView: React.FC = () => {
             </div>
 
             {/* Total Estimated Box */}
-            <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-600 text-white space-y-1 shadow-lg">
-              <div className="text-xs text-amber-100 uppercase tracking-wider font-bold">
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white space-y-1 shadow-lg shadow-orange-500/20">
+              <div className="text-xs text-orange-100 uppercase tracking-wider font-bold">
                 Estimation Totale Globale
               </div>
               <div className="text-3xl font-black">
@@ -472,9 +472,9 @@ export const WeddingMarketplaceView: React.FC = () => {
               </div>
             </div>
 
-            <div className="p-3 bg-amber-50 dark:bg-amber-950/40 rounded-xl border border-amber-200 dark:border-amber-900/60 text-xs text-amber-900 dark:text-amber-200 flex items-center justify-between">
+            <div className="p-3 bg-orange-50 dark:bg-orange-950/40 rounded-xl border border-orange-200 dark:border-orange-900/60 text-xs text-orange-950 dark:text-orange-200 flex items-center justify-between">
               <span>Conseiller Mariage & Administration :</span>
-              <span className="font-bold font-mono text-rose-600">contact@nisfy.app</span>
+              <span className="font-bold font-mono text-[#FF3823]">contact@nisfy.app</span>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-2">
@@ -505,7 +505,7 @@ export const WeddingMarketplaceView: React.FC = () => {
                     setIsQuoteModalOpen(false);
                   }, 2500);
                 }}
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-bold text-xs shadow-md transition flex items-center justify-center gap-2 cursor-pointer"
+                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white font-bold text-xs shadow-md shadow-orange-500/25 transition flex items-center justify-center gap-2 cursor-pointer"
               >
                 {quoteSuccess ? (
                   <>

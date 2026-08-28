@@ -23,7 +23,7 @@ export function ProfileCard({ profile, currentUser }: ProfileCardProps) {
       {/* Top badges */}
       <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
         {profile.hasBlueBadge && (
-          <div className="bg-blue-500 text-white text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-md">
+          <div className="bg-[#38BDF8] text-slate-950 text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1 shadow-md">
             <ShieldCheck className="w-4 h-4" />
             Vérifié
           </div>
@@ -38,7 +38,7 @@ export function ProfileCard({ profile, currentUser }: ProfileCardProps) {
 
       {/* Compatibility Badge Top Right */}
       <div className="absolute top-4 right-4 z-10">
-        <div className="bg-emerald-500 text-white text-sm font-black px-3 py-1.5 rounded-full shadow-lg border-2 border-white/20 flex flex-col items-center leading-none">
+        <div className="bg-gradient-to-br from-[#FF6B35] to-[#FF3823] text-white text-sm font-black px-3 py-1.5 rounded-full shadow-lg shadow-orange-500/30 border-2 border-white/20 flex flex-col items-center leading-none">
           <span>{compatibility.score}%</span>
           <span className="text-[9px] uppercase font-semibold">Match</span>
         </div>

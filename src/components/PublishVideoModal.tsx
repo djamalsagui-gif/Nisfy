@@ -354,7 +354,7 @@ export function PublishVideoModal({
     <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto animate-in fade-in select-none">
       <div className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden flex flex-col max-h-[92vh]">
         {/* Modal Header */}
-        <div className="px-5 py-4 bg-gradient-to-r from-rose-500 via-pink-600 to-indigo-600 text-white flex items-center justify-between">
+        <div className="px-5 py-4 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-2xl bg-white/20 backdrop-blur-xs flex items-center justify-center text-white shadow-inner">
               <Film className="w-5 h-5" />
@@ -393,7 +393,7 @@ export function PublishVideoModal({
             }}
             className={`pb-2.5 px-3 rounded-t-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border-b-2 ${
               tabMode === 'record'
-                ? 'border-rose-500 text-rose-600 bg-white shadow-xs'
+                ? 'border-[#FF3823] text-[#FF3823] bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -410,7 +410,7 @@ export function PublishVideoModal({
             }}
             className={`pb-2.5 px-3 rounded-t-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border-b-2 ${
               tabMode === 'upload'
-                ? 'border-rose-500 text-rose-600 bg-white shadow-xs'
+                ? 'border-[#FF3823] text-[#FF3823] bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -427,7 +427,7 @@ export function PublishVideoModal({
             }}
             className={`pb-2.5 px-3 rounded-t-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border-b-2 ${
               tabMode === 'templates'
-                ? 'border-rose-500 text-rose-600 bg-white shadow-xs'
+                ? 'border-[#FF3823] text-[#FF3823] bg-white shadow-xs'
                 : 'border-transparent text-slate-500 hover:text-slate-900'
             }`}
           >
@@ -461,12 +461,12 @@ export function PublishVideoModal({
 
                   {cameraError && (
                     <div className="absolute inset-0 bg-slate-900/90 p-6 flex flex-col items-center justify-center text-center text-white space-y-3 z-20">
-                      <Camera className="w-10 h-10 text-rose-400 opacity-60" />
+                      <Camera className="w-10 h-10 text-[#FF3823] opacity-60" />
                       <p className="text-xs text-slate-300 max-w-xs">{cameraError}</p>
                       <button
                         type="button"
                         onClick={() => setTabMode('templates')}
-                        className="px-4 py-2 bg-gradient-to-r from-rose-500 to-indigo-600 rounded-xl text-xs font-bold text-white shadow-md cursor-pointer"
+                        className="px-4 py-2 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] rounded-xl text-xs font-bold text-white shadow-md cursor-pointer"
                       >
                         {isArabic ? 'اختيار قالب فيديو جاهز' : 'Choisir un modèle prêt à l’emploi'}
                       </button>
@@ -475,8 +475,8 @@ export function PublishVideoModal({
 
                   {/* Recording Status Overlay */}
                   {isRecording && (
-                    <div className="absolute top-3 left-3 z-30 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-white border border-rose-500/40">
-                      <span className="w-2.5 h-2.5 rounded-full bg-rose-500 animate-ping" />
+                    <div className="absolute top-3 left-3 z-30 flex items-center gap-2 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full text-white border border-[#FF3823]/40">
+                      <span className="w-2.5 h-2.5 rounded-full bg-[#FF3823] animate-ping" />
                       <span className="text-xs font-black">
                         REC 00:{recordingSeconds < 10 ? `0${recordingSeconds}` : recordingSeconds} / 60s
                       </span>
@@ -493,7 +493,7 @@ export function PublishVideoModal({
                           type="button"
                           onClick={() => setSelectedFilter(f)}
                           className={`px-2 py-0.5 rounded-lg capitalize cursor-pointer transition-colors ${
-                            selectedFilter === f ? 'bg-rose-500 text-white' : 'text-slate-300 hover:text-white'
+                            selectedFilter === f ? 'bg-[#FF3823] text-white' : 'text-slate-300 hover:text-white'
                           }`}
                         >
                           {f}
@@ -531,7 +531,7 @@ export function PublishVideoModal({
                     <button
                       type="button"
                       onClick={startRecording}
-                      className="px-6 py-3 rounded-full bg-rose-600 hover:bg-rose-700 text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-rose-500/30 transition-transform active:scale-95 cursor-pointer"
+                      className="px-6 py-3 rounded-full bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white font-black text-xs flex items-center gap-2 shadow-lg shadow-orange-500/30 transition-transform active:scale-95 cursor-pointer"
                     >
                       <span className="w-3.5 h-3.5 rounded-full bg-white animate-pulse" />
                       <span>{isArabic ? 'بدء تسجيل الفيديو (حتى 60 ثانية)' : 'Lancer l’Enregistrement (jusqu’à 60s)'}</span>
@@ -540,9 +540,9 @@ export function PublishVideoModal({
                     <button
                       type="button"
                       onClick={stopRecording}
-                      className="px-6 py-3 rounded-full bg-slate-900 hover:bg-black text-white font-black text-xs flex items-center gap-2 shadow-lg transition-transform active:scale-95 cursor-pointer ring-2 ring-rose-500"
+                      className="px-6 py-3 rounded-full bg-slate-900 hover:bg-black text-white font-black text-xs flex items-center gap-2 shadow-lg transition-transform active:scale-95 cursor-pointer ring-2 ring-[#FF3823]"
                     >
-                      <span className="w-3 h-3 bg-rose-500 rounded-sm" />
+                      <span className="w-3 h-3 bg-[#FF3823] rounded-sm" />
                       <span>{isArabic ? 'إنهاء وحفظ الفيديو' : 'Terminer & Valider la Vidéo'}</span>
                     </button>
                   )}
@@ -556,9 +556,9 @@ export function PublishVideoModal({
             <div className="space-y-4">
               <div
                 onClick={() => fileInputRef.current?.click()}
-                className="border-2 border-dashed border-rose-300 hover:border-rose-500 bg-rose-50/40 rounded-3xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center group"
+                className="border-2 border-dashed border-orange-300 hover:border-[#FF3823] bg-orange-50/40 rounded-3xl p-8 text-center cursor-pointer transition-all flex flex-col items-center justify-center group"
               >
-                <div className="w-16 h-16 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                <div className="w-16 h-16 rounded-full bg-orange-100 text-[#FF3823] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
                   <Upload className="w-8 h-8" />
                 </div>
                 <h3 className="text-sm font-black text-slate-800">
@@ -569,7 +569,7 @@ export function PublishVideoModal({
                     ? 'فيديوهات عمودية أو أفقية قصيرة (10 إلى 60 ثانية) للتعريف بنفسك'
                     : 'Format court recommandé (10s à 60s) pour un maximum de visibilité auprès des adhérents.'}
                 </p>
-                <span className="mt-4 px-4 py-2 rounded-xl bg-white border border-rose-200 text-rose-700 text-xs font-bold shadow-xs">
+                <span className="mt-4 px-4 py-2 rounded-xl bg-white border border-orange-200 text-[#FF3823] text-xs font-bold shadow-xs">
                   {isArabic ? 'تصفح الملفات' : 'Parcourir les fichiers'}
                 </span>
                 <input
@@ -608,7 +608,7 @@ export function PublishVideoModal({
                       onClick={() => handleSelectTemplate(tpl)}
                       className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex gap-3 items-center group ${
                         isSelected
-                          ? 'border-rose-500 bg-rose-50/60 shadow-md ring-2 ring-rose-300'
+                          ? 'border-[#FF3823] bg-orange-50/60 shadow-md ring-2 ring-[#FF6B35]/40'
                           : 'border-slate-200 hover:border-slate-300 bg-white'
                       }`}
                     >
@@ -626,7 +626,7 @@ export function PublishVideoModal({
 
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center justify-between">
-                          <span className="text-[10px] font-black text-rose-600 uppercase">
+                          <span className="text-[10px] font-black text-[#FF3823] uppercase">
                             {tpl.tag}
                           </span>
                           <span className="text-[10px] text-slate-400 font-bold">
@@ -662,14 +662,14 @@ export function PublishVideoModal({
                     ? 'مثال: السلام عليكم ! تقديمي في 15 ثانية للزواج الجاد 💍'
                     : 'Ex: Salam ! Ma présentation en 15s pour un projet sérieux 💍'
                 }
-                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-rose-400 focus:outline-none"
+                className="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-900 focus:bg-white focus:ring-2 focus:ring-[#FF3823] focus:outline-none"
               />
             </div>
 
             {/* Quick Hashtags */}
             <div>
               <label className="block text-xs font-black text-slate-700 mb-1 flex items-center gap-1">
-                <Tag className="w-3.5 h-3.5 text-rose-500" />
+                <Tag className="w-3.5 h-3.5 text-[#FF3823]" />
                 <span>{isArabic ? 'الوسم / الموضوع :' : 'Thème & Hashtag principal :'}</span>
               </label>
               <div className="flex flex-wrap gap-1.5">
@@ -680,7 +680,7 @@ export function PublishVideoModal({
                     onClick={() => setSelectedTag(tag)}
                     className={`px-2.5 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       selectedTag === tag
-                        ? 'bg-rose-500 text-white shadow-xs'
+                        ? 'bg-[#FF3823] text-white shadow-xs'
                         : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
                     }`}
                   >
@@ -691,7 +691,7 @@ export function PublishVideoModal({
             </div>
 
             {/* 🎵 CHOIX DE LA MUSIQUE / AMBIANCE DU CLIP */}
-            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 border border-amber-300 dark:border-amber-700/50 space-y-2">
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-orange-500/10 via-rose-500/10 to-sky-500/10 border border-orange-300 dark:border-orange-700/50 space-y-2">
               <MusicSelector
                 selectedTrackId={selectedMusicThemeId}
                 onSelectTrack={(track) => setSelectedMusicThemeId(track.id)}
@@ -707,7 +707,7 @@ export function PublishVideoModal({
                 type="checkbox"
                 checked={isStoryOnWall}
                 onChange={(e) => setIsStoryOnWall(e.target.checked)}
-                className="w-4 h-4 text-purple-600 rounded focus:ring-purple-400 cursor-pointer"
+                className="w-4 h-4 text-[#FF3823] rounded focus:ring-[#FF3823] cursor-pointer"
               />
               <div>
                 <span className="text-xs font-black text-purple-950 flex items-center gap-1.5">
@@ -728,7 +728,7 @@ export function PublishVideoModal({
                 type="checkbox"
                 checked={isPrimaryPresentation}
                 onChange={(e) => setIsPrimaryPresentation(e.target.checked)}
-                className="w-4 h-4 text-rose-600 rounded focus:ring-rose-400 cursor-pointer"
+                className="w-4 h-4 text-[#FF3823] rounded focus:ring-[#FF3823] cursor-pointer"
               />
               <div>
                 <span className="text-xs font-black text-amber-900 block">
@@ -770,7 +770,7 @@ export function PublishVideoModal({
             disabled={!videoUrl}
             className={`px-6 py-2.5 rounded-2xl text-xs font-black text-white shadow-lg transition-all flex items-center gap-2 cursor-pointer ${
               videoUrl
-                ? 'bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-600 hover:to-indigo-700 shadow-rose-500/25 active:scale-95'
+                ? 'bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 shadow-orange-500/25 active:scale-95'
                 : 'bg-slate-300 cursor-not-allowed opacity-60'
             }`}
           >

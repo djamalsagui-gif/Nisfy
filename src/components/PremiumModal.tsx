@@ -101,7 +101,7 @@ export function PremiumModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm overflow-y-auto animate-in fade-in">
       <div className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full shadow-2xl border border-rose-200 dark:border-slate-800 overflow-hidden my-6">
         {/* Header with gradient */}
-        <div className="relative bg-gradient-to-r from-amber-500 via-rose-500 to-indigo-600 p-6 sm:p-8 text-white">
+        <div className="relative bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] p-6 sm:p-8 text-white">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors cursor-pointer"
@@ -122,7 +122,7 @@ export function PremiumModal({
               </h2>
             </div>
           </div>
-          <p className="text-xs text-rose-100 mt-2 max-w-lg">
+          <p className="text-xs text-orange-100 mt-2 max-w-lg">
             {isArabic
               ? 'احصل على إمكانية إرسال سوبر لايك وزهور الياسمين غير محدودة، وتصدر قوائم الـ 69 ولاية، ومعرفة من زار بروفايلك.'
               : 'Multipliez vos chances de mariage : Super Likes et Jasmins illimités, priorité dans les 69 wilayas et mode discret.'}
@@ -177,27 +177,27 @@ export function PremiumModal({
               onClick={() => setSelectedPlan('vip')}
               className={`p-5 rounded-2xl border-2 transition-all cursor-pointer relative ${
                 selectedPlan === 'vip'
-                  ? 'border-rose-500 bg-rose-50/50 dark:bg-rose-950/20 shadow-md ring-2 ring-rose-500/20'
-                  : 'border-slate-200 dark:border-slate-800 hover:border-rose-300'
+                  ? 'border-[#FF3823] bg-orange-50/50 dark:bg-orange-950/20 shadow-md ring-2 ring-[#FF3823]/25'
+                  : 'border-slate-200 dark:border-slate-800 hover:border-orange-300'
               }`}
             >
-              <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-rose-500 to-amber-500 text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
+              <div className="absolute -top-3 right-4 px-3 py-0.5 rounded-full bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white text-[10px] font-black uppercase tracking-wider shadow-sm">
                 {isArabic ? 'الأكثر طلباً' : 'Recommandé'}
               </div>
 
               <div className="flex items-center justify-between mb-3">
                 <div className="flex items-center gap-2">
-                  <Crown className="w-5 h-5 text-rose-500" />
+                  <Crown className="w-5 h-5 text-[#FF3823]" />
                   <h3 className="text-base font-black text-slate-900 dark:text-white">Nisfy VIP</h3>
                 </div>
-                <span className="text-base font-extrabold text-rose-600 dark:text-rose-400">
+                <span className="text-base font-extrabold text-[#FF3823] dark:text-[#FF6B35]">
                   10 € <span className="text-[11px] font-medium text-slate-500">/ mois</span>
                 </span>
               </div>
 
               <ul className="space-y-2 text-xs text-slate-600 dark:text-slate-300">
-                <li className="flex items-center gap-2 font-bold text-rose-700 dark:text-rose-300">
-                  <Check className="w-4 h-4 text-rose-500 shrink-0" />
+                <li className="flex items-center gap-2 font-bold text-[#FF3823] dark:text-[#FF6B35]">
+                  <Check className="w-4 h-4 text-[#FF3823] shrink-0" />
                   <span>{isArabic ? 'كل ميزات Gold بالإضافة إلى :' : 'Tous les avantages Gold +'}</span>
                 </li>
                 <li className="flex items-center gap-2">
@@ -224,7 +224,7 @@ export function PremiumModal({
           <button
             onClick={() => handleSubscribe(selectedPlan)}
             disabled={isProcessing}
-            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-amber-500 hover:from-rose-700 hover:to-amber-600 text-white font-black text-sm shadow-lg shadow-rose-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white font-black text-sm shadow-lg shadow-orange-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
           >
             <Crown className="w-4 h-4" />
             <span>
@@ -267,7 +267,7 @@ export function PremiumModal({
                   }`}
                 >
                   <p className="text-xs font-black text-slate-900 dark:text-white">{pack.desc}</p>
-                  <p className="text-sm font-extrabold text-rose-600 dark:text-rose-400 mt-1">{pack.price}</p>
+                  <p className="text-sm font-extrabold text-[#FF3823] dark:text-[#FF6B35] mt-1">{pack.price}</p>
                   <span className="text-[10px] text-slate-500 block mt-1">
                     {isArabic ? 'شحن فوري' : 'Acheter'}
                   </span>

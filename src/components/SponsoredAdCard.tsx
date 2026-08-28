@@ -102,7 +102,7 @@ export function SponsoredAdCard({
     return (
       <div
         onClick={() => onOpenDetails(ad)}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 dark:from-amber-950/30 dark:to-rose-950/30 border border-amber-300/40 dark:border-amber-700/40 p-2.5 sm:p-3 flex items-center justify-between gap-3 cursor-pointer hover:border-amber-400 transition-all group"
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-500/10 via-orange-500/10 to-indigo-500/10 dark:from-amber-950/30 dark:to-orange-950/30 border border-amber-300/40 dark:border-amber-700/40 p-2.5 sm:p-3 flex items-center justify-between gap-3 cursor-pointer hover:border-amber-400 transition-all group"
         dir={isArabic ? 'rtl' : 'ltr'}
       >
         <div className="flex items-center gap-2.5 min-w-0">
@@ -117,7 +117,7 @@ export function SponsoredAdCard({
               <span className="text-xs font-black text-slate-900 dark:text-white truncate">
                 {isArabic ? ad.brandNameAr : ad.brandName}
               </span>
-              <span className="text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-1.5 py-0.2 rounded">
+              <span className="text-[10px] font-bold text-[#FF3823] dark:text-[#FF6B35] bg-orange-50 dark:bg-orange-950/60 px-1.5 py-0.2 rounded">
                 {isArabic ? ad.discountBadgeAr : ad.discountBadge}
               </span>
             </div>
@@ -136,7 +136,7 @@ export function SponsoredAdCard({
             {copied ? <Check className="w-3 h-3 text-emerald-600" /> : <Tag className="w-3 h-3 text-amber-600" />}
             <span>{ad.promoCode}</span>
           </button>
-          <span className="text-xs font-bold text-rose-600 dark:text-rose-400 flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
+          <span className="text-xs font-bold text-[#FF3823] dark:text-[#FF6B35] flex items-center gap-0.5 group-hover:translate-x-0.5 transition-transform">
             <span>{isArabic ? 'عرض' : 'Voir'}</span>
             <ChevronRight className="w-3.5 h-3.5" />
           </span>
@@ -163,7 +163,7 @@ export function SponsoredAdCard({
     return (
       <div
         onClick={() => onOpenDetails(ad)}
-        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-rose-950 text-white shadow-md border border-slate-700/60 p-4 sm:p-5 cursor-pointer hover:border-amber-400/60 transition-all group"
+        className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-slate-900 via-slate-800 to-orange-950 text-white shadow-md border border-slate-700/60 p-4 sm:p-5 cursor-pointer hover:border-amber-400/60 transition-all group"
         dir={isArabic ? 'rtl' : 'ltr'}
       >
         {onDismiss && (
@@ -195,7 +195,7 @@ export function SponsoredAdCard({
                   <Sparkles className="w-2.5 h-2.5" />
                   {isArabic ? 'إعلان معتمد' : 'Sponsor Nisfy'}
                 </span>
-                <span className="text-xs text-rose-300 font-bold">
+                <span className="text-xs text-orange-300 font-bold">
                   {isArabic ? ad.discountBadgeAr : ad.discountBadge}
                 </span>
               </div>
@@ -233,7 +233,7 @@ export function SponsoredAdCard({
             </button>
             <button
               onClick={() => onOpenDetails(ad)}
-              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950 font-bold text-xs flex items-center gap-1 shadow-md hover:brightness-110 transition-all cursor-pointer"
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white font-bold text-xs flex items-center gap-1 shadow-md hover:brightness-110 transition-all cursor-pointer"
             >
               <span>{isArabic ? 'عرض التفاصيل' : 'Détails & Photos'}</span>
               <ChevronRight className="w-3.5 h-3.5" />
@@ -278,7 +278,7 @@ export function SponsoredAdCard({
           </div>
 
           <div className="flex items-center gap-1.5">
-            <span className="px-3 py-1 rounded-full bg-rose-600 text-white font-bold text-xs shadow-md">
+            <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white font-bold text-xs shadow-md">
               {isArabic ? ad.discountBadgeAr : ad.discountBadge}
             </span>
             {onDismiss && (
@@ -336,7 +336,7 @@ export function SponsoredAdCard({
             </div>
             <span className="text-slate-400">•</span>
             <div className="flex items-center text-slate-300 text-xs">
-              <MapPin className="w-3.5 h-3.5 text-rose-400 mr-0.5" />
+              <MapPin className="w-3.5 h-3.5 text-[#FF6B35] mr-0.5" />
               {ad.wilayas[0]}
             </div>
           </div>
@@ -354,12 +354,12 @@ export function SponsoredAdCard({
               onClick={handleToggleMusic}
               className={`px-3 py-1.5 rounded-full text-xs font-black flex items-center gap-1.5 backdrop-blur-md border transition-all cursor-pointer shadow-lg ${
                 isPlayingMusic
-                  ? 'bg-gradient-to-r from-amber-400 to-rose-500 text-slate-950 border-amber-300 ring-2 ring-amber-300/50 scale-105'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white border-orange-300 ring-2 ring-orange-300/50 scale-105'
                   : 'bg-black/60 hover:bg-black/80 text-white border-white/20'
               }`}
             >
               {isPlayingMusic ? (
-                <Pause className="w-3.5 h-3.5 fill-slate-950" />
+                <Pause className="w-3.5 h-3.5 fill-white" />
               ) : (
                 <Play className="w-3.5 h-3.5 fill-white" />
               )}
@@ -368,9 +368,9 @@ export function SponsoredAdCard({
               </span>
               {isPlayingMusic && (
                 <span className="flex items-end gap-0.5 h-2.5 ml-0.5">
-                  <span className="w-0.75 bg-slate-950 rounded-full animate-bounce h-full" />
-                  <span className="w-0.75 bg-slate-950 rounded-full animate-bounce h-2/3" />
-                  <span className="w-0.75 bg-slate-950 rounded-full animate-bounce h-4/5" />
+                  <span className="w-0.75 bg-white rounded-full animate-bounce h-full" />
+                  <span className="w-0.75 bg-white rounded-full animate-bounce h-2/3" />
+                  <span className="w-0.75 bg-white rounded-full animate-bounce h-4/5" />
                 </span>
               )}
             </button>
@@ -390,7 +390,7 @@ export function SponsoredAdCard({
       {/* Card Content & Features */}
       <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
         {/* Promo Code Strip */}
-        <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-rose-50 dark:from-amber-950/40 dark:to-rose-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-between gap-2 shadow-xs">
+        <div className="p-3 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/40 dark:to-orange-950/40 border border-amber-200 dark:border-amber-800/60 flex items-center justify-between gap-2 shadow-xs">
           <div className="flex items-center gap-2 text-amber-900 dark:text-amber-200">
             <Tag className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
             <span className="text-xs font-bold">{isArabic ? 'كود الخصم :' : 'Code Promo :'}</span>

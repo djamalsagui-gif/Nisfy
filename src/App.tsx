@@ -49,9 +49,15 @@ import { PremiumModal } from './components/PremiumModal';
 import { VerificationModal } from './components/auth/VerificationModal';
 import { ContactModal } from './components/ContactModal';
 import { useLanguage } from './context/LanguageContext';
+import { SplashScreen } from './components/SplashScreen';
+import { PwaInstallModal } from './components/PwaInstallModal';
+import { PwaInstallBanner } from './components/PwaInstallBanner';
 
 export default function App() {
   const { t, isArabic } = useLanguage();
+
+  // Launch Splash Screen (Instagram-style: logo appears, then disappears gradually)
+  const [showSplash, setShowSplash] = useState(true);
 
   // 1. Core State
   const [currentUser, setLoggedInUser] = useState<UserProfile | null>(() =>
@@ -95,6 +101,7 @@ export default function App() {
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Bookmarks State
@@ -448,16 +455,30 @@ export default function App() {
   // If not logged in, render Authentication Screen
   if (!currentUser) {
     return (
-      <AuthModal
-        onLoginSuccess={handleLoginSuccess}
-        registeredUsers={registeredUsers}
-        onRegisterUser={handleRegisterUser}
-      />
+      <>
+        {showSplash && (
+          <SplashScreen
+            isDarkMode={isDarkMode}
+            onFinished={() => setShowSplash(false)}
+          />
+        )}
+        <AuthModal
+          onLoginSuccess={handleLoginSuccess}
+          registeredUsers={registeredUsers}
+          onRegisterUser={handleRegisterUser}
+        />
+      </>
     );
   }
 
   return (
     <div className="min-h-screen bg-slate-100/70 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-16 font-sans flex flex-col justify-between transition-colors duration-200">
+      {showSplash && (
+        <SplashScreen
+          isDarkMode={isDarkMode}
+          onFinished={() => setShowSplash(false)}
+        />
+      )}
       <div>
         {/* Navigation Bar */}
         <Navbar
@@ -478,6 +499,7 @@ export default function App() {
           onOpenPremium={() => setIsPremiumModalOpen(true)}
           onOpenVerification={() => setIsVerificationModalOpen(true)}
           onOpenContact={() => setIsContactModalOpen(true)}
+          onOpenPwaInstall={() => setIsPwaModalOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -601,6 +623,7 @@ export default function App() {
               onUpdateProfile={handleUpdateProfile}
               onLogout={handleLogout}
               likesReceivedCount={likesSent.length}
+              onOpenPwaInstall={() => setIsPwaModalOpen(true)}
             />
           )}
 
@@ -730,6 +753,13 @@ export default function App() {
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
+      />
+
+      {/* ===== PWA INSTALLATION BANNER & MODAL ===== */}
+      <PwaInstallBanner onOpenInstallModal={() => setIsPwaModalOpen(true)} />
+      <PwaInstallModal
+        isOpen={isPwaModalOpen}
+        onClose={() => setIsPwaModalOpen(false)}
       />
 
       {/* ===== TOAST NOTIFICATION POPUP ===== */}

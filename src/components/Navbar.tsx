@@ -28,10 +28,14 @@ import {
   Store,
   ShoppingBag,
   Mail,
+  MoreHorizontal,
+  Smartphone,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
 import { LanguageSwitcher } from './LanguageSwitcher';
+import { NisfyLogo } from './NisfyLogo';
+import { checkIsAdmin } from '../utils/adsManager';
 
 interface NavbarProps {
   currentUser: UserProfile;
@@ -54,6 +58,7 @@ interface NavbarProps {
   onOpenPremium?: () => void;
   onOpenVerification?: () => void;
   onOpenContact?: () => void;
+  onOpenPwaInstall?: () => void;
 }
 
 export function Navbar({
@@ -77,18 +82,25 @@ export function Navbar({
   onOpenPremium,
   onOpenVerification,
   onOpenContact,
+  onOpenPwaInstall,
 }: NavbarProps) {
   const { t, isArabic } = useLanguage();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showExplorerMenu, setShowExplorerMenu] = useState(false);
   const [isListening, setIsListening] = useState(false);
-  const [showMobileSearch, setShowMobileSearch] = useState(false);
-  const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const [isSearchExpanded, setIsSearchExpanded] = useState(false);
 
-  // Close user dropdown on outside click
+  const userMenuRef = useRef<HTMLDivElement | null>(null);
+  const explorerMenuRef = useRef<HTMLDivElement | null>(null);
+
+  // Close menus on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (userMenuRef.current && !userMenuRef.current.contains(event.target as Node)) {
         setShowUserMenu(false);
+      }
+      if (explorerMenuRef.current && !explorerMenuRef.current.contains(event.target as Node)) {
+        setShowExplorerMenu(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -127,514 +139,420 @@ export function Navbar({
     }
   };
 
+  const isMasterUser = checkIsAdmin(currentUser?.email);
+  const isSecondaryActive = ['shop', 'marketplace', 'customs', 'chef_nadjet', 'admin', 'map'].includes(activeTab);
+
   return (
     <>
-    <header className="bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200/90 dark:border-slate-800 sticky top-0 z-40 shadow-xs transition-colors duration-200">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
-        {/* Brand Logo */}
+    <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 sticky top-0 z-40 transition-all duration-300">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-3">
+        {/* Brand Wordmark (Instagram style: clean typographic brand, logo hidden once window is open) */}
         <div
           onClick={() => onSelectTab('discover')}
-          className="flex items-center gap-2 sm:gap-2.5 cursor-pointer select-none group shrink-0"
+          className="flex items-center gap-2 cursor-pointer select-none group shrink-0"
         >
-          <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-2xl bg-gradient-to-tr from-rose-600 to-rose-500 flex items-center justify-center text-white shadow-md shadow-rose-600/25 group-hover:scale-105 transition-transform">
-            <Heart className="w-5 h-5 fill-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-lg sm:text-xl font-black tracking-tight text-slate-900 dark:text-white">
-                {t.appName}
-              </span>
-              <span className="hidden xl:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-100 dark:bg-emerald-950/70 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800">
-                {t.wilayasBadge}
-              </span>
-            </div>
-            <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium hidden md:block">
-              {t.appSubtitle}
-            </p>
+          <div className="flex items-center gap-2">
+            <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-100 dark:to-white bg-clip-text text-transparent group-hover:opacity-90 transition-opacity font-sans">
+              Nisfy
+            </span>
+            <span className="text-lg sm:text-xl font-bold text-[#FF3823] font-serif">
+              نصفي
+            </span>
+            <span className="hidden xl:inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+              {t.wilayasBadge}
+            </span>
           </div>
         </div>
 
-        {/* Persistent Global Search Bar (Desktop & Tablet) */}
-        <div className="hidden md:flex items-center flex-1 max-w-xs lg:max-w-sm relative">
-          <Search className="w-4 h-4 text-slate-400 absolute left-3 pointer-events-none" />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => {
-              onSearchChange?.(e.target.value);
-              if (activeTab !== 'discover') onSelectTab('discover');
-            }}
-            placeholder={isArabic ? 'بحث بالاسم، الولاية، المهنة...' : 'Recherche par nom, wilaya, métier...'}
-            className="w-full pl-9 pr-8 py-1.5 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200/80 dark:border-slate-700 text-xs font-semibold text-slate-800 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-rose-500/30 focus:bg-white dark:focus:bg-slate-800/90 transition-all"
-          />
-          {searchQuery ? (
-            <button
-              onClick={() => onSearchChange?.('')}
-              className="absolute right-7 p-1 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-            >
-              <X className="w-3.5 h-3.5" />
-            </button>
-          ) : null}
-          <button
-            onClick={handleVoiceSearch}
-            className={`absolute right-2 p-1 rounded-lg transition-colors ${
-              isListening ? 'text-rose-600 animate-pulse bg-rose-50 dark:bg-rose-950/50' : 'text-slate-400 hover:text-rose-500'
-            }`}
-            title="Recherche vocale"
-          >
-            {isListening ? <MicOff className="w-3.5 h-3.5" /> : <Mic className="w-3.5 h-3.5" />}
-          </button>
-        </div>
-
-        {/* Navigation Tabs (Desktop & Tablet) - hidden on small mobile, visible sm+ */}
-        <nav className="hidden sm:flex flex-1 min-w-0 items-center gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-1">
-          {/* Discover */}
+        {/* Primary Streamlined Navigation (Desktop & Tablet) */}
+        <nav className="hidden sm:flex items-center gap-1 bg-slate-100/70 dark:bg-slate-800/70 p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-md">
+          {/* 1. Découvrir */}
           <button
             onClick={() => onSelectTab('discover')}
-            className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'discover'
-                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Compass className="w-4 h-4 text-rose-500" />
+            <Compass className={`w-3.5 h-3.5 ${activeTab === 'discover' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
             <span>{t.tabDiscover}</span>
           </button>
 
-          {/* Boutique E-Commerce (Nisfy Shop) */}
-          <button
-            onClick={() => onSelectTab('shop')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'shop'
-                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
-            }`}
-            title="Boutique & Trousseau Mariage (E-Commerce)"
-          >
-            <ShoppingBag className="w-4 h-4 text-emerald-600" />
-            <span>{isArabic ? 'متجر الأعراس' : 'Boutique'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'shop' ? 'bg-emerald-600 text-white' : 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300'}`}>
-              SHOP
-            </span>
-          </button>
-
-          {/* Wedding Marketplace (Prestataires & Salles) */}
-          <button
-            onClick={() => onSelectTab('marketplace')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'marketplace'
-                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
-            }`}
-            title="Prestataires & Salles des Fêtes"
-          >
-            <Store className="w-4 h-4 text-amber-600" />
-            <span>{isArabic ? 'سوق الأعراس' : 'Marketplace'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'marketplace' ? 'bg-amber-600 text-white' : 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300'}`}>
-              DZ
-            </span>
-          </button>
-
-          {/* Social Feed (Reels 69 Wilayas) */}
+          {/* 2. Reels DZ */}
           <button
             onClick={() => onSelectTab('feed')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'feed'
-                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Film className="w-4 h-4 text-rose-500" />
-            <span className="hidden md:inline">{isArabic ? 'خلاصة الفيديوهات' : 'Reels'}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'feed' ? 'bg-rose-600 text-white' : 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300'}`}>
-              DZ
-            </span>
+            <Film className={`w-3.5 h-3.5 ${activeTab === 'feed' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{isArabic ? 'ريلز' : 'Reels'}</span>
           </button>
 
-          {/* Live Streaming Tab */}
-          <button
-            onClick={() => onSelectTab('live')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'live'
-                ? 'bg-rose-600 text-white shadow-md shadow-rose-600/20'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
-            }`}
-          >
-            <div className="relative">
-              <Radio className={`w-4 h-4 ${activeTab === 'live' ? 'text-white animate-pulse' : 'text-rose-600 animate-pulse'}`} />
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-rose-500 animate-ping" />
-            </div>
-            <span className="hidden md:inline">{t.tabLive}</span>
-            <span className={`px-1.5 py-0.2 rounded-full text-[9px] font-black ${activeTab === 'live' ? 'bg-white text-rose-600' : 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300'}`}>
-              LIVE
-            </span>
-          </button>
-
-          {/* Matches */}
+          {/* 3. Matchs */}
           <button
             onClick={() => onSelectTab('matches')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'matches'
-                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+                ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-amber-500" />
-            <span className="hidden md:inline">{t.tabMatches}</span>
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>{t.tabMatches}</span>
             {matchesCount > 0 && (
-              <span className="px-1.5 py-0.2 bg-amber-500 text-white rounded-full text-[10px] font-extrabold">
+              <span className="px-1.5 py-0.2 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-full text-[9px] font-extrabold shadow-xs shadow-orange-500/30">
                 {matchesCount}
               </span>
             )}
           </button>
 
-          {/* Private Chat */}
+          {/* 4. Chat */}
           <button
             onClick={() => onSelectTab('chat')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'chat'
-                ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-300 border border-rose-200 dark:border-rose-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <MessageCircle className="w-4 h-4 text-rose-500" />
-            <span className="hidden md:inline">{t.tabChat}</span>
+            <MessageCircle className={`w-3.5 h-3.5 ${activeTab === 'chat' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{t.tabChat}</span>
             {unreadCount > 0 && (
-              <span className="px-1.5 py-0.2 bg-rose-600 text-white rounded-full text-[10px] font-extrabold animate-pulse">
+              <span className="px-1.5 py-0.2 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-full text-[9px] font-extrabold animate-pulse shadow-xs shadow-orange-500/30">
                 {unreadCount}
               </span>
             )}
           </button>
 
-          {/* Public Lounge */}
+          {/* 5. Lounge */}
           <button
             onClick={() => onSelectTab('lounge')}
-            className={`px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'lounge'
-                ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Users className="w-4 h-4 text-emerald-600" />
-            <span className="hidden lg:inline">{t.tabLounge}</span>
+            <Users className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="hidden md:inline">{t.tabLounge}</span>
           </button>
 
-          {/* Customs Guide (Coutumes 69 Wilayas) */}
-          <button
-            onClick={() => onSelectTab('customs')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'customs'
-                ? 'bg-emerald-700 text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
-            }`}
-            title="Guide des Coutumes & Mariage des 69 Wilayas"
-          >
-            <BookOpen className={`w-4 h-4 ${activeTab === 'customs' ? 'text-white' : 'text-emerald-600'}`} />
-            <span className="hidden lg:inline">{isArabic ? 'تقاليد 69 ولاية' : 'Coutumes'}</span>
-          </button>
-
-          {/* Chef Nadjet Pâtisserie & Mariage Tab */}
-          <button
-            onClick={() => onSelectTab('chef_nadjet')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'chef_nadjet'
-                ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-900/60 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
-            }`}
-            title="Espace Chef Nadjet - Gâteaux & Recettes Mariage"
-          >
-            <Cake className="w-4 h-4 text-amber-600" />
-            <span className="hidden lg:inline">{isArabic ? 'الشيف نجاة' : 'Chef Nadjet'}</span>
-            <span className="px-1.5 py-0.2 rounded-full text-[9px] font-black bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300">
-              👑
-            </span>
-          </button>
-
-          {/* Admin Annonceurs & Campagnes Pub (Direct Access) */}
-          <button
-            onClick={() => onSelectTab('admin')}
-            className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-              activeTab === 'admin'
-                ? 'bg-slate-900 dark:bg-slate-100 text-amber-300 dark:text-slate-900 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
-            }`}
-            title="Gestion des Campagnes, Annonces & Contrats Publicitaires"
-          >
-            <ShieldCheck className="w-4 h-4 text-amber-500" />
-            <span className="inline">{isArabic ? 'إدارة الإعلانات' : 'Campagnes'}</span>
-            <span className="px-1.5 py-0.2 rounded-full bg-amber-400/20 dark:bg-amber-400/30 text-amber-700 dark:text-amber-400 text-[9px] font-black">
-              PRO
-            </span>
-          </button>
-
-          {/* World & Regional Traffic Map */}
-          {isMapEnabled ? (
+          {/* Admin Direct Button (When Super Admin or activeTab === 'admin') */}
+          {(isMasterUser || activeTab === 'admin') && (
             <button
-              onClick={() => onSelectTab('map')}
-              className={`relative px-2.5 sm:px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 cursor-pointer ${
-                activeTab === 'map'
-                  ? 'bg-slate-900 dark:bg-slate-800 text-rose-400 border border-rose-500/50 shadow-xs'
-                  : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-slate-800/70'
+              onClick={() => onSelectTab('admin')}
+              className={`px-3 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'admin'
+                  ? 'bg-gradient-to-r from-amber-500 to-[#FF3823] text-white shadow-xs'
+                  : 'bg-amber-500/15 text-amber-800 dark:text-amber-300 hover:bg-amber-500/25 border border-amber-500/30'
               }`}
-              title={t.mapTitle}
+              title="Espace Administrateur (Gestion des publicités, contrats et paiements)"
             >
-              <div className="relative">
-                <Globe className="w-4 h-4 text-rose-500" />
-                <span className="absolute -top-0.5 -right-0.5 w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping" />
-              </div>
-              <span className="hidden lg:inline">{t.tabMap}</span>
-            </button>
-          ) : (
-            <button
-              onClick={() => onToggleMapEnabled(true)}
-              className="px-2 sm:px-2.5 py-1.5 rounded-2xl text-[11px] font-bold text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50/70 dark:hover:bg-slate-800 border border-dashed border-slate-300 dark:border-slate-700 transition-all flex items-center gap-1 shrink-0 cursor-pointer"
-              title={t.mapOptionHint}
-            >
-              <Globe className="w-3.5 h-3.5 text-slate-400" />
-              <span className="hidden lg:inline">{t.activateMapBtn}</span>
-              <span className="lg:hidden">+ 🗺️</span>
+              <ShieldCheck className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+              <span>{isArabic ? '👑 الإدارة' : '👑 Admin Pubs'}</span>
             </button>
           )}
+
+          {/* 6. Fluid "Explorer" Menu (Replaces 6 separate buttons) */}
+          <div className="relative" ref={explorerMenuRef}>
+            <button
+              onClick={() => setShowExplorerMenu(!showExplorerMenu)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                isSecondaryActive || showExplorerMenu
+                  ? 'bg-white dark:bg-slate-900 text-slate-900 dark:text-white shadow-xs'
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              <span>{isArabic ? 'المزيد' : 'Plus'}</span>
+              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${showExplorerMenu ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showExplorerMenu && (
+              <div className="absolute right-0 mt-2 w-56 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-1.5 z-50 animate-in fade-in zoom-in-95">
+                <button
+                  onClick={() => { onSelectTab('shop'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'shop' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <ShoppingBag className="w-4 h-4 text-emerald-600" />
+                  <span>{isArabic ? 'متجر الأعراس (E-Commerce)' : 'Boutique Mariage DZ'}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('marketplace'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'marketplace' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Store className="w-4 h-4 text-amber-600" />
+                  <span>{isArabic ? 'سوق وقاعات الأعراس' : 'Prestataires & Salles'}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('customs'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'customs' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <BookOpen className="w-4 h-4 text-emerald-600" />
+                  <span>{isArabic ? 'دليل عادات 69 ولاية' : 'Coutumes 69 Wilayas'}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('chef_nadjet'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'chef_nadjet' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Cake className="w-4 h-4 text-amber-600" />
+                  <span>{isArabic ? 'الشيف نجاة (حلويات الأعراس)' : 'Chef Nadjet (Recettes)'}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('live'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'live' ? 'bg-orange-50 dark:bg-orange-950/60 text-[#FF3823]' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Radio className="w-4 h-4 text-[#FF3823] animate-pulse" />
+                  <span>{t.tabLive}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('map'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'map' ? 'bg-slate-100 dark:bg-slate-800 text-[#FF3823]' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Globe className="w-4 h-4 text-[#38BDF8]" />
+                  <span>{t.tabMap}</span>
+                </button>
+
+                {onOpenPwaInstall && (
+                  <button
+                    onClick={() => { setShowExplorerMenu(false); onOpenPwaInstall(); }}
+                    className="w-full px-3 py-2 text-left text-xs font-bold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer bg-orange-50/70 dark:bg-orange-950/40 text-[#FF3823] hover:bg-orange-100/80 dark:hover:bg-orange-950/60 border border-orange-200/60 dark:border-orange-900/40"
+                  >
+                    <Smartphone className="w-4 h-4 text-[#FF3823] shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span className="truncate">{isArabic ? '📱 تثبيت التطبيق على الهاتف' : '📱 Installer l’App Mobile (PWA)'}</span>
+                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                        {isArabic ? 'سريع • تنبيهات مباشرة • بدون متجر' : 'Rapide • Direct sur l’écran'}
+                      </span>
+                    </div>
+                  </button>
+                )}
+
+                <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+
+                <button
+                  onClick={() => { onSelectTab('admin'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-bold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'admin'
+                      ? 'bg-gradient-to-r from-amber-500 to-[#FF3823] text-white'
+                      : isMasterUser
+                      ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 hover:bg-amber-500/25 border border-amber-500/30'
+                      : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="truncate">{isArabic ? '👑 إدارة الإعلانات والمدفوعات' : '👑 Pubs & Paiements (Admin)'}</span>
+                    {isMasterUser && (
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-normal">Super Admin actif</span>
+                    )}
+                  </div>
+                </button>
+              </div>
+            )}
+          </div>
         </nav>
 
-        {/* User Profile & Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {/* Sleek Compact Language Switcher Toggle */}
+        {/* Right Side: Fluid Search & Unified User Action Menu */}
+        <div className="flex items-center gap-2">
+          {/* Fluid Compact Search */}
+          <div className="relative flex items-center">
+            {isSearchExpanded ? (
+              <div className="flex items-center bg-slate-100 dark:bg-slate-800 rounded-full px-3 py-1 border border-slate-200 dark:border-slate-700 animate-in fade-in slide-in-from-right-4 duration-200">
+                <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+                <input
+                  type="text"
+                  autoFocus
+                  value={searchQuery}
+                  onChange={(e) => {
+                    onSearchChange?.(e.target.value);
+                    if (activeTab !== 'discover') onSelectTab('discover');
+                  }}
+                  placeholder={isArabic ? 'بحث...' : 'Recherche...'}
+                  className="w-32 sm:w-44 px-2 py-0.5 bg-transparent text-xs text-slate-800 dark:text-white focus:outline-none"
+                />
+                {searchQuery && (
+                  <button onClick={() => onSearchChange?.('')} className="p-0.5 text-slate-400 hover:text-slate-600">
+                    <X className="w-3 h-3" />
+                  </button>
+                )}
+                <button
+                  onClick={() => setIsSearchExpanded(false)}
+                  className="ml-1 text-[11px] font-bold text-slate-400 hover:text-slate-700 dark:hover:text-slate-200"
+                >
+                  ✕
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={() => setIsSearchExpanded(true)}
+                title="Rechercher"
+                className="w-8.5 h-8.5 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+              >
+                <Search className="w-4 h-4" />
+              </button>
+            )}
+          </div>
+
+          {/* Minimal Language Toggle */}
           <LanguageSwitcher size="sm" variant="toggle" />
 
-          {/* Dark Mode Toggle */}
-          {onToggleDarkMode && (
-            <button
-              onClick={onToggleDarkMode}
-              className="p-2 text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
-              title={isDarkMode ? 'Mode Clair' : 'Mode Sombre'}
-            >
-              {isDarkMode ? (
-                <Sun className="w-4 h-4 text-amber-400" />
-              ) : (
-                <Moon className="w-4 h-4 text-indigo-500" />
-              )}
-            </button>
-          )}
-
-          {/* Mute Audio Toggle */}
-          <button
-            onClick={onToggleMute}
-            className="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl transition-colors cursor-pointer"
-            title={isMuted ? t.muteOn : t.muteOff}
-          >
-            {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-rose-500" />}
-          </button>
-
-          {/* VIP Upgrade Button */}
-          {onOpenPremium && (
-            <button
-              onClick={onOpenPremium}
-              className="hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-600 hover:from-amber-600 hover:to-rose-700 text-white text-xs font-black shadow-xs transition-all hover:scale-105 cursor-pointer"
-            >
-              <Crown className="w-3.5 h-3.5 text-amber-200" />
-              <span>VIP</span>
-            </button>
-          )}
-
-          {/* User Button with Rich Dropdown Menu */}
+          {/* Unified Profile & Settings Menu (Replaces all scattered buttons) */}
           <div className="relative" ref={userMenuRef}>
             <button
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className={`p-1 pl-2 pr-2.5 rounded-2xl border flex items-center gap-1.5 transition-all cursor-pointer ${
-                activeTab === 'profile' || showUserMenu
-                  ? 'border-rose-300 bg-rose-50/80 dark:border-rose-900/80 dark:bg-rose-950/50 ring-2 ring-rose-200 dark:ring-rose-900/40'
-                  : 'border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/80 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
+              className="flex items-center gap-1.5 p-1 pl-1.5 pr-2 rounded-full bg-slate-100/80 dark:bg-slate-800/80 hover:bg-slate-200/80 dark:hover:bg-slate-700/80 border border-slate-200/60 dark:border-slate-700/60 transition-all cursor-pointer group"
             >
-              <div className="relative">
-                <img
-                  src={currentUser.avatar}
-                  alt={currentUser.pseudo}
-                  referrerPolicy="no-referrer"
-                  className="w-7 h-7 rounded-full object-cover border border-slate-200 dark:border-slate-700"
-                />
-                <span className="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-emerald-500 ring-1 ring-white dark:ring-slate-900" />
-              </div>
-              <span className="text-xs font-extrabold text-slate-800 dark:text-slate-200 hidden md:block max-w-[85px] truncate">
-                {currentUser.pseudo}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
+              <img
+                src={currentUser.avatar}
+                alt={currentUser.pseudo}
+                referrerPolicy="no-referrer"
+                className="w-6.5 h-6.5 rounded-full object-cover"
+              />
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${showUserMenu ? 'rotate-180' : ''}`} />
             </button>
 
             {/* Dropdown Menu */}
             {showUserMenu && (
-              <div className="absolute right-0 mt-2 w-64 bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-200 dark:border-slate-800 py-1.5 z-50 animate-in fade-in slide-in-from-top-2">
-                <div className="px-3.5 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div className="absolute right-0 mt-2 w-64 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-2 z-50 animate-in fade-in zoom-in-95">
+                {/* User Info Header */}
+                <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between mb-1">
                   <div>
                     <p className="text-xs font-black text-slate-900 dark:text-white truncate">{currentUser.pseudo}</p>
                     <p className="text-[11px] text-slate-400 font-medium truncate">{currentUser.city}</p>
                   </div>
-                  {currentUser.verified ? (
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-black border border-emerald-200 dark:border-emerald-800">
+                  {currentUser.verified && (
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 text-[10px] font-bold">
                       ✓ DZ69
                     </span>
-                  ) : null}
+                  )}
                 </div>
 
-                {onOpenPremium && (
+                {/* Quick Preferences: Theme & Sound (Integrated inside menu) */}
+                <div className="grid grid-cols-2 gap-1 px-1 py-1 mb-1 bg-slate-50 dark:bg-slate-800/60 rounded-xl">
+                  {onToggleDarkMode && (
+                    <button
+                      onClick={onToggleDarkMode}
+                      className="flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer"
+                    >
+                      {isDarkMode ? <Sun className="w-3.5 h-3.5 text-amber-400" /> : <Moon className="w-3.5 h-3.5 text-indigo-500" />}
+                      <span>{isDarkMode ? 'Clair' : 'Sombre'}</span>
+                    </button>
+                  )}
                   <button
-                    onClick={() => {
-                      onOpenPremium();
-                      setShowUserMenu(false);
-                    }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-black bg-gradient-to-r from-amber-50 to-rose-50 dark:from-amber-950/40 dark:to-rose-950/40 hover:from-amber-100 hover:to-rose-100 dark:hover:from-amber-950/60 dark:hover:to-rose-950/60 text-rose-700 dark:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    onClick={onToggleMute}
+                    className="flex items-center justify-center gap-1.5 py-1.5 text-xs font-semibold text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white rounded-lg hover:bg-white dark:hover:bg-slate-700 transition-colors cursor-pointer"
                   >
-                    <Crown className="w-4 h-4 text-amber-500" />
-                    <span>{isArabic ? 'باقات VIP واشتراكات الذهب 👑' : 'Abonnements Nisfy VIP & Gold 👑'}</span>
+                    {isMuted ? <VolumeX className="w-3.5 h-3.5 text-slate-400" /> : <Volume2 className="w-3.5 h-3.5 text-[#FF3823]" />}
+                    <span>{isMuted ? 'Muet' : 'Sons'}</span>
                   </button>
-                )}
+                </div>
 
-                {onOpenVerification && (
-                  <button
-                    onClick={() => {
-                      onOpenVerification();
-                      setShowUserMenu(false);
-                    }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 hover:text-emerald-700 dark:hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
-                  >
-                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                    <span>{isArabic ? 'توثيق الحساب (Selfie DZ69)' : 'Vérification Selfie & CNI 🇩🇿'}</span>
-                  </button>
-                )}
-
+                {/* Main Menu Links */}
                 <button
-                  onClick={() => {
-                    onSelectTab('profile');
-                    setShowUserMenu(false);
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
+                  onClick={() => { onSelectTab('profile'); setShowUserMenu(false); }}
+                  className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
                 >
                   <User className="w-4 h-4 text-slate-400" />
                   <span>{isArabic ? 'الملف الشخصي' : 'Mon Profil'}</span>
                 </button>
 
-                <button
-                  onClick={() => {
-                    onSelectTab('profile');
-                    setShowUserMenu(false);
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Sliders className="w-4 h-4 text-slate-400" />
-                  <span>{isArabic ? 'معايير الزواج (Zawaj)' : 'Mes Critères Zawaj'}</span>
-                </button>
-
-                {onOpenStories && (
+                {onOpenPremium && (
                   <button
-                    onClick={() => {
-                      onOpenStories();
-                      setShowUserMenu(false);
-                    }}
-                    className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    onClick={() => { onOpenPremium(); setShowUserMenu(false); }}
+                    className="w-full px-3 py-2 text-left text-xs font-semibold text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
                   >
-                    <Film className="w-4 h-4 text-rose-500" />
-                    <span>{isArabic ? 'قصص وستوري NISFY' : 'NISFY Stories Vidéos'}</span>
+                    <Crown className="w-4 h-4 text-amber-500" />
+                    <span>{isArabic ? 'باقات VIP واشتراكات الذهب' : 'Abonnements VIP & Gold'}</span>
+                  </button>
+                )}
+
+                {onOpenVerification && (
+                  <button
+                    onClick={() => { onOpenVerification(); setShowUserMenu(false); }}
+                    className="w-full px-3 py-2 text-left text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <span>{isArabic ? 'توثيق الحساب (Selfie)' : 'Vérification Profil 🇩🇿'}</span>
                   </button>
                 )}
 
                 <button
                   onClick={() => {
-                    onSelectTab('matches');
                     setShowUserMenu(false);
+                    if (onOpenContact) onOpenContact();
                   }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-200 hover:bg-rose-50 dark:hover:bg-rose-950/40 hover:text-rose-600 dark:hover:text-rose-300 flex items-center gap-2 transition-colors cursor-pointer"
+                  className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
                 >
-                  <Flower2 className="w-4 h-4 text-amber-500" />
-                  <span>{isArabic ? 'الياسمين والاشتراكات' : 'Mes Jasmins & Matchs'}</span>
+                  <Mail className="w-4 h-4 text-[#38BDF8]" />
+                  <span>{isArabic ? 'اتصل بالإدارة' : 'Contact & Support'}</span>
                 </button>
 
-                <button
-                  onClick={() => {
-                    onSelectTab('customs');
-                    setShowUserMenu(false);
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <BookOpen className="w-4 h-4 text-emerald-600" />
-                  <span>{isArabic ? 'دليل تقاليد وتراث 69 ولاية' : 'Guide Coutumes 69 Wilayas'}</span>
-                </button>
+                {onOpenPwaInstall && (
+                  <button
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      onOpenPwaInstall();
+                    }}
+                    className="w-full px-3 py-2 text-left text-xs font-bold text-[#FF3823] bg-orange-50/60 dark:bg-orange-950/30 hover:bg-orange-100 dark:hover:bg-orange-950/60 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <Smartphone className="w-4 h-4 text-[#FF3823]" />
+                    <span>{isArabic ? '📱 تثبيت التطبيق (PWA)' : '📱 Installer l’App Mobile'}</span>
+                  </button>
+                )}
 
-                <button
-                  onClick={() => {
-                    onSelectTab('shop');
-                    setShowUserMenu(false);
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-emerald-800 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <ShoppingBag className="w-4 h-4 text-emerald-600" />
-                  <span>{isArabic ? 'متجر الأعراس (E-Commerce)' : 'Boutique & Trousseau Nisfy'}</span>
-                </button>
+                <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
 
+                {/* Direct Admin Access inside User Menu */}
                 <button
                   onClick={() => {
-                    onSelectTab('marketplace');
                     setShowUserMenu(false);
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-amber-900 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40 flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Store className="w-4 h-4 text-amber-600" />
-                  <span>{isArabic ? 'سوق وقاعات الأعراس (Marketplace)' : 'Prestataires & Salles Mariage'}</span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    onSelectTab('chef_nadjet');
-                    setShowUserMenu(false);
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-amber-800 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/40 flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Cake className="w-4 h-4 text-amber-600" />
-                  <span>{isArabic ? 'صفحة الشيف نجاة (حلويات الأعراس)' : 'Chef Nadjet (Recettes & Mariage)'}</span>
-                </button>
-
-                {/* Espace Administrateur Annonceurs */}
-                <button
-                  onClick={() => {
                     onSelectTab('admin');
-                    setShowUserMenu(false);
                   }}
-                  className="w-full px-3.5 py-2.5 text-left text-xs font-black bg-slate-900 dark:bg-slate-800 hover:bg-slate-950 dark:hover:bg-slate-700 text-amber-300 flex items-center justify-between transition-all cursor-pointer rounded-xl my-1 shadow-xs"
+                  className={`w-full px-3 py-2 text-left text-xs font-bold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'admin'
+                      ? 'bg-gradient-to-r from-amber-500 to-[#FF3823] text-white'
+                      : isMasterUser
+                      ? 'bg-amber-500/15 text-amber-800 dark:text-amber-300 hover:bg-amber-500/25 border border-amber-500/30'
+                      : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
                 >
-                  <div className="flex items-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-amber-400" />
-                    <span>{isArabic ? 'لوحة تحكم المعلنين (Admin)' : 'Admin Annonceurs & Pubs'}</span>
+                  <ShieldCheck className="w-4 h-4 text-amber-500 shrink-0" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="truncate">{isArabic ? '👑 إدارة الإعلانات والمدفوعات' : '👑 Espace Pubs & Paiements'}</span>
+                    {isMasterUser && (
+                      <span className="text-[10px] text-amber-600 dark:text-amber-400 font-normal">Super Admin actif</span>
+                    )}
                   </div>
-                  <span className="px-1.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 text-[9px] font-mono font-bold">
-                    PRO
-                  </span>
-                </button>
-
-                <button
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    if (onOpenContact) {
-                      onOpenContact();
-                    } else {
-                      window.location.href = 'mailto:contact@nisfy.app?subject=[NISFY]%20Demande%20ou%20Assistance';
-                    }
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-rose-700 dark:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 transition-colors cursor-pointer"
-                >
-                  <Mail className="w-4 h-4 text-rose-500" />
-                  <span>{isArabic ? 'الدعم الفني والإدارة الرسمية' : 'Contact & Support Nisfy'}</span>
                 </button>
 
                 <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
 
                 <button
-                  onClick={() => {
-                    setShowUserMenu(false);
-                    onLogout();
-                  }}
-                  className="w-full px-3.5 py-2 text-left text-xs font-bold text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 flex items-center gap-2 transition-colors cursor-pointer"
+                  onClick={() => { setShowUserMenu(false); onLogout(); }}
+                  className="w-full px-3 py-2 text-left text-xs font-semibold text-[#FF3823] hover:bg-orange-50 dark:hover:bg-orange-950/40 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
                 >
-                  <LogOut className="w-4 h-4 text-rose-500" />
+                  <LogOut className="w-4 h-4 text-[#FF3823]" />
                   <span>{t.logout}</span>
                 </button>
               </div>
@@ -644,102 +562,87 @@ export function Navbar({
       </div>
     </header>
 
-    {/* Mobile Fixed Bottom Navigation Bar (Visible only on mobile devices < sm) */}
+    {/* Mobile Fixed Bottom Navigation Bar - Super clean 4-pill layout */}
     <nav
-      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-lg border-t border-slate-200 dark:border-slate-800 px-2 py-1.5 flex items-center justify-around shadow-lg transition-colors duration-200"
+      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/70 dark:border-slate-800/70 px-3 py-2 flex items-center justify-around shadow-lg transition-colors duration-200"
       dir={isArabic ? 'rtl' : 'ltr'}
     >
       {/* 1. Découvrir */}
       <button
         type="button"
         onClick={() => onSelectTab('discover')}
-        className={`flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+        className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
           activeTab === 'discover'
-            ? 'text-rose-600 dark:text-rose-400 font-black'
-            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
+            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
+            : 'text-slate-500 dark:text-slate-400'
         }`}
       >
-        <div className={`p-1 rounded-xl transition-colors ${activeTab === 'discover' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : ''}`}>
-          <Compass className="w-5 h-5" />
-        </div>
-        <span className="text-[10px] tracking-tight mt-0.5">{t.tabDiscover}</span>
+        <Compass className="w-5 h-5" />
+        <span className="text-[10px] mt-0.5">{t.tabDiscover}</span>
       </button>
 
-      {/* 2. Boutique SHOP */}
-      <button
-        type="button"
-        onClick={() => onSelectTab('shop')}
-        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
-          activeTab === 'shop'
-            ? 'text-emerald-700 dark:text-emerald-400 font-black'
-            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
-        }`}
-      >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'shop' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400' : ''}`}>
-          <ShoppingBag className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-emerald-600 text-white rounded-full text-[8px] font-black">
-            SHOP
-          </span>
-        </div>
-        <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'المتجر' : 'Boutique'}</span>
-      </button>
-
-      {/* 3. Marketplace DZ */}
-      <button
-        type="button"
-        onClick={() => onSelectTab('marketplace')}
-        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
-          activeTab === 'marketplace'
-            ? 'text-amber-700 dark:text-amber-400 font-black'
-            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
-        }`}
-      >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'marketplace' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400' : ''}`}>
-          <Store className="w-5 h-5" />
-          <span className="absolute -top-1 -right-1 px-1 py-0.2 bg-amber-600 text-white rounded-full text-[8px] font-black">
-            DZ
-          </span>
-        </div>
-        <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'السوق' : 'Marché'}</span>
-      </button>
-
-      {/* 4. Social Feed / Live */}
+      {/* 2. Reels DZ */}
       <button
         type="button"
         onClick={() => onSelectTab('feed')}
-        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+        className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
           activeTab === 'feed'
-            ? 'text-rose-600 dark:text-rose-400 font-black'
-            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
+            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
+            : 'text-slate-500 dark:text-slate-400'
         }`}
       >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'feed' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : ''}`}>
-          <Film className="w-5 h-5" />
-        </div>
-        <span className="text-[10px] tracking-tight mt-0.5">{isArabic ? 'ريلز' : 'Reels'}</span>
+        <Film className="w-5 h-5" />
+        <span className="text-[10px] mt-0.5">{isArabic ? 'ريلز' : 'Reels'}</span>
       </button>
 
-      {/* 5. Messages / Chat */}
+      {/* 3. Messages */}
       <button
         type="button"
         onClick={() => onSelectTab('chat')}
-        className={`relative flex flex-col items-center justify-center py-1 px-2 rounded-xl transition-all cursor-pointer ${
+        className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
           activeTab === 'chat'
-            ? 'text-rose-600 dark:text-rose-400 font-black'
-            : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 font-bold'
+            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
+            : 'text-slate-500 dark:text-slate-400'
         }`}
       >
-        <div className={`relative p-1 rounded-xl transition-colors ${activeTab === 'chat' ? 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400' : ''}`}>
-          <MessageCircle className="w-5 h-5" />
-          {unreadCount > 0 && (
-            <span className="absolute -top-1 -right-1.5 px-1 py-0.2 bg-rose-600 text-white rounded-full text-[8px] font-black animate-pulse">
-              {unreadCount}
-            </span>
-          )}
-        </div>
-        <span className="text-[10px] tracking-tight mt-0.5">{t.tabChat}</span>
+        <MessageCircle className="w-5 h-5" />
+        {unreadCount > 0 && (
+          <span className="absolute top-1 right-2 w-2 h-2 bg-[#FF3823] rounded-full animate-ping" />
+        )}
+        <span className="text-[10px] mt-0.5">{t.tabChat}</span>
       </button>
+
+      {/* 4. Profil / Menu */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('profile')}
+        className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
+          activeTab === 'profile'
+            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
+            : 'text-slate-500 dark:text-slate-400'
+        }`}
+      >
+        <User className="w-5 h-5" />
+        <span className="text-[10px] mt-0.5">{isArabic ? 'حسابي' : 'Profil'}</span>
+      </button>
+
+      {/* 5. Admin Pubs & Paiements (When Super Admin or on admin tab) */}
+      {(isMasterUser || activeTab === 'admin') && (
+        <button
+          type="button"
+          onClick={() => onSelectTab('admin')}
+          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
+            activeTab === 'admin'
+              ? 'text-white font-black bg-gradient-to-r from-amber-500 to-[#FF3823] shadow-xs'
+              : 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
+          }`}
+        >
+          <ShieldCheck className="w-5 h-5" />
+          <span className="text-[10px] mt-0.5">{isArabic ? 'الإدارة' : 'Admin'}</span>
+        </button>
+      )}
     </nav>
     </>
   );
 }
+

@@ -261,7 +261,7 @@ export function LiveStreamView({
     <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6">
       {/* If currently in an active Live room (either as Host or Viewer) */}
       {activeSession ? (
-        <div className="relative w-full max-w-5xl mx-auto bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-rose-500/20 grid grid-cols-1 lg:grid-cols-12 min-h-[75vh] max-h-[85vh]">
+        <div className="relative w-full max-w-5xl mx-auto bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border border-orange-500/30 grid grid-cols-1 lg:grid-cols-12 min-h-[75vh] max-h-[85vh]">
           {/* Main Video Stream Frame */}
           <div className="lg:col-span-8 relative bg-black flex items-center justify-center overflow-hidden min-h-[400px]">
             {isHostMode ? (
@@ -277,7 +277,7 @@ export function LiveStreamView({
                 />
               ) : (
                 <div className="flex flex-col items-center justify-center text-center p-6 space-y-3">
-                  <div className="w-24 h-24 rounded-full border-4 border-rose-500/40 p-1">
+                  <div className="w-24 h-24 rounded-full border-4 border-[#FF3823]/40 p-1">
                     <img
                       src={currentUser.avatar}
                       alt={currentUser.pseudo}
@@ -312,10 +312,10 @@ export function LiveStreamView({
                       src={activeSession.hostAvatar}
                       alt={activeSession.hostName}
                       referrerPolicy="no-referrer"
-                      className="w-24 h-24 rounded-full object-cover border-4 border-rose-500/50"
+                      className="w-24 h-24 rounded-full object-cover border-4 border-[#FF3823]/50"
                     />
                     <h3 className="text-white font-bold text-lg">{activeSession.hostName}</h3>
-                    <p className="text-rose-400 text-xs font-semibold">{activeSession.hostCity}</p>
+                    <p className="text-[#38BDF8] text-xs font-semibold">{activeSession.hostCity}</p>
                   </div>
                 )}
               </div>
@@ -328,14 +328,14 @@ export function LiveStreamView({
                   src={isHostMode ? currentUser.avatar : activeSession.hostAvatar}
                   alt="Host Avatar"
                   referrerPolicy="no-referrer"
-                  className="w-8 h-8 rounded-full object-cover border border-rose-500"
+                  className="w-8 h-8 rounded-full object-cover border border-[#FF6B35]"
                 />
                 <div>
                   <div className="flex items-center gap-1.5">
                     <span className="text-white font-bold text-xs sm:text-sm">
                       {isHostMode ? currentUser.pseudo : activeSession.hostName}
                     </span>
-                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-black bg-rose-600 text-white animate-pulse">
+                    <span className="inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-black bg-[#FF3823] text-white animate-pulse">
                       LIVE
                     </span>
                   </div>
@@ -348,7 +348,7 @@ export function LiveStreamView({
               {/* Viewers counter & Timer */}
               <div className="flex items-center gap-2">
                 <div className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-white text-xs font-bold">
-                  <Users className="w-3.5 h-3.5 text-rose-400" />
+                  <Users className="w-3.5 h-3.5 text-[#38BDF8]" />
                   <span>{activeSession.viewersCount + (isHostMode ? 12 : 0)}</span>
                 </div>
                 <div className="hidden sm:flex items-center gap-1 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md border border-white/10 text-slate-300 text-xs font-medium">
@@ -356,7 +356,7 @@ export function LiveStreamView({
                 </div>
                 <button
                   onClick={handleLeaveLive}
-                  className="px-3 py-1 bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold rounded-full transition-colors flex items-center gap-1 cursor-pointer"
+                  className="px-3 py-1 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-xs font-bold rounded-full transition-all flex items-center gap-1 cursor-pointer"
                 >
                   <X className="w-3.5 h-3.5" />
                   <span>{isHostMode ? t.stopLiveBtn : t.closeVideo}</span>
@@ -398,7 +398,7 @@ export function LiveStreamView({
                   className={`p-3 rounded-full backdrop-blur-md border transition-all ${
                     isCameraOn
                       ? 'bg-white/20 border-white/30 text-white hover:bg-white/30'
-                      : 'bg-rose-600 border-rose-500 text-white'
+                      : 'bg-[#FF3823] border-[#FF6B35] text-white shadow-lg shadow-[#FF3823]/40'
                   }`}
                   title={isCameraOn ? t.liveCameraOff : t.liveCameraOn}
                 >
@@ -409,7 +409,7 @@ export function LiveStreamView({
                   className={`p-3 rounded-full backdrop-blur-md border transition-all ${
                     isMicOn
                       ? 'bg-white/20 border-white/30 text-white hover:bg-white/30'
-                      : 'bg-rose-600 border-rose-500 text-white'
+                      : 'bg-[#FF3823] border-[#FF6B35] text-white shadow-lg shadow-[#FF3823]/40'
                   }`}
                   title={isMicOn ? t.liveMicOff : t.liveMicOn}
                 >
@@ -435,12 +435,12 @@ export function LiveStreamView({
             {/* Live Chat Header */}
             <div className="p-3.5 border-b border-white/10 flex items-center justify-between">
               <div className="flex items-center gap-2 text-white font-bold text-sm">
-                <MessageCircle className="w-4 h-4 text-rose-400" />
+                <MessageCircle className="w-4 h-4 text-[#FF6B35]" />
                 <span>{isArabic ? 'شات البث المباشر' : 'Chat en Direct'}</span>
               </div>
               <div className="flex items-center gap-1.5">
-                <span className="text-xs text-rose-400 font-bold flex items-center gap-1">
-                  <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
+                <span className="text-xs text-[#FF6B35] font-bold flex items-center gap-1">
+                  <Heart className="w-3.5 h-3.5 fill-[#FF3823] text-[#FF3823]" />
                   <span>{activeSession.likesCount}</span>
                 </span>
               </div>
@@ -458,7 +458,7 @@ export function LiveStreamView({
                     key={comment.id}
                     className={`p-2 rounded-xl transition-all ${
                       comment.isGift
-                        ? 'bg-gradient-to-r from-rose-950/60 to-pink-950/60 border border-rose-500/30 text-rose-200'
+                        ? 'bg-gradient-to-r from-orange-950/60 to-red-950/60 border border-[#FF3823]/30 text-orange-200'
                         : 'bg-white/5 border border-white/5 text-slate-200'
                     }`}
                   >
@@ -477,7 +477,7 @@ export function LiveStreamView({
                           <span className="text-[9px] text-slate-500">{comment.timestamp}</span>
                         </div>
                         {comment.isGift ? (
-                          <div className="flex items-center gap-1 text-rose-300 font-bold mt-0.5">
+                          <div className="flex items-center gap-1 text-orange-300 font-bold mt-0.5">
                             <span className="text-base">{comment.giftIcon}</span>
                             <span>{comment.content}</span>
                           </div>
@@ -499,7 +499,7 @@ export function LiveStreamView({
                   <button
                     key={gift.id}
                     onClick={() => handleSendGift(gift)}
-                    className="p-2 rounded-xl bg-white/10 hover:bg-rose-600/30 border border-white/10 flex flex-col items-center gap-1 text-center transition-transform hover:scale-105 cursor-pointer"
+                    className="p-2 rounded-xl bg-white/10 hover:bg-[#FF3823]/30 border border-white/10 flex flex-col items-center gap-1 text-center transition-transform hover:scale-105 cursor-pointer"
                   >
                     <span className="text-2xl">{gift.icon}</span>
                     <span className="text-[9px] text-slate-300 font-bold truncate max-w-[50px]">
@@ -518,12 +518,12 @@ export function LiveStreamView({
                   value={commentText}
                   onChange={(e) => setCommentText(e.target.value)}
                   placeholder={t.liveTypeMessage}
-                  className="flex-1 bg-white/10 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                  className="flex-1 bg-white/10 border border-white/10 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-orange-400 focus:border-[#FF3823]"
                 />
                 <button
                   type="submit"
                   disabled={!commentText.trim()}
-                  className="p-2 rounded-xl bg-rose-600 hover:bg-rose-700 disabled:opacity-50 text-white transition-colors cursor-pointer"
+                  className="p-2 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-90 disabled:opacity-50 text-white transition-all cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                 </button>
@@ -536,8 +536,8 @@ export function LiveStreamView({
                   onClick={() => setShowGiftsMenu(!showGiftsMenu)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer ${
                     showGiftsMenu
-                      ? 'bg-rose-600 text-white'
-                      : 'bg-white/10 text-rose-300 hover:bg-white/20'
+                      ? 'bg-[#FF3823] text-white'
+                      : 'bg-white/10 text-orange-300 hover:bg-white/20'
                   }`}
                 >
                   <Gift className="w-3.5 h-3.5" />
@@ -547,7 +547,7 @@ export function LiveStreamView({
                 <button
                   type="button"
                   onClick={() => triggerFloatingHeart('❤️')}
-                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-rose-500 to-pink-600 text-white text-xs font-bold shadow-md hover:scale-105 transition-transform flex items-center gap-1 cursor-pointer"
+                  className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white text-xs font-bold shadow-md hover:scale-105 transition-transform flex items-center gap-1 cursor-pointer"
                 >
                   <Heart className="w-3.5 h-3.5 fill-white" />
                   <span>{t.liveLike}</span>
@@ -560,21 +560,21 @@ export function LiveStreamView({
         /* Main Live Stream Discovery Page */
         <div className="space-y-6">
           {/* Header Banner */}
-          <div className="bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-700 rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
+          <div className="bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] rounded-3xl p-6 sm:p-8 text-white shadow-xl flex flex-col md:flex-row items-center justify-between gap-6 relative overflow-hidden">
             <div className="space-y-2 z-10 text-center md:text-left">
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-xs font-extrabold border border-white/20">
                 <Radio className="w-3.5 h-3.5 text-white animate-pulse" />
                 <span>{isArabic ? 'بث فيديو مباشر • 69 ولاية' : 'Live Vidéo & Rencontres Directes'}</span>
               </div>
               <h2 className="text-2xl sm:text-3xl font-black tracking-tight">{t.liveTitle}</h2>
-              <p className="text-xs sm:text-sm text-rose-100 max-w-xl">{t.liveSubtitle}</p>
+              <p className="text-xs sm:text-sm text-orange-100 max-w-xl">{t.liveSubtitle}</p>
             </div>
 
             <button
               onClick={() => setShowCreateModal(true)}
-              className="z-10 px-6 py-3.5 bg-white text-rose-600 hover:bg-rose-50 rounded-2xl font-black text-sm shadow-xl flex items-center gap-2 transition-all hover:scale-105 cursor-pointer shrink-0"
+              className="z-10 px-6 py-3.5 bg-white text-[#FF3823] hover:bg-orange-50 rounded-2xl font-black text-sm shadow-xl flex items-center gap-2 transition-all hover:scale-105 cursor-pointer shrink-0"
             >
-              <Video className="w-5 h-5 text-rose-600" />
+              <Video className="w-5 h-5 text-[#FF3823]" />
               <span>{t.startLiveBtn}</span>
             </button>
           </div>
@@ -583,9 +583,9 @@ export function LiveStreamView({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <Flame className="w-5 h-5 text-rose-500" />
+                <Flame className="w-5 h-5 text-[#FF6B35]" />
                 <h3 className="text-lg font-black text-slate-900">{t.activeLives}</h3>
-                <span className="px-2 py-0.5 bg-rose-100 text-rose-700 rounded-full text-xs font-extrabold">
+                <span className="px-2 py-0.5 bg-orange-100 text-[#FF3823] rounded-full text-xs font-extrabold">
                   {liveSessions.filter((s) => s.isLive).length}
                 </span>
               </div>
@@ -593,14 +593,14 @@ export function LiveStreamView({
 
             {liveSessions.filter((s) => s.isLive).length === 0 ? (
               <div className="bg-white rounded-3xl border border-slate-200 p-12 text-center space-y-4">
-                <div className="w-16 h-16 rounded-full bg-rose-50 text-rose-500 mx-auto flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-orange-50 text-[#FF3823] mx-auto flex items-center justify-center">
                   <Radio className="w-8 h-8" />
                 </div>
                 <h4 className="text-base font-bold text-slate-800">{t.noLivesActive}</h4>
                 <p className="text-xs text-slate-500 max-w-md mx-auto">{t.noLivesDesc}</p>
                 <button
                   onClick={() => setShowCreateModal(true)}
-                  className="px-5 py-2.5 bg-rose-600 text-white rounded-xl font-bold text-xs hover:bg-rose-700 transition-colors inline-flex items-center gap-2"
+                  className="px-5 py-2.5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-xl font-bold text-xs hover:opacity-95 transition-all inline-flex items-center gap-2 cursor-pointer shadow-md shadow-orange-500/20"
                 >
                   <Plus className="w-4 h-4" />
                   <span>{t.startLiveBtn}</span>
@@ -651,12 +651,12 @@ export function LiveStreamView({
 
                         {/* Live Badge */}
                         <div className="absolute top-3 left-3 flex items-center gap-2">
-                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-rose-600 text-white shadow-lg animate-pulse">
+                          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-black bg-[#FF3823] text-white shadow-lg animate-pulse">
                             <Radio className="w-3 h-3" />
                             <span>LIVE</span>
                           </span>
                           <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold bg-black/60 backdrop-blur-md text-white">
-                            <Users className="w-3 h-3 text-rose-400" />
+                            <Users className="w-3 h-3 text-[#38BDF8]" />
                             <span>{session.viewersCount}</span>
                           </span>
                         </div>
@@ -677,7 +677,7 @@ export function LiveStreamView({
                               src={session.hostAvatar}
                               alt={session.hostName}
                               referrerPolicy="no-referrer"
-                              className="w-8 h-8 rounded-full object-cover border border-rose-400"
+                              className="w-8 h-8 rounded-full object-cover border border-[#FF6B35]"
                             />
                             <div>
                               <h4 className="font-bold text-slate-900 text-sm">{session.hostName}</h4>
@@ -706,7 +706,7 @@ export function LiveStreamView({
                             setActiveSession(session);
                             setIsHostMode(session.hostId === currentUser.id);
                           }}
-                          className="w-full py-2.5 bg-gradient-to-r from-rose-600 to-indigo-600 text-white rounded-xl font-bold text-xs shadow-md hover:opacity-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                          className="w-full py-2.5 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white rounded-xl font-bold text-xs shadow-md shadow-orange-500/20 hover:opacity-95 transition-all flex items-center justify-center gap-1.5 cursor-pointer"
                         >
                           <Play className="w-3.5 h-3.5 fill-white" />
                           <span>{t.joinLiveBtn}</span>
@@ -726,7 +726,7 @@ export function LiveStreamView({
           <div className="bg-white rounded-3xl max-w-lg w-full p-6 shadow-2xl border border-slate-100 space-y-4">
             <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div className="flex items-center gap-2">
-                <Radio className="w-5 h-5 text-rose-600" />
+                <Radio className="w-5 h-5 text-[#FF3823]" />
                 <h3 className="font-black text-slate-900 text-lg">{t.startLiveBtn}</h3>
               </div>
               <button
@@ -752,7 +752,7 @@ export function LiveStreamView({
                       ? 'مثال : دردشة محترمة حول مشروع الزواج والتعارف الجاد...'
                       : 'Ex: Échange et discussion zawaj dans le respect...'
                   }
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:ring-2 focus:ring-rose-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] focus:outline-none"
                 />
               </div>
 
@@ -763,7 +763,7 @@ export function LiveStreamView({
                 <select
                   value={liveTopic}
                   onChange={(e) => setLiveTopic(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:ring-2 focus:ring-rose-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] focus:outline-none"
                 >
                   <option value="Rencontre sérieuse & Mariage">💍 Rencontre sérieuse & Mariage (Zawaj)</option>
                   <option value="Diaspora DZ & Vie à l’étranger">✈️ Diaspora DZ & Vie à l’étranger</option>
@@ -779,7 +779,7 @@ export function LiveStreamView({
                 <select
                   value={liveWilaya}
                   onChange={(e) => setLiveWilaya(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:ring-2 focus:ring-rose-500 focus:outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs text-slate-900 focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] focus:outline-none"
                 >
                   {WILAYAS_69.map((w) => (
                     <option key={w.code} value={`${w.code} - ${w.name}`}>
@@ -789,8 +789,8 @@ export function LiveStreamView({
                 </select>
               </div>
 
-              <div className="bg-rose-50 rounded-2xl p-3 text-[11px] text-rose-800 border border-rose-100 flex items-start gap-2">
-                <ShieldCheck className="w-4 h-4 text-rose-600 shrink-0 mt-0.5" />
+              <div className="bg-orange-50 rounded-2xl p-3 text-[11px] text-orange-950 border border-orange-200/60 flex items-start gap-2">
+                <ShieldCheck className="w-4 h-4 text-[#FF3823] shrink-0 mt-0.5" />
                 <p>
                   {isArabic
                     ? 'البث المباشر مخصص للتعارف المحترم ومشاريع الزواج. يُرجى الالتزام بالأخلاق وحسن المعاملة.'
@@ -808,7 +808,7 @@ export function LiveStreamView({
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white text-xs font-black rounded-xl shadow-lg transition-transform hover:scale-105 cursor-pointer"
+                  className="px-5 py-2.5 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white text-xs font-black rounded-xl shadow-md shadow-orange-500/20 transition-transform hover:scale-105 cursor-pointer"
                 >
                   {t.startLiveBtn}
                 </button>

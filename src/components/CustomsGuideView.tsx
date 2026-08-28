@@ -77,7 +77,7 @@ export const CustomsGuideView: React.FC<CustomsGuideViewProps> = ({
               <button
                 type="button"
                 onClick={onNavigateToMarketplace}
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/20 hover:from-amber-600 hover:to-amber-700 transition"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] text-white font-bold text-sm shadow-lg shadow-orange-500/20 hover:opacity-95 transition cursor-pointer"
               >
                 <Crown className="w-4 h-4" />
                 Trouver un Prestataire (Marketplace)

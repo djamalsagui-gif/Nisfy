@@ -397,12 +397,12 @@ export const YouthShopView: React.FC = () => {
             {/* Cart Trigger */}
             <button
               onClick={() => setIsCartOpen(true)}
-              className="relative flex-1 sm:flex-initial flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white font-extrabold text-sm shadow-lg shadow-amber-500/25 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
+              className="relative flex-1 sm:flex-initial flex items-center justify-center gap-2.5 px-5 py-3.5 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white font-extrabold text-sm shadow-lg shadow-orange-500/25 transition-all transform hover:scale-105 active:scale-95 cursor-pointer"
             >
               <ShoppingBag className="w-5 h-5" />
               <span>{isArabic ? 'السلة' : 'Mon Panier'}</span>
               {totalCartCount > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-white text-rose-600 text-xs font-black animate-bounce shadow-xs">
+                <span className="px-2 py-0.5 rounded-full bg-white text-[#FF3823] text-xs font-black animate-bounce shadow-xs">
                   {totalCartCount}
                 </span>
               )}

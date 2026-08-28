@@ -19,6 +19,7 @@ import {
   Bookmark,
   Megaphone,
   Tag,
+  X,
 } from 'lucide-react';
 import { UserProfile, SearchFilter, ProfileVideo } from '../types';
 import { WILAYAS_69 } from '../data/wilayas';
@@ -199,193 +200,198 @@ export function DiscoverView({
         onAddStory={() => setIsPublishModalOpen(true)}
       />
 
-      {/* 2. Top Controls & Filter Bar */}
-      <div className="bg-white rounded-3xl p-4 sm:p-5 border border-slate-200 shadow-xs space-y-3">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div>
-            <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+      {/* 2. Top Fluid Controls & Filter Bar */}
+      <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-3.5 sm:p-4 border border-slate-200/70 dark:border-slate-800 shadow-xs space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2">
+            <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
               <span>{t.discoverTitle}</span>
-              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-rose-100 text-rose-700">
-                {filteredUsers.length} {t.profilesFound}
-              </span>
             </h2>
-            <p className="text-xs text-slate-500">
-              {t.discoverSubtitle}
-            </p>
+            <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-50 text-[#FF3823] dark:bg-orange-950/50 dark:text-[#FF6B35] border border-orange-200/60 dark:border-orange-900/40">
+              {filteredUsers.length}
+            </span>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            {/* Quick Marriage Filter Toggle Button 💍 */}
-            <button
-              type="button"
-              onClick={() => setOnlyMarriage(!onlyMarriage)}
-              className={`px-3 py-2 rounded-2xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
-                onlyMarriage
-                  ? 'bg-gradient-to-r from-amber-500 via-rose-500 to-pink-600 text-white ring-2 ring-amber-300 scale-102'
-                  : 'bg-gradient-to-r from-amber-50 to-rose-50 text-rose-700 border-2 border-rose-300 hover:border-rose-400'
-              }`}
-            >
-              <span>💍</span>
-              <span>{t.marriageFilterBtn}</span>
-              {onlyMarriage && <span className="text-[10px] bg-white/20 px-1 rounded">✓</span>}
-            </button>
-
-            {/* Quick Saved / Bookmarked Toggle */}
-            {bookmarkedUserIds.length > 0 && (
-              <button
-                type="button"
-                onClick={() => setOnlyBookmarked(!onlyBookmarked)}
-                className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
-                  onlyBookmarked
-                    ? 'bg-amber-500 text-white shadow-amber-500/20'
-                    : 'bg-amber-50 text-amber-800 border border-amber-200 hover:bg-amber-100'
-                }`}
-              >
-                <Bookmark className="w-3.5 h-3.5 fill-current" />
-                <span>Favoris ({bookmarkedUserIds.length})</span>
-              </button>
-            )}
-
-            {/* Quick Video Only Toggle */}
-            <button
-              type="button"
-              onClick={() => setOnlyWithVideo(!onlyWithVideo)}
-              className={`px-3 py-2 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
-                onlyWithVideo
-                  ? 'bg-indigo-600 text-white shadow-indigo-500/20'
-                  : 'bg-indigo-50 text-indigo-700 border border-indigo-200 hover:bg-indigo-100'
-              }`}
-            >
-              <Video className="w-3.5 h-3.5" />
-              <span>{isArabic ? 'فيديوهات' : 'Avec vidéo'}</span>
-              {onlyWithVideo && <span className="text-[10px] bg-white/20 px-1 rounded">✓</span>}
-            </button>
-
-            {/* View Mode Toggle */}
-            <div className="flex items-center bg-slate-100 p-1 rounded-2xl">
+          <div className="flex items-center gap-2">
+            {/* View Mode Toggle (Sleek minimalist icon pill with Red-Orange and Sky Blue) */}
+            <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-full border border-slate-200/60 dark:border-slate-700">
               <button
                 type="button"
                 onClick={() => setViewMode('card')}
-                className={`p-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                title={t.swipeMode}
+                className={`p-1.5 px-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   viewMode === 'card'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 }`}
               >
-                <Layers className="w-3.5 h-3.5 text-rose-500" />
-                <span>{t.swipeMode}</span>
+                <Layers className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline text-[11px]">{t.swipeMode}</span>
               </button>
               <button
                 type="button"
                 onClick={() => setViewMode('grid')}
-                className={`p-1.5 px-3 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                title={t.gridMode}
+                className={`p-1.5 px-2.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
                   viewMode === 'grid'
-                    ? 'bg-white text-slate-900 shadow-xs'
-                    : 'text-slate-500 hover:text-slate-900'
+                    ? 'bg-white dark:bg-slate-900 text-sky-600 dark:text-sky-400 shadow-xs'
+                    : 'text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white'
                 }`}
               >
-                <LayoutGrid className="w-3.5 h-3.5 text-indigo-500" />
-                <span>{t.gridMode}</span>
+                <LayoutGrid className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline text-[11px]">{t.gridMode}</span>
               </button>
             </div>
 
-            {/* Filter Toggle Button */}
+            {/* Comprehensive Filter Trigger Button */}
             <button
               type="button"
               onClick={() => setShowFilters(!showFilters)}
-              className={`p-2 px-3 rounded-2xl text-xs font-bold transition-all flex items-center gap-1.5 border cursor-pointer ${
-                showFilters
-                  ? 'bg-slate-900 text-white border-slate-900'
-                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:bg-slate-100'
+              className={`p-1.5 px-3 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
+                showFilters || onlyMarriage || onlyWithVideo || onlyBookmarked
+                  ? 'bg-orange-50 dark:bg-orange-950/50 text-[#FF3823] dark:text-[#FF6B35] border-orange-200 dark:border-orange-900/60 shadow-xs'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200'
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
-              <span>{t.filters}</span>
+              <span className="text-[11px]">{t.filters}</span>
+              {(onlyMarriage || onlyWithVideo || onlyBookmarked) && (
+                <span className="w-1.5 h-1.5 rounded-full bg-[#FF3823]" />
+              )}
             </button>
           </div>
         </div>
 
-        {/* Collapsible Filters Drawer */}
+        {/* Collapsible Fluid Filters Drawer */}
         {showFilters && (
-          <div className="pt-3 border-t border-slate-100 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs animate-in fade-in">
-            {/* Gender filter */}
-            <div>
-              <label className="block font-bold text-slate-600 mb-1">{t.genderFilterAll}</label>
-              <select
-                value={filterGender}
-                onChange={(e) => setFilterGender(e.target.value as any)}
-                className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:bg-white focus:outline-none"
+          <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3 animate-in fade-in duration-200">
+            {/* Quick Filter Tags (Zawaj, Vidéo, Favoris) */}
+            <div className="flex flex-wrap items-center gap-1.5 pb-1">
+              <button
+                type="button"
+                onClick={() => setOnlyMarriage(!onlyMarriage)}
+                className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  onlyMarriage
+                    ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                }`}
               >
-                <option value="tous">{t.allGenders}</option>
-                <option value="femme">{t.onlyWomen}</option>
-                <option value="homme">{t.onlyMen}</option>
-                <option value="non-binaire">{isArabic ? 'آخر' : 'Non-binaires'}</option>
-              </select>
+                <span>💍</span>
+                <span>{t.marriageFilterBtn}</span>
+                {onlyMarriage && <span>✓</span>}
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setOnlyWithVideo(!onlyWithVideo)}
+                className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                  onlyWithVideo
+                    ? 'bg-sky-500 text-white shadow-xs'
+                    : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                }`}
+              >
+                <Video className="w-3 h-3" />
+                <span>{isArabic ? 'مع فيديو' : 'Avec vidéo'}</span>
+                {onlyWithVideo && <span>✓</span>}
+              </button>
+
+              {bookmarkedUserIds.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setOnlyBookmarked(!onlyBookmarked)}
+                  className={`px-2.5 py-1 rounded-full text-[11px] font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                    onlyBookmarked
+                      ? 'bg-amber-500 text-white shadow-xs'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200'
+                  }`}
+                >
+                  <Bookmark className="w-3 h-3 fill-current" />
+                  <span>Favoris ({bookmarkedUserIds.length})</span>
+                </button>
+              )}
             </div>
 
-            {/* Wilaya Filter (69 Wilayas) */}
-            <div>
-              <label className="block font-bold text-slate-600 mb-1">{t.wilayaFilter}</label>
-              <select
-                value={filterCity}
-                onChange={(e) => setFilterCity(e.target.value)}
-                className="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl text-slate-900 font-semibold focus:bg-white focus:outline-none"
-              >
-                <option value="">{t.allWilayas}</option>
-                <optgroup label={isArabic ? '🇩🇿 الجزائر (الولايات 01 إلى 58)' : '🇩🇿 Algérie (Wilayas 01 à 58)'}>
-                  {WILAYAS_69.filter((w) => !w.isDiaspora).map((w) => (
-                    <option key={w.code} value={w.name}>
-                      {w.code} - {w.name} ({w.arabicName})
-                    </option>
-                  ))}
-                </optgroup>
-                <optgroup label={isArabic ? '🌍 دياسبورا DZ69 (الولايات 59 إلى 69)' : '🌍 Diaspora DZ69 (Wilayas 59 à 69)'}>
-                  {WILAYAS_69.filter((w) => w.isDiaspora).map((w) => (
-                    <option key={w.code} value={w.name}>
-                      {w.code} - {w.name} ({w.arabicName})
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
-            </div>
-
-            {/* Age Range */}
-            <div>
-              <label className="block font-bold text-slate-600 mb-1">
-                {t.ageFilter} ({minAge} - {maxAge} {isArabic ? 'سنة' : 'ans'})
-              </label>
-              <div className="flex items-center gap-2">
-                <input
-                  type="range"
-                  min={18}
-                  max={65}
-                  value={maxAge}
-                  onChange={(e) => setMaxAge(Number(e.target.value))}
-                  className="w-full accent-rose-500"
-                />
+            {/* Filter Inputs Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+              {/* Gender filter */}
+              <div>
+                <label className="block font-bold text-slate-600 dark:text-slate-400 mb-1">{t.genderFilterAll}</label>
+                <select
+                  value={filterGender}
+                  onChange={(e) => setFilterGender(e.target.value as any)}
+                  className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold focus:outline-none"
+                >
+                  <option value="tous">{t.allGenders}</option>
+                  <option value="femme">{t.onlyWomen}</option>
+                  <option value="homme">{t.onlyMen}</option>
+                  <option value="non-binaire">{isArabic ? 'آخر' : 'Non-binaires'}</option>
+                </select>
               </div>
-            </div>
 
-            {/* Toggles (Online & Verified & Video) */}
-            <div className="flex flex-col gap-1.5 justify-end">
-              <label className="flex items-center gap-2 cursor-pointer p-1.5 px-2 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100">
-                <input
-                  type="checkbox"
-                  checked={onlyOnline}
-                  onChange={(e) => setOnlyOnline(e.target.checked)}
-                  className="rounded text-rose-500 focus:ring-rose-400 w-3.5 h-3.5"
-                />
-                <span className="font-bold text-slate-700 text-[11px]">{t.onlyOnline}</span>
-              </label>
-              <label className="flex items-center gap-2 cursor-pointer p-1.5 px-2 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100">
-                <input
-                  type="checkbox"
-                  checked={onlyVerified}
-                  onChange={(e) => setOnlyVerified(e.target.checked)}
-                  className="rounded text-sky-500 focus:ring-sky-400 w-3.5 h-3.5"
-                />
-                <span className="font-bold text-slate-700 text-[11px]">{t.onlyVerified}</span>
-              </label>
+              {/* Wilaya Filter (69 Wilayas) */}
+              <div>
+                <label className="block font-bold text-slate-600 dark:text-slate-400 mb-1">{t.wilayaFilter}</label>
+                <select
+                  value={filterCity}
+                  onChange={(e) => setFilterCity(e.target.value)}
+                  className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold focus:outline-none"
+                >
+                  <option value="">{t.allWilayas}</option>
+                  <optgroup label={isArabic ? '🇩🇿 الجزائر (الولايات 01 إلى 58)' : '🇩🇿 Algérie (Wilayas 01 à 58)'}>
+                    {WILAYAS_69.filter((w) => !w.isDiaspora).map((w) => (
+                      <option key={w.code} value={w.name}>
+                        {w.code} - {w.name} ({w.arabicName})
+                      </option>
+                    ))}
+                  </optgroup>
+                  <optgroup label={isArabic ? '🌍 دياسبورا DZ69 (الولايات 59 إلى 69)' : '🌍 Diaspora DZ69 (Wilayas 59 à 69)'}>
+                    {WILAYAS_69.filter((w) => w.isDiaspora).map((w) => (
+                      <option key={w.code} value={w.name}>
+                        {w.code} - {w.name} ({w.arabicName})
+                      </option>
+                    ))}
+                  </optgroup>
+                </select>
+              </div>
+
+              {/* Age Range */}
+              <div>
+                <label className="block font-bold text-slate-600 dark:text-slate-400 mb-1">
+                  {t.ageFilter} ({minAge} - {maxAge} {isArabic ? 'سنة' : 'ans'})
+                </label>
+                <div className="flex items-center gap-2 pt-1">
+                  <input
+                    type="range"
+                    min={18}
+                    max={65}
+                    value={maxAge}
+                    onChange={(e) => setMaxAge(Number(e.target.value))}
+                    className="w-full accent-[#FF3823]"
+                  />
+                </div>
+              </div>
+
+              {/* Toggles (Online & Verified) */}
+              <div className="flex flex-col gap-1.5 justify-end">
+                <label className="flex items-center gap-2 cursor-pointer p-1.5 px-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                  <input
+                    type="checkbox"
+                    checked={onlyOnline}
+                    onChange={(e) => setOnlyOnline(e.target.checked)}
+                    className="rounded text-[#FF3823] focus:ring-[#FF3823] w-3.5 h-3.5"
+                  />
+                  <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px]">{t.onlyOnline}</span>
+                </label>
+                <label className="flex items-center gap-2 cursor-pointer p-1.5 px-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700/50">
+                  <input
+                    type="checkbox"
+                    checked={onlyVerified}
+                    onChange={(e) => setOnlyVerified(e.target.checked)}
+                    className="rounded text-emerald-500 focus:ring-emerald-400 w-3.5 h-3.5"
+                  />
+                  <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px]">{t.onlyVerified}</span>
+                </label>
+              </div>
             </div>
           </div>
         )}
@@ -397,12 +403,12 @@ export function DiscoverView({
               onClick={onOpenMap}
               className="flex items-center gap-3 cursor-pointer group flex-1"
             >
-              <div className="w-9 h-9 rounded-xl bg-rose-500/20 border border-rose-500/40 flex items-center justify-center text-rose-400 group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-[#FF3823]/20 border border-[#FF3823]/40 flex items-center justify-center text-[#FF6B35] group-hover:scale-105 transition-transform shrink-0">
                 <Globe className="w-5 h-5" />
               </div>
               <div>
                 <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-black text-white group-hover:text-rose-300 transition-colors">
+                  <span className="text-xs font-black text-white group-hover:text-orange-300 transition-colors">
                     {t.worldMapBanner}
                   </span>
                   <span className="px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-300 text-[9px] font-extrabold border border-emerald-500/30">
@@ -419,7 +425,7 @@ export function DiscoverView({
               <button
                 type="button"
                 onClick={onOpenMap}
-                className="px-3 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-500 text-white text-xs font-bold transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-xs font-bold transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
               >
                 <span>{t.viewMapBtn}</span>
                 <Radio className="w-3.5 h-3.5 animate-pulse" />
@@ -437,19 +443,19 @@ export function DiscoverView({
             </div>
           </div>
         ) : (
-          <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-indigo-950 to-rose-950 border border-indigo-500/30 hover:border-rose-400/50 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all shadow-md group">
+          <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-950 to-orange-950 border border-orange-500/30 hover:border-[#FF3823]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all shadow-md group">
             {/* Ambient colorful glow */}
-            <div className="absolute top-0 right-0 -mt-6 -mr-6 w-36 h-36 bg-rose-500/20 rounded-full blur-2xl pointer-events-none" />
-            <div className="absolute bottom-0 left-10 -mb-6 w-32 h-32 bg-indigo-500/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute top-0 right-0 -mt-6 -mr-6 w-36 h-36 bg-[#FF3823]/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute bottom-0 left-10 -mb-6 w-32 h-32 bg-[#38BDF8]/10 rounded-full blur-2xl pointer-events-none" />
 
             <div className="relative z-10 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 to-rose-500 text-white flex items-center justify-center shrink-0 shadow-md">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FF3823] text-white flex items-center justify-center shrink-0 shadow-md">
                 <Globe className="w-5 h-5 animate-spin-slow" />
               </div>
               <div>
                 <p className="text-xs font-black text-white flex items-center gap-2">
                   <span>{t.mapToggleTitle}</span>
-                  <span className="px-2 py-0.5 rounded-full bg-rose-500/20 text-rose-300 text-[10px] font-bold border border-rose-500/30">
+                  <span className="px-2 py-0.5 rounded-full bg-[#FF3823]/20 text-orange-300 text-[10px] font-bold border border-[#FF3823]/30">
                     {t.mapStatusDisabled}
                   </span>
                 </p>
@@ -466,7 +472,7 @@ export function DiscoverView({
                   onToggleMap(true);
                   if (onOpenMap) onOpenMap();
                 }}
-                className="relative z-10 w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white text-xs font-black transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0 active:scale-95"
+                className="relative z-10 w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white text-xs font-black transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0 active:scale-95"
               >
                 <Globe className="w-4 h-4 text-white" />
                 <span>{t.activateMapBtn}</span>
@@ -556,7 +562,7 @@ export function DiscoverView({
           ) : (
             /* Empty state when deck is finished */
             <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-8 text-center border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
-              <div className="w-16 h-16 bg-rose-50 dark:bg-rose-950/50 text-rose-500 rounded-full flex items-center justify-center text-3xl mx-auto">
+              <div className="w-16 h-16 bg-orange-50 dark:bg-orange-950/50 text-[#FF3823] rounded-full flex items-center justify-center text-3xl mx-auto">
                 ✨
               </div>
               <h3 className="text-lg font-black text-slate-900 dark:text-white">
@@ -588,7 +594,7 @@ export function DiscoverView({
             return (
               <React.Fragment key={user.id}>
                 {shouldShowAd && adToShow && !isAdDismissed && (
-                  <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-rose-950 rounded-3xl overflow-hidden border border-amber-400/50 shadow-md p-4 text-white flex flex-col justify-between group">
+                  <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-orange-950 rounded-3xl overflow-hidden border border-amber-400/50 shadow-md p-4 text-white flex flex-col justify-between group">
                     <button
                       type="button"
                       onClick={() => setDismissedGridAdIds((prev) => [...prev, adToShow.id])}
@@ -608,7 +614,7 @@ export function DiscoverView({
                         <Sparkles className="w-2.5 h-2.5" />
                         <span>{isArabic ? 'إعلان معتمد' : 'Sponsor Nisfy'}</span>
                       </div>
-                      <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-rose-600 text-white text-[9px] font-bold">
+                      <div className="absolute bottom-2 right-2 px-2 py-0.5 rounded-full bg-[#FF3823] text-white text-[9px] font-bold">
                         {isArabic ? adToShow.discountBadgeAr : adToShow.discountBadge}
                       </div>
                     </div>
@@ -632,7 +638,7 @@ export function DiscoverView({
                       <button
                         type="button"
                         onClick={() => setSelectedAdForModal(adToShow)}
-                        className="flex-1 py-1.5 px-3 bg-gradient-to-r from-amber-400 to-rose-500 hover:brightness-110 text-slate-950 rounded-xl text-xs font-black transition-all cursor-pointer text-center"
+                        className="flex-1 py-1.5 px-3 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white rounded-xl text-xs font-black transition-all cursor-pointer text-center"
                       >
                         {isArabic ? 'عرض التفاصيل' : 'Voir l’Offre'}
                       </button>
@@ -701,7 +707,7 @@ export function DiscoverView({
                                 key={tIdx}
                                 className={`text-[10px] font-bold px-2 py-0.5 rounded-md ${
                                   isMarriage
-                                    ? 'bg-gradient-to-r from-amber-100 to-rose-100 text-rose-800 border border-rose-300 font-extrabold shadow-xs'
+                                    ? 'bg-gradient-to-r from-orange-100 to-amber-100 text-[#FF3823] border border-orange-300 font-extrabold shadow-xs'
                                     : 'bg-slate-100 text-slate-600'
                                 }`}
                               >
@@ -722,7 +728,7 @@ export function DiscoverView({
                       <button
                         type="button"
                         onClick={() => onStartDirectChat(user)}
-                        className="p-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl transition-colors cursor-pointer"
+                        className="p-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl transition-colors cursor-pointer"
                         title={t.directMessage}
                       >
                         <MessageCircle className="w-4 h-4" />
@@ -731,7 +737,7 @@ export function DiscoverView({
                       <button
                         type="button"
                         onClick={() => handleLike(user)}
-                        className="flex-1 py-2 bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
+                        className="flex-1 py-2 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1 shadow-xs transition-transform active:scale-95 cursor-pointer"
                       >
                         <Heart className="w-3.5 h-3.5 fill-white" />
                         <span>{t.likeBtn}</span>

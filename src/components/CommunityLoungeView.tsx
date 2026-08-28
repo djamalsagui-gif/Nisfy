@@ -123,7 +123,7 @@ export function CommunityLoungeView({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-xl bg-rose-100 text-rose-700">
+              <span className="p-1.5 rounded-xl bg-orange-100 text-[#FF3823]">
                 <Radio className="w-5 h-5 animate-pulse" />
               </span>
               <h2 className="text-lg font-black text-slate-900">
@@ -160,7 +160,7 @@ export function CommunityLoungeView({
                 }}
                 className={`p-3 rounded-2xl border text-left transition-all relative flex flex-col justify-between cursor-pointer ${
                   isSelected
-                    ? 'bg-gradient-to-b from-rose-50 to-indigo-50 border-rose-400 shadow-md ring-2 ring-rose-200'
+                    ? 'bg-gradient-to-b from-orange-50 to-sky-50/40 border-[#FF3823] shadow-md ring-2 ring-[#FF3823]/25'
                     : 'bg-slate-50/70 border-slate-200 hover:bg-slate-100 hover:border-slate-300'
                 }`}
               >
@@ -177,7 +177,7 @@ export function CommunityLoungeView({
                 </div>
 
                 <div className="mt-2 flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                  <span className="w-2 h-2 rounded-full bg-[#FF3823] animate-pulse" />
                   <span className="text-[10px] text-slate-500 font-medium">
                     {room.speakersCount} {isArabic ? 'متحدث' : 'orateurs'}
                   </span>
@@ -209,7 +209,7 @@ export function CommunityLoungeView({
         {/* Room Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/10 pb-4 mb-5">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-600 flex items-center justify-center text-2xl shadow-lg">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] flex items-center justify-center text-2xl shadow-lg">
               {selectedRoom.emoji}
             </div>
             <div>
@@ -217,7 +217,7 @@ export function CommunityLoungeView({
                 <h3 className="text-base sm:text-lg font-black tracking-tight text-white">
                   {isArabic ? selectedRoom.nameAr : selectedRoom.nameFr}
                 </h3>
-                <span className="px-2 py-0.2 rounded-full text-[10px] font-black bg-rose-500 text-white uppercase">
+                <span className="px-2 py-0.2 rounded-full text-[10px] font-black bg-[#FF3823] text-white uppercase">
                   En Direct
                 </span>
               </div>
@@ -301,13 +301,13 @@ export function CommunityLoungeView({
 
             {/* Current User if on stage */}
             {isOnStage && (
-              <div className="bg-rose-950/40 border border-rose-500 rounded-2xl p-3 flex flex-col items-center text-center relative animate-in zoom-in-95">
+              <div className="bg-orange-950/40 border border-[#FF3823] rounded-2xl p-3 flex flex-col items-center text-center relative animate-in zoom-in-95">
                 <div className="relative mb-2">
                   <img
                     src={currentUser.avatar}
                     alt={currentUser.pseudo}
                     referrerPolicy="no-referrer"
-                    className="w-14 h-14 rounded-full object-cover border-2 border-rose-500 ring-4 ring-rose-500/30"
+                    className="w-14 h-14 rounded-full object-cover border-2 border-[#FF3823] ring-4 ring-[#FF3823]/30"
                   />
                   <button
                     onClick={toggleMic}
@@ -318,10 +318,10 @@ export function CommunityLoungeView({
                     {isMuted ? <MicOff className="w-2.5 h-2.5" /> : <Mic className="w-2.5 h-2.5" />}
                   </button>
                 </div>
-                <span className="text-xs font-black text-rose-300 truncate max-w-[110px]">
+                <span className="text-xs font-black text-orange-200 truncate max-w-[110px]">
                   {currentUser.pseudo} (Moi)
                 </span>
-                <span className="text-[10px] text-rose-400 font-bold">
+                <span className="text-[10px] text-orange-400 font-bold">
                   {isMuted ? 'Micro coupé' : 'Micro actif 🎙️'}
                 </span>
               </div>
@@ -339,7 +339,7 @@ export function CommunityLoungeView({
                   onClick={toggleMic}
                   className={`py-2 px-4 rounded-xl text-xs font-black flex items-center gap-1.5 transition-all cursor-pointer ${
                     isMuted
-                      ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                      ? 'bg-[#FF3823] hover:bg-[#FF6B35] text-white'
                       : 'bg-emerald-600 hover:bg-emerald-700 text-white'
                   }`}
                 >
@@ -362,7 +362,7 @@ export function CommunityLoungeView({
                 className={`py-2 px-4 rounded-xl text-xs font-black flex items-center gap-1.5 shadow-md transition-all cursor-pointer ${
                   isHandRaised
                     ? 'bg-amber-500 text-slate-950 animate-pulse'
-                    : 'bg-gradient-to-r from-rose-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white'
+                    : 'bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white shadow-md shadow-orange-500/20'
                 }`}
               >
                 <Hand className="w-4 h-4" />
@@ -408,7 +408,7 @@ export function CommunityLoungeView({
                     ? `شارك فكرة أو سؤال في صالون "${selectedRoom.nameAr}"...`
                     : `Partagez une réflexion ou une question dans le salon "${selectedRoom.nameFr}"...`
                 }
-                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 focus:bg-white focus:ring-2 focus:ring-rose-500/20 focus:border-rose-500 focus:outline-none transition-all"
+                className="w-full p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs sm:text-sm text-slate-900 focus:bg-white focus:ring-2 focus:ring-orange-500/20 focus:border-[#FF3823] focus:outline-none transition-all"
               />
             </div>
           </div>
@@ -422,7 +422,7 @@ export function CommunityLoungeView({
             <button
               type="submit"
               disabled={!postContent.trim()}
-              className="py-2 px-4 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-600 hover:to-indigo-700 disabled:opacity-50 text-white rounded-xl text-xs font-extrabold shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
+              className="py-2 px-4 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 disabled:opacity-50 text-white rounded-xl text-xs font-extrabold shadow-md shadow-orange-500/20 transition-all flex items-center gap-1.5 cursor-pointer"
             >
               <Send className="w-3.5 h-3.5" />
               <span>{t.publishInLoungeBtn}</span>
@@ -513,7 +513,7 @@ export function CommunityLoungeView({
                   <button
                     type="button"
                     onClick={() => onStartDirectChat(authorUser)}
-                    className="py-1.5 px-3 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
+                    className="py-1.5 px-3 bg-orange-50 hover:bg-orange-100 text-[#FF3823] rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer"
                   >
                     <MessageCircle className="w-3.5 h-3.5" />
                     <span>{t.writeToThem}</span>
@@ -532,11 +532,11 @@ export function CommunityLoungeView({
                   type="button"
                   onClick={() => onLikeMessage(msg.id)}
                   className={`flex items-center gap-1.5 font-bold transition-colors cursor-pointer ${
-                    isLikedByMe ? 'text-rose-600' : 'text-slate-500 hover:text-rose-500'
+                    isLikedByMe ? 'text-[#FF3823]' : 'text-slate-500 hover:text-[#FF3823]'
                   }`}
                 >
                   <Heart
-                    className={`w-4 h-4 ${isLikedByMe ? 'fill-rose-600' : ''}`}
+                    className={`w-4 h-4 ${isLikedByMe ? 'fill-[#FF3823]' : ''}`}
                   />
                   <span>{msg.likes} {t.likeBtn}</span>
                 </button>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="primaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6B35" />
+      <stop offset="50%" stop-color="#FF3823" />
+      <stop offset="100%" stop-color="#DC2626" />
+    </linearGradient>
+    <linearGradient id="secondaryGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#0284C7" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background with smooth rounded squircle -->
+  <rect width="512" height="512" rx="128" fill="url(#bgGrad)" />
+
+  <!-- Subtle glow background circle -->
+  <circle cx="256" cy="256" r="180" fill="#FF3823" opacity="0.12" filter="url(#glow)" />
+
+  <!-- Islamic geometric accent star / crescent touch (subtle) -->
+  <circle cx="256" cy="256" r="210" fill="none" stroke="#38BDF8" stroke-width="2" stroke-dasharray="8 12" opacity="0.3" />
+
+  <!-- Nisfy Stylized 'N' Monogram: Two parallel pillars joined by warm connection bridge -->
+  <!-- Left Pillar (Orange-Red / Groom & Passion) -->
+  <line x1="150" y1="120" x2="150" y2="392" stroke="url(#primaryGrad)" stroke-width="68" stroke-linecap="round" />
+
+  <!-- Right Pillar (Sky Blue / Bride & Serenity) -->
+  <line x1="362" y1="120" x2="362" y2="392" stroke="url(#secondaryGrad)" stroke-width="68" stroke-linecap="round" />
+
+  <!-- Union Diagonal / Halal Marriage Bond -->
+  <line x1="150" y1="120" x2="362" y2="392" stroke="url(#primaryGrad)" stroke-width="68" stroke-linecap="round" />
+
+  <!-- Heart-shaped golden center dot representing the Sacred Union / Nisf El Din -->
+  <circle cx="256" cy="256" r="22" fill="#FBBF24" filter="url(#glow)" />
+</svg>

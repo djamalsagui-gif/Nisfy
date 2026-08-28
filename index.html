@@ -2,15 +2,75 @@
 <html lang="fr">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
     <title>Nisfy • نصفي | Rencontre & Mariage 69 Wilayas</title>
     <meta name="description" content="Nisfy (نصفي) - Trouvez votre moitié parmi les célibataires des 69 Wilayas d'Algérie et de la Diaspora" />
+    
+    <!-- PWA & Mobile Web App Meta Tags -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <meta name="theme-color" content="#FF3823" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="Nisfy نصفي" />
+    <meta name="application-name" content="Nisfy" />
+    <meta name="format-detection" content="telephone=no" />
+
+    <!-- App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
+    <link rel="apple-touch-icon" href="/icon.svg" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+      try {
+        if (localStorage.getItem('nisfy_theme') === 'dark') {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+
+      // Register PWA Service Worker for offline shell and fast launch
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then((reg) => console.log('[PWA] Service Worker registered:', reg.scope))
+            .catch((err) => console.log('[PWA] Service Worker registration failed:', err));
+        });
+      }
+    </script>
   </head>
   <body class="bg-slate-50 text-slate-900 font-['Plus_Jakarta_Sans',sans-serif] antialiased selection:bg-emerald-500 selection:text-white">
-    <div id="root"></div>
+    <div id="root">
+      <div style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;z-index:99999;font-family:system-ui,-apple-system,sans-serif;">
+        <style>
+          @media (prefers-color-scheme: dark) {
+            #nisfy-boot-loader { background: #0B0F19 !important; color: #ffffff !important; }
+          }
+          .dark #nisfy-boot-loader { background: #0B0F19 !important; color: #ffffff !important; }
+          @keyframes nisfy-spin { to { transform: rotate(360deg); } }
+          @keyframes nisfy-pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.85; transform: scale(0.97); } }
+        </style>
+        <div id="nisfy-boot-loader" style="position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:#ffffff;transition:background-color 0.3s ease;">
+          <div style="position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:20px;">
+            <div style="position:absolute;width:110px;height:110px;border-radius:50%;border:3px solid transparent;border-top-color:#FF3823;border-right-color:#38BDF8;animation:nisfy-spin 1.2s linear infinite;"></div>
+            <svg width="68" height="68" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" style="animation:nisfy-pulse 2s ease-in-out infinite;">
+              <rect width="100" height="100" rx="26" fill="#0F172A"/>
+              <line x1="28" y1="22" x2="28" y2="78" stroke="#FF4D1C" stroke-width="15" stroke-linecap="round"/>
+              <line x1="72" y1="22" x2="72" y2="78" stroke="#38BDF8" stroke-width="15" stroke-linecap="round"/>
+              <line x1="28" y1="22" x2="72" y2="78" stroke="#FF3823" stroke-width="15" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div style="font-size:24px;font-weight:900;letter-spacing:-0.5px;color:#0F172A;display:flex;align-items:center;gap:8px;">
+            <span>Nisfy</span>
+            <span style="color:#FF3823;font-family:serif;">نصفي</span>
+          </div>
+          <div style="margin-top:6px;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#94A3B8;">
+            Chargement de la plateforme...
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

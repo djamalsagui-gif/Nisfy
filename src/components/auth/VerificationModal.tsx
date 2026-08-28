@@ -40,7 +40,7 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
       <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl overflow-hidden relative">
         <div className="flex items-center justify-between p-4 border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-emerald-500" />
+            <ShieldCheck className="w-5 h-5 text-[#38BDF8]" />
             <h2 className="text-lg font-bold text-slate-900 dark:text-white">
               {isArabic ? 'توثيق الحساب' : 'Vérification Profil'}
             </h2>
@@ -53,8 +53,8 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
         <div className="p-6">
           {step === 1 && (
             <div className="space-y-6 text-center">
-              <div className="w-20 h-20 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto">
-                <ShieldCheck className="w-10 h-10 text-emerald-500" />
+              <div className="w-20 h-20 bg-sky-50 dark:bg-sky-950/40 rounded-full flex items-center justify-center mx-auto border-2 border-sky-200 dark:border-sky-800">
+                <ShieldCheck className="w-10 h-10 text-[#38BDF8]" />
               </div>
               
               <div className="space-y-2">
@@ -68,13 +68,13 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
 
               <div className="space-y-3 text-left bg-slate-50 dark:bg-slate-800 p-4 rounded-2xl">
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5" />
                   <p className="text-xs text-slate-600 dark:text-slate-300">
                     <strong>Étape 1:</strong> Prenez en photo votre CNI (les données sensibles seront floutées).
                   </p>
                 </div>
                 <div className="flex items-start gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-[#38BDF8] shrink-0 mt-0.5" />
                   <p className="text-xs text-slate-600 dark:text-slate-300">
                     <strong>Étape 2:</strong> Prenez un selfie clair pour comparaison.
                   </p>
@@ -83,7 +83,7 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
 
               <button
                 onClick={() => setStep(2)}
-                className="w-full py-3 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 transition-colors"
+                className="w-full py-3 px-4 rounded-xl shadow-md shadow-orange-500/20 text-sm font-bold text-white bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 transition-all cursor-pointer"
               >
                 Commencer
               </button>
@@ -117,11 +117,11 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
               <button
                 onClick={handleSimulateUpload}
                 disabled={isUploading}
-                className="w-full py-3 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:opacity-90 transition-opacity disabled:opacity-50 flex items-center justify-center gap-2"
+                className="w-full py-3 px-4 rounded-xl shadow-md shadow-orange-500/20 text-sm font-bold text-white bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 transition-all disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isUploading ? (
                   <>
-                    <span className="w-5 h-5 border-2 border-slate-300 border-t-white dark:border-t-slate-900 rounded-full animate-spin" />
+                    <span className="w-5 h-5 border-2 border-slate-300 border-t-white rounded-full animate-spin" />
                     Analyse de l'identité...
                   </>
                 ) : (
@@ -133,10 +133,10 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
 
           {step === 3 && (
             <div className="space-y-6 text-center">
-              <div className="w-24 h-24 bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center mx-auto border-4 border-white dark:border-slate-900 shadow-xl relative">
-                <ShieldCheck className="w-12 h-12 text-emerald-500" />
-                <div className="absolute -bottom-2 -right-2 bg-white dark:bg-slate-900 rounded-full p-1">
-                  <CheckCircle2 className="w-8 h-8 text-emerald-500" />
+              <div className="w-24 h-24 bg-sky-50 dark:bg-sky-950/40 rounded-full flex items-center justify-center mx-auto border-4 border-white dark:border-slate-900 shadow-xl relative">
+                <ShieldCheck className="w-12 h-12 text-[#38BDF8]" />
+                <div className="absolute -bottom-2 -right-2 bg-white dark:bg-slate-900 rounded-full p-1 shadow-sm">
+                  <CheckCircle2 className="w-8 h-8 text-[#38BDF8]" />
                 </div>
               </div>
               
@@ -151,7 +151,7 @@ export function VerificationModal({ isOpen, onClose, currentUser, onVerification
 
               <button
                 onClick={handleFinish}
-                className="w-full py-3 px-4 rounded-xl shadow-sm text-sm font-bold text-white bg-emerald-500 hover:bg-emerald-600 transition-colors"
+                className="w-full py-3 px-4 rounded-xl shadow-md shadow-orange-500/20 text-sm font-bold text-white bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 transition-all cursor-pointer"
               >
                 Continuer
               </button>

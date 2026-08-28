@@ -42,10 +42,10 @@ export function MatchesView({
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="relative overflow-hidden bg-gradient-to-br from-slate-900 via-rose-950 to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-rose-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="relative overflow-hidden bg-gradient-to-br from-slate-950 via-[#2A1115] to-slate-900 rounded-3xl p-6 sm:p-8 text-white shadow-xl border border-[#FF3823]/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-amber-300" />
+            <Sparkles className="w-5 h-5 text-[#FF6B35]" />
             <h2 className="text-xl sm:text-2xl font-black">{t.matchesTitle}</h2>
           </div>
           <p className="text-xs sm:text-sm text-slate-300 max-w-lg">
@@ -54,8 +54,8 @@ export function MatchesView({
         </div>
 
         <div className="bg-white/10 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/20 text-center shrink-0">
-          <span className="text-2xl font-black text-amber-300">{matchedUsers.length}</span>
-          <span className="text-[10px] block font-extrabold uppercase tracking-wider text-rose-200">
+          <span className="text-2xl font-black text-[#38BDF8]">{matchedUsers.length}</span>
+          <span className="text-[10px] block font-extrabold uppercase tracking-wider text-orange-200">
             {t.recentMatches}
           </span>
         </div>
@@ -64,7 +64,7 @@ export function MatchesView({
       {matchedUsers.length === 0 ? (
         /* Empty State */
         <div className="bg-white dark:bg-slate-900 rounded-3xl p-10 text-center border border-slate-200 dark:border-slate-800 shadow-xs space-y-4 max-w-lg mx-auto">
-          <div className="w-16 h-16 bg-rose-50 dark:bg-rose-950/50 text-rose-500 rounded-full flex items-center justify-center text-3xl mx-auto">
+          <div className="w-16 h-16 bg-orange-50 dark:bg-orange-950/50 text-[#FF3823] rounded-full flex items-center justify-center text-3xl mx-auto">
             💌
           </div>
           <h3 className="text-lg font-black text-slate-900 dark:text-white">
@@ -76,7 +76,7 @@ export function MatchesView({
           <button
             type="button"
             onClick={onExploreMore}
-            className="py-2.5 px-6 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-xs font-bold shadow-xs transition-all inline-flex items-center gap-2 cursor-pointer"
+            className="py-2.5 px-6 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white rounded-2xl text-xs font-bold shadow-md shadow-orange-500/20 transition-all inline-flex items-center gap-2 cursor-pointer"
           >
             <Heart className="w-4 h-4 fill-white" />
             <span>{t.exploreBtn}</span>
@@ -98,7 +98,7 @@ export function MatchesView({
                       src={user.avatar}
                       alt={user.pseudo}
                       referrerPolicy="no-referrer"
-                      className="w-14 h-14 rounded-2xl object-cover border-2 border-rose-200 dark:border-rose-900/60 group-hover:scale-105 transition-transform"
+                      className="w-14 h-14 rounded-2xl object-cover border-2 border-orange-200 dark:border-orange-900/60 group-hover:scale-105 transition-transform"
                     />
                     {user.isOnline && (
                       <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 ring-2 ring-white dark:ring-slate-900" />
@@ -120,9 +120,9 @@ export function MatchesView({
                       )}
                     </div>
                     <p className="text-xs text-slate-400 font-medium flex items-center gap-1">
-                      <MapPin className="w-3 h-3 text-rose-400" /> {user.city}
+                      <MapPin className="w-3 h-3 text-[#FF3823]" /> {user.city}
                     </p>
-                    <span className="inline-block mt-0.5 text-[10px] font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-full">
+                    <span className="inline-block mt-0.5 text-[10px] font-bold text-[#FF3823] dark:text-[#FF6B35] bg-orange-50 dark:bg-orange-950/60 px-2 py-0.5 rounded-full">
                       Match à {user.matchScore || 92}% {t.affinity}
                     </span>
                   </div>
@@ -147,11 +147,11 @@ export function MatchesView({
                     onStartDirectChat(
                       user,
                       isArabic
-                        ? `أهلا ${user.pseudo} ! فرحان(ة) بالماتش ديالنا في القلعة DZ69 ! ✨`
-                        : `Coucou ${user.pseudo} ! Ravi(e) de notre match sur القلعة DZ69 ! ✨`
+                        ? `أهلا ${user.pseudo} ! فرحان(ة) بالماتش ديالنا في Nisfy نصفي ! ✨`
+                        : `Coucou ${user.pseudo} ! Ravi(e) de notre match sur Nisfy ! ✨`
                     )
                   }
-                  className="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-2.5 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white rounded-2xl text-xs font-bold shadow-md shadow-orange-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <MessageCircle className="w-4 h-4" />
                   <span>{t.startChatBtn}</span>

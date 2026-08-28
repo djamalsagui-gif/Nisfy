@@ -210,7 +210,7 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
             <p className="text-xs text-white/60 mt-1">Soyez le premier à publier un moment Nisfy !</p>
             <button
               onClick={() => setIsPublishModalOpen(true)}
-              className="mt-4 px-4 py-2 bg-rose-500/20 hover:bg-rose-500/30 text-rose-200 rounded-xl text-xs font-semibold border border-rose-400/30 shadow-sm transition-colors cursor-pointer"
+              className="mt-4 px-4 py-2 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white rounded-xl text-xs font-semibold shadow-md shadow-orange-500/20 transition-all cursor-pointer"
             >
               {isArabic ? 'نشر فيديو' : 'Publier une vidéo'}
             </button>
@@ -240,10 +240,10 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
       {/* Bouton doux & discret : Publier une vidéo */}
       <button 
         onClick={() => setIsPublishModalOpen(true)}
-        className="absolute bottom-20 sm:bottom-6 right-3 sm:right-6 z-30 px-3.5 py-2 bg-rose-950/75 hover:bg-rose-900/90 text-rose-100 text-xs font-semibold rounded-xl border border-rose-500/30 backdrop-blur-md shadow-md flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
+        className="absolute bottom-20 sm:bottom-6 right-3 sm:right-6 z-30 px-3.5 py-2 bg-[#FF3823]/85 hover:bg-[#FF3823] text-white text-xs font-bold rounded-xl border border-orange-300/40 backdrop-blur-md shadow-lg shadow-orange-500/25 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
         title="Publier une vidéo"
       >
-        <Plus className="w-4 h-4 text-rose-300" />
+        <Plus className="w-4 h-4 text-white" />
         <span>{isArabic ? 'نشر فيديو' : 'Publier une vidéo'}</span>
       </button>
 
@@ -256,7 +256,7 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
               <h3 className="font-extrabold text-sm text-white">
                 {isArabic ? 'التعليقات' : 'Commentaires'}
               </h3>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-rose-500/20 text-rose-400 border border-rose-500/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-[#FF3823]/20 text-orange-400 border border-[#FF3823]/30">
                 {activePost.comments?.length || 0}
               </span>
             </div>
@@ -280,7 +280,7 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
                   />
                   <div className="flex-1 bg-slate-800/70 p-2.5 rounded-2xl border border-slate-700/60">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-rose-400">{comment.authorPseudo}</span>
+                      <span className="text-xs font-bold text-[#FF6B35]">{comment.authorPseudo}</span>
                       <span className="text-[10px] text-slate-500">{comment.timestamp}</span>
                     </div>
                     <p className="text-xs text-slate-200 mt-1 font-medium leading-relaxed">{comment.content}</p>
@@ -303,12 +303,12 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
               value={newCommentText}
               onChange={(e) => setNewCommentText(e.target.value)}
               placeholder={isArabic ? 'اكتب تعليقاً محترماً...' : 'Écrire un commentaire bienveillant...'}
-              className="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-rose-500"
+              className="flex-1 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2.5 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-[#FF3823]"
             />
             <button
               type="submit"
               disabled={!newCommentText.trim()}
-              className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:scale-105 active:scale-95 transition-transform shrink-0"
+              className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] flex items-center justify-center text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-md hover:scale-105 active:scale-95 transition-transform shrink-0 cursor-pointer"
             >
               <Send className="w-4 h-4" />
             </button>

@@ -118,12 +118,12 @@ export function ContactModal({
 
             <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-300 max-w-md mx-auto flex items-center justify-between font-mono">
               <span className="font-bold">Email destinataire :</span>
-              <span className="text-rose-600 dark:text-rose-400 font-black">{OFFICIAL_ADMIN_EMAIL}</span>
+              <span className="text-[#FF3823] dark:text-[#FF6B35] font-black">{OFFICIAL_ADMIN_EMAIL}</span>
             </div>
 
             <button
               onClick={handleReset}
-              className="px-6 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-rose-600 dark:hover:bg-rose-700 text-white font-bold text-sm rounded-xl transition-all cursor-pointer"
+              className="px-6 py-3 bg-slate-900 hover:bg-slate-800 dark:bg-[#FF3823] dark:hover:bg-[#FF6B35] text-white font-bold text-sm rounded-xl transition-all cursor-pointer"
             >
               {isArabic ? 'إغلاق' : 'Fermer'}
             </button>
@@ -132,11 +132,11 @@ export function ContactModal({
           <form onSubmit={handleSubmit} className="space-y-5">
             {/* Header */}
             <div className="flex items-start gap-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center shadow-lg shrink-0">
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] text-white flex items-center justify-center shadow-lg shrink-0">
                 <Mail className="w-6 h-6" />
               </div>
               <div>
-                <span className="text-[10px] font-black text-rose-700 bg-rose-100 dark:bg-rose-950/60 dark:text-rose-300 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                <span className="text-[10px] font-black text-[#FF3823] bg-orange-100 dark:bg-orange-950/60 dark:text-orange-300 px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                   {isArabic ? 'الدعم الفني والإدارة الرسمية' : 'Support & Contact Officiel'}
                 </span>
                 <h2 className="text-xl font-black text-slate-900 dark:text-white leading-snug mt-1">
@@ -144,7 +144,7 @@ export function ContactModal({
                 </h2>
                 <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
                   {isArabic ? 'البريد الرسمي المعتمد لجميع الطلبات :' : 'Adresse officielle pour toute demande : '}{' '}
-                  <strong className="text-rose-600 dark:text-rose-400 select-all font-mono">
+                  <strong className="text-[#FF3823] dark:text-[#FF6B35] select-all font-mono">
                     {OFFICIAL_ADMIN_EMAIL}
                   </strong>
                 </p>
@@ -169,7 +169,7 @@ export function ContactModal({
                     onClick={() => setRequestType(type.id)}
                     className={`py-2 px-3 rounded-xl font-bold border transition-all text-center cursor-pointer ${
                       requestType === type.id
-                        ? 'bg-rose-500 text-white border-rose-500 shadow-xs'
+                        ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white border-transparent shadow-xs'
                         : 'bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100'
                     }`}
                   >
@@ -191,7 +191,7 @@ export function ContactModal({
                   placeholder="Ex: Samir Laouami"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-rose-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] outline-none"
                 />
               </div>
 
@@ -204,7 +204,7 @@ export function ContactModal({
                   placeholder="votre-email@gmail.com"
                   value={userEmail}
                   onChange={(e) => setUserEmail(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-rose-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] outline-none"
                 />
               </div>
             </div>
@@ -220,7 +220,7 @@ export function ContactModal({
                   placeholder="05 / 06 / 07..."
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-rose-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] outline-none"
                 />
               </div>
 
@@ -233,7 +233,7 @@ export function ContactModal({
                   placeholder="16 - Alger, 31 - Oran..."
                   value={wilaya}
                   onChange={(e) => setWilaya(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-rose-400 outline-none"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] outline-none"
                 />
               </div>
             </div>
@@ -248,7 +248,7 @@ export function ContactModal({
                 placeholder="Ex: Demande de partenariat / Question sur l'abonnement"
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-rose-400 outline-none"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] outline-none"
               />
             </div>
 
@@ -263,21 +263,21 @@ export function ContactModal({
                 placeholder="Écrivez votre message ou précisez votre demande ici..."
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-rose-400 outline-none resize-none"
+                className="w-full p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:ring-2 focus:ring-orange-400 focus:border-[#FF3823] outline-none resize-none"
               />
             </div>
 
             {/* Destination Notice */}
-            <div className="p-3 rounded-2xl bg-rose-50/70 dark:bg-rose-950/40 border border-rose-200/80 dark:border-rose-900/60 flex items-center justify-between text-xs text-rose-900 dark:text-rose-200">
+            <div className="p-3 rounded-2xl bg-orange-50/70 dark:bg-orange-950/40 border border-orange-200/80 dark:border-orange-900/60 flex items-center justify-between text-xs text-orange-900 dark:text-orange-200">
               <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-rose-600 shrink-0" />
+                <ShieldCheck className="w-4 h-4 text-[#FF3823] shrink-0" />
                 <span>
                   {isArabic
                     ? `سيتم إرسال هذا الطلب مباشرة إلى:`
                     : `Destinataire officiel :`}
                 </span>
               </div>
-              <span className="font-bold font-mono text-rose-700 dark:text-rose-300">
+              <span className="font-bold font-mono text-[#FF3823] dark:text-[#FF6B35]">
                 {OFFICIAL_ADMIN_EMAIL}
               </span>
             </div>
@@ -293,7 +293,7 @@ export function ContactModal({
               </button>
               <button
                 type="submit"
-                className="flex-1 py-3.5 bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-700 hover:to-amber-700 text-white font-extrabold text-xs rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3.5 bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white font-extrabold text-xs rounded-xl shadow-md shadow-orange-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 <Send className="w-4 h-4" />
                 <span>
