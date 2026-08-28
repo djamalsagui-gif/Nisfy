@@ -42,7 +42,6 @@ export interface Translations {
   tabMatches: string;
   tabChat: string;
   tabLounge: string;
-  tabMap: string;
   tabProfile: string;
   tabChefNadjet: string;
   // Header & Status
@@ -225,28 +224,6 @@ export interface Translations {
   playVideo: string;
   closeVideo: string;
   filterHasVideo: string;
-
-  // Map Toggle & Option
-  mapToggleTitle: string;
-  mapStatusDisabled: string;
-  mapStatusEnabled: string;
-  activateMapBtn: string;
-  deactivateMapBtn: string;
-  returnToDiscover: string;
-  mapOptionHint: string;
-  worldMapBanner: string;
-  worldMapTeaser: string;
-  viewMapBtn: string;
-
-  // Connected Members on Map Click
-  connectedMembersInZone: string;
-  chooseToChat: string;
-  chatNowBtn: string;
-  sendDirectMsg: string;
-  sendJasmin: string;
-  viewProfileDetails: string;
-  connectedLiveHeader: string;
-  clickCityInstruction: string;
 }
 
 export const TRANSLATIONS: Record<Language, Translations> = {
@@ -289,7 +266,6 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tabMatches: 'Mes Matchs',
     tabChat: 'Messagerie',
     tabLounge: 'Salon Public',
-    tabMap: 'Carte & Trafic',
     tabProfile: 'Mon Profil',
     tabChefNadjet: 'Recettes & Gastronomie',
     tabLive: 'En Direct (Live)',
@@ -473,28 +449,6 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     playVideo: 'Regarder la vidéo',
     closeVideo: 'Fermer',
     filterHasVideo: '📹 Profils avec Vidéo uniquement',
-
-    // Map Toggle & Option
-    mapToggleTitle: 'Carte Mondiale du Trafic & Wilayas',
-    mapStatusDisabled: 'Carte actuellement masquée',
-    mapStatusEnabled: 'Carte mondiale active',
-    activateMapBtn: 'Activer la Carte',
-    deactivateMapBtn: 'Masquer la Carte',
-    returnToDiscover: 'Retour aux profils',
-    mapOptionHint: 'Activez la carte à tout moment pour visualiser les flux de connexion en temps réel.',
-    worldMapBanner: 'Carte Mondiale du Trafic & Wilayas',
-    worldMapTeaser: 'Visualisez les connexions en direct et les flux actifs entre les 69 wilayas et la diaspora',
-    viewMapBtn: 'Ouvrir la Carte',
-
-    // Connected Members on Map Click
-    connectedMembersInZone: 'Membres connectés en direct',
-    chooseToChat: 'Choisissez avec qui converser en direct :',
-    chatNowBtn: 'Discuter maintenant',
-    sendDirectMsg: 'Envoyer un message',
-    sendJasmin: 'Offrir un Jasmin',
-    viewProfileDetails: 'Voir le profil',
-    connectedLiveHeader: 'Connectés en direct à',
-    clickCityInstruction: 'Cliquez sur une ville ou une wilaya pour afficher les membres connectés et discuter immédiatement.',
   },
 
   ar: {
@@ -536,7 +490,6 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tabMatches: 'مطابقاتي',
     tabChat: 'الدردشة والرسائل',
     tabLounge: 'الصالون العام',
-    tabMap: 'الخريطة والترافيك',
     tabProfile: 'ملفي الشخصي',
     tabChefNadjet: 'وصفات وفنون الطهي',
     tabLive: 'بث مباشر (Live)',
@@ -720,28 +673,6 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     playVideo: 'مشاهدة الفيديو',
     closeVideo: 'إغلاق',
     filterHasVideo: '📹 حسابات تحتوي على فيديو فقط',
-
-    // Map Toggle & Option
-    mapToggleTitle: 'خريطة الترافيك العالمية والولايات',
-    mapStatusDisabled: 'الخريطة مخفية حالياً',
-    mapStatusEnabled: 'الخريطة مفعلة حالياً',
-    activateMapBtn: 'تفعيل الخريطة',
-    deactivateMapBtn: 'إخفاء الخريطة',
-    returnToDiscover: 'العودة لتصفح الأعضاء',
-    mapOptionHint: 'قم بتفعيل الخريطة في أي وقت لمشاهدة حركة وتدفق الاتصال في الوقت الفعلي بين الـ 69 ولاية والمهجر.',
-    worldMapBanner: 'خريطة الترافيك العالمية والولايات',
-    worldMapTeaser: 'شاهد التفاعلات المباشرة ونقاط الاتصال بين الـ 69 ولاية والمهجر في الوقت الفعلي',
-    viewMapBtn: 'فتح الخريطة',
-
-    // Connected Members on Map Click
-    connectedMembersInZone: 'الأعضاء المتصلون الآن في هذه المنطقة',
-    chooseToChat: 'اختر مع من تريد بدء المحادثة والتعارف في الخاص :',
-    chatNowBtn: 'تحدث الآن',
-    sendDirectMsg: 'إرسال رسالة',
-    sendJasmin: 'إهداء ياسمينة',
-    viewProfileDetails: 'عرض البروفايل',
-    connectedLiveHeader: 'المتصلون مباشرة في',
-    clickCityInstruction: 'اضغط على أي ولاية أو مدينة لعرض كافة الأعضاء المتصلين واختيار من ترغب في مراسلته فوراً.',
   },
 };
 
