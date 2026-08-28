@@ -67,10 +67,10 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
         <div className="text-center">
           <h1 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center justify-center gap-2">
             <ChefHat className="w-5 h-5 text-amber-500" />
-            <span>{isArabic ? 'ركن كبار الطهاة والذواقة' : 'Espace Chefs & Haute Gastronomie'}</span>
+            <span>{isArabic ? 'وصفات وفنون الطهي' : 'Recettes & Gastronomie'}</span>
           </h1>
           <p className="text-[11px] text-slate-500 dark:text-slate-400">
-            {isArabic ? 'أطباق الزفاف والحلويات والمأكولات الإسبانية' : 'Pâtisseries & Spécialités Méditerranéennes'}
+            {isArabic ? 'أشهى المأكولات، حلويات الأعراس والابتكارات المطبخية' : 'Pâtisseries d’exception, cuisine de fête & haute gastronomie'}
           </p>
         </div>
         <div className="w-10" />
@@ -90,10 +90,10 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
             }`}
           >
             <span>🥘</span>
-            <span>{isArabic ? 'الشيف جمال ميشيل (إسبانيا)' : 'Chef Djamel-Michel (Espagne)'}</span>
+            <span className="truncate">{isArabic ? 'المأكولات المتوسطية (إسبانيا)' : 'Gastronomie & Paella'}</span>
           </button>
 
-          {/* 2. Chef Nadjet */}
+          {/* 2. Recettes & Pâtisseries */}
           <button
             type="button"
             onClick={() => setSelectedChefTab('nadjet')}
@@ -103,8 +103,8 @@ export function ChefNadjetView({ onBackToDiscover }: ChefNadjetViewProps) {
                 : 'text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <span>👑</span>
-            <span>{isArabic ? 'الشيف نجاة (حلويات)' : 'Chef Nadjet (Pâtisserie)'}</span>
+            <span>🍰</span>
+            <span className="truncate">{isArabic ? 'حلويات ووصفات الأعراس' : 'Pâtisseries & Délices'}</span>
           </button>
         </div>
       </div>

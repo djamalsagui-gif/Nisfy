@@ -12,8 +12,6 @@ import {
   Search,
   Filter,
   MessageCircle,
-  Globe,
-  Radio,
   Video,
   Play,
   Bookmark,
@@ -43,9 +41,6 @@ interface DiscoverViewProps {
   allUsers: UserProfile[];
   onLikeUser: (targetUser: UserProfile, isSuperLike?: boolean, isJasmin?: boolean) => void;
   onStartDirectChat: (targetUser: UserProfile, initialMessage?: string) => void;
-  onOpenMap?: () => void;
-  isMapEnabled?: boolean;
-  onToggleMap?: (enabled?: boolean) => void;
   onReportUser?: (targetUser: UserProfile) => void;
   onBlockUser?: (targetUser: UserProfile) => void;
   bookmarkedUserIds?: string[];
@@ -58,9 +53,6 @@ export function DiscoverView({
   allUsers,
   onLikeUser,
   onStartDirectChat,
-  onOpenMap,
-  isMapEnabled = false,
-  onToggleMap,
   onReportUser,
   onBlockUser,
   bookmarkedUserIds = [],
@@ -389,95 +381,10 @@ export function DiscoverView({
                     onChange={(e) => setOnlyVerified(e.target.checked)}
                     className="rounded text-emerald-500 focus:ring-emerald-400 w-3.5 h-3.5"
                   />
-                  <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px]">{t.onlyVerified}</span>
+                    <span className="font-bold text-slate-700 dark:text-slate-300 text-[11px]">{t.onlyVerified}</span>
                 </label>
               </div>
             </div>
-          </div>
-        )}
-
-        {/* World Traffic Map - Optional & Toggleable by user choice */}
-        {isMapEnabled ? (
-          <div className="bg-gradient-to-r from-slate-900 via-slate-950 to-slate-900 border border-slate-800 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-white shadow-md">
-            <div
-              onClick={onOpenMap}
-              className="flex items-center gap-3 cursor-pointer group flex-1"
-            >
-              <div className="w-9 h-9 rounded-xl bg-[#FF3823]/20 border border-[#FF3823]/40 flex items-center justify-center text-[#FF6B35] group-hover:scale-105 transition-transform shrink-0">
-                <Globe className="w-5 h-5" />
-              </div>
-              <div>
-                <div className="flex items-center gap-1.5">
-                  <span className="text-xs font-black text-white group-hover:text-orange-300 transition-colors">
-                    {t.worldMapBanner}
-                  </span>
-                  <span className="px-1.5 py-0.2 rounded-md bg-emerald-500/20 text-emerald-300 text-[9px] font-extrabold border border-emerald-500/30">
-                    ACTIVÉE
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-400 line-clamp-1">
-                  {t.worldMapTeaser}
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
-              <button
-                type="button"
-                onClick={onOpenMap}
-                className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] hover:opacity-95 text-white text-xs font-bold transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
-              >
-                <span>{t.viewMapBtn}</span>
-                <Radio className="w-3.5 h-3.5 animate-pulse" />
-              </button>
-              {onToggleMap && (
-                <button
-                  type="button"
-                  onClick={() => onToggleMap(false)}
-                  className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold transition-colors shrink-0 cursor-pointer"
-                  title={t.deactivateMapBtn}
-                >
-                  {t.deactivateMapBtn}
-                </button>
-              )}
-            </div>
-          </div>
-        ) : (
-          <div className="relative overflow-hidden bg-gradient-to-r from-slate-900 via-slate-950 to-orange-950 border border-orange-500/30 hover:border-[#FF3823]/50 rounded-2xl p-3 sm:p-3.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 transition-all shadow-md group">
-            {/* Ambient colorful glow */}
-            <div className="absolute top-0 right-0 -mt-6 -mr-6 w-36 h-36 bg-[#FF3823]/20 rounded-full blur-2xl pointer-events-none" />
-            <div className="absolute bottom-0 left-10 -mb-6 w-32 h-32 bg-[#38BDF8]/10 rounded-full blur-2xl pointer-events-none" />
-
-            <div className="relative z-10 flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FF6B35] to-[#FF3823] text-white flex items-center justify-center shrink-0 shadow-md">
-                <Globe className="w-5 h-5 animate-spin-slow" />
-              </div>
-              <div>
-                <p className="text-xs font-black text-white flex items-center gap-2">
-                  <span>{t.mapToggleTitle}</span>
-                  <span className="px-2 py-0.5 rounded-full bg-[#FF3823]/20 text-orange-300 text-[10px] font-bold border border-[#FF3823]/30">
-                    {t.mapStatusDisabled}
-                  </span>
-                </p>
-                <p className="text-[11px] text-slate-300 hidden sm:block mt-0.5">
-                  {t.mapOptionHint}
-                </p>
-              </div>
-            </div>
-
-            {onToggleMap && (
-              <button
-                type="button"
-                onClick={() => {
-                  onToggleMap(true);
-                  if (onOpenMap) onOpenMap();
-                }}
-                className="relative z-10 w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 text-white text-xs font-black transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer shrink-0 active:scale-95"
-              >
-                <Globe className="w-4 h-4 text-white" />
-                <span>{t.activateMapBtn}</span>
-              </button>
-            )}
           </div>
         )}
       </div>

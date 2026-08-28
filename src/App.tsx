@@ -34,7 +34,6 @@ import { DiscoverView } from './components/DiscoverView';
 import { MatchesView } from './components/MatchesView';
 import { PrivateChatView } from './components/PrivateChatView';
 import { CommunityLoungeView } from './components/CommunityLoungeView';
-import { LiveTrafficMapView } from './components/LiveTrafficMapView';
 import { LiveStreamView } from './components/LiveStreamView';
 import { MyProfileView } from './components/MyProfileView';
 import { ChefNadjetView } from './components/chef-nadjet/ChefNadjetView';
@@ -114,16 +113,6 @@ export default function App() {
     }
   });
 
-  // Map Visibility State (Hidden by default, user-activatable)
-  const [isMapEnabled, setIsMapEnabled] = useState<boolean>(() => {
-    try {
-      const saved = localStorage.getItem('dz_map_enabled');
-      return saved === 'true'; // Defaults to false (hidden)
-    } catch {
-      return false;
-    }
-  });
-
   // 2. Data State
   const [chats, setChats] = useState<Record<string, ChatMessage[]>>(() =>
     getPrivateChats()
@@ -168,22 +157,6 @@ export default function App() {
       }
       return next;
     });
-  };
-
-  const handleToggleMap = (enabled?: boolean) => {
-    const next = enabled !== undefined ? enabled : !isMapEnabled;
-    setIsMapEnabled(next);
-    try {
-      localStorage.setItem('dz_map_enabled', String(next));
-    } catch {
-      // ignore
-    }
-    if (next) {
-      setActiveTab('map');
-      datingSounds.playTapSound();
-    } else if (activeTab === 'map') {
-      setActiveTab('discover');
-    }
   };
 
   const handleRegisterUser = (newUser: UserProfile) => {
@@ -490,8 +463,6 @@ export default function App() {
           matchesCount={matches.length}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
-          isMapEnabled={isMapEnabled}
-          onToggleMapEnabled={handleToggleMap}
           allUsers={registeredUsers}
           onSelectUser={(u) => handleStartDirectChat(u)}
           isDarkMode={isDarkMode}
@@ -510,12 +481,6 @@ export default function App() {
               allUsers={registeredUsers}
               onLikeUser={handleLikeUser}
               onStartDirectChat={handleStartDirectChat}
-              onOpenMap={() => {
-                setIsMapEnabled(true);
-                setActiveTab('map');
-              }}
-              isMapEnabled={isMapEnabled}
-              onToggleMap={handleToggleMap}
               onReportUser={handleReportUser}
               onBlockUser={handleBlockUser}
               bookmarkedUserIds={bookmarkedUserIds}
@@ -603,17 +568,6 @@ export default function App() {
               onPostMessage={handlePostCommunityMessage}
               onLikeMessage={handleLikeCommunityMessage}
               onStartDirectChat={handleStartDirectChat}
-            />
-          )}
-
-          {activeTab === 'map' && (
-            <LiveTrafficMapView
-              currentUser={currentUser}
-              allUsers={registeredUsers}
-              onStartDirectChat={handleStartDirectChat}
-              onExploreZoneFilter={() => setActiveTab('discover')}
-              onCloseMap={() => setActiveTab('discover')}
-              onToggleMap={handleToggleMap}
             />
           )}
 

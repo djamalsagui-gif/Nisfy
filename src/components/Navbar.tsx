@@ -8,7 +8,6 @@ import {
   Sparkles,
   Volume2,
   VolumeX,
-  Globe,
   Radio,
   Search,
   Mic,
@@ -20,6 +19,7 @@ import {
   ChevronDown,
   X,
   Cake,
+  ChefHat,
   Crown,
   ShieldCheck,
   Moon,
@@ -46,8 +46,6 @@ interface NavbarProps {
   matchesCount: number;
   isMuted: boolean;
   onToggleMute: () => void;
-  isMapEnabled: boolean;
-  onToggleMapEnabled: (enabled?: boolean) => void;
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onOpenStories?: () => void;
@@ -70,8 +68,6 @@ export function Navbar({
   matchesCount,
   isMuted,
   onToggleMute,
-  isMapEnabled,
-  onToggleMapEnabled,
   searchQuery = '',
   onSearchChange,
   onOpenStories,
@@ -140,7 +136,7 @@ export function Navbar({
   };
 
   const isMasterUser = checkIsAdmin(currentUser?.email);
-  const isSecondaryActive = ['shop', 'marketplace', 'customs', 'chef_nadjet', 'admin', 'map'].includes(activeTab);
+  const isSecondaryActive = ['shop', 'marketplace', 'customs', 'chef_nadjet', 'admin'].includes(activeTab);
 
   return (
     <>
@@ -309,8 +305,8 @@ export function Navbar({
                     activeTab === 'chef_nadjet' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
                   }`}
                 >
-                  <Cake className="w-4 h-4 text-amber-600" />
-                  <span>{isArabic ? 'الشيف نجاة (حلويات الأعراس)' : 'Chef Nadjet (Recettes)'}</span>
+                  <ChefHat className="w-4 h-4 text-amber-600" />
+                  <span>{isArabic ? 'وصفات وفنون الطهي' : 'Recettes & Gastronomie'}</span>
                 </button>
 
                 <button
@@ -321,16 +317,6 @@ export function Navbar({
                 >
                   <Radio className="w-4 h-4 text-[#FF3823] animate-pulse" />
                   <span>{t.tabLive}</span>
-                </button>
-
-                <button
-                  onClick={() => { onSelectTab('map'); setShowExplorerMenu(false); }}
-                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
-                    activeTab === 'map' ? 'bg-slate-100 dark:bg-slate-800 text-[#FF3823]' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
-                  }`}
-                >
-                  <Globe className="w-4 h-4 text-[#38BDF8]" />
-                  <span>{t.tabMap}</span>
                 </button>
 
                 {onOpenPwaInstall && (

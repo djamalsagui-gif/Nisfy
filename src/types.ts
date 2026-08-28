@@ -172,7 +172,6 @@ export type ActiveTab =
   | 'matches'
   | 'chat'
   | 'lounge'
-  | 'map'
   | 'profile'
   | 'live'
   | 'chef_nadjet'

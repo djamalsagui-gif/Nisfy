@@ -291,7 +291,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tabLounge: 'Salon Public',
     tabMap: 'Carte & Trafic',
     tabProfile: 'Mon Profil',
-    tabChefNadjet: 'Chef Nadjet (Gâteaux & Mariage)',
+    tabChefNadjet: 'Recettes & Gastronomie',
     tabLive: 'En Direct (Live)',
 
     // Header & Status
@@ -538,7 +538,7 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     tabLounge: 'الصالون العام',
     tabMap: 'الخريطة والترافيك',
     tabProfile: 'ملفي الشخصي',
-    tabChefNadjet: 'الشيف نجاة (حلويات الأعراس)',
+    tabChefNadjet: 'وصفات وفنون الطهي',
     tabLive: 'بث مباشر (Live)',
 
     // Header & Status
