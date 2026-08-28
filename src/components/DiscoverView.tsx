@@ -33,6 +33,7 @@ import { PublishVideoModal } from './PublishVideoModal';
 import { SponsoredAdCard } from './SponsoredAdCard';
 import { SponsoredAdModal } from './SponsoredAdModal';
 import { BecomePartnerModal } from './BecomePartnerModal';
+import { calculateCompatibilityScore } from '../utils/matchingAlgorithm';
 import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -72,6 +73,11 @@ export function DiscoverView({
   // Stories Fullscreen Player state
   const [activeStoryUser, setActiveStoryUser] = useState<UserProfile | null>(null);
   const [activeStoryIndex, setActiveStoryIndex] = useState(0);
+
+  // 7 Sub-tabs for Encounter (Section 8)
+  const [encounterSubTab, setEncounterSubTab] = useState<
+    'pour_vous' | 'compatibilites' | 'nouveaux' | 'likes_recus' | 'favoris' | 'superlikes_jasmin' | 'matchs'
+  >('pour_vous');
 
   // Filters state
   const [discoveryFilters, setDiscoveryFilters] = useState({
@@ -147,7 +153,30 @@ export function DiscoverView({
     });
   }, [allUsers, currentUser.id, currentUser.blockedUsers, discoveryFilters]);
 
-  const activeCardUser = filteredUsers[currentIndex] || null;
+  // Process profiles according to encounterSubTab (Section 8)
+  const processedUsers = useMemo(() => {
+    let list = [...filteredUsers];
+    if (encounterSubTab === 'compatibilites') {
+      list.sort((a, b) => {
+        const scoreA = calculateCompatibilityScore(currentUser, a).score;
+        const scoreB = calculateCompatibilityScore(currentUser, b).score;
+        return scoreB - scoreA;
+      });
+    } else if (encounterSubTab === 'nouveaux') {
+      list.reverse();
+    } else if (encounterSubTab === 'favoris') {
+      list = list.filter((u) => bookmarkedUserIds.includes(u.id));
+    } else if (encounterSubTab === 'likes_recus') {
+      list = list.filter((u) => (u.likesCount && u.likesCount > 80) || u.verified);
+    } else if (encounterSubTab === 'superlikes_jasmin') {
+      list = list.filter((u) => u.marriageVerified || u.verified || (u.jasminLikesCount && u.jasminLikesCount > 0));
+    } else if (encounterSubTab === 'matchs') {
+      list = list.filter((u) => u.isOnline || (u.seriousnessScore && u.seriousnessScore >= 80));
+    }
+    return list;
+  }, [filteredUsers, encounterSubTab, currentUser, bookmarkedUserIds]);
+
+  const activeCardUser = processedUsers[currentIndex] || null;
 
   const handleLike = (targetUser: UserProfile) => {
     datingSounds.playLikeSound();
@@ -192,20 +221,53 @@ export function DiscoverView({
         onAddStory={() => setIsPublishModalOpen(true)}
       />
 
-      {/* 2. Top Fluid Controls & Filter Bar */}
+      {/* 2. Top Fluid Controls & Encounter Sub-Tabs (Section 8) */}
       <div className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl rounded-3xl p-3.5 sm:p-4 border border-slate-200/70 dark:border-slate-800 shadow-xs space-y-3">
-        <div className="flex items-center justify-between gap-3">
+        {/* Encounter Sub-Tabs (Pour vous, Compatibilités, Nouveaux, Likes reçus, Favoris, Jasmin, Matchs) */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-hide no-scrollbar border-b border-slate-100 dark:border-slate-800">
+          {[
+            { id: 'pour_vous', labelFr: '🌟 Pour vous', labelAr: '🌟 لك' },
+            { id: 'compatibilites', labelFr: '❤️ 90%+ Compatibles', labelAr: '❤️ أعلى توافق' },
+            { id: 'nouveaux', labelFr: '✨ Nouveaux profils', labelAr: '✨ الجدد' },
+            { id: 'likes_recus', labelFr: '💌 Likes reçus', labelAr: '💌 إعجابات واردة' },
+            { id: 'favoris', labelFr: '⭐ Favoris', labelAr: '⭐ المفضلة' },
+            { id: 'superlikes_jasmin', labelFr: '🌸 Jasmin & Super-Likes', labelAr: '🌸 ياسمين ومميز' },
+            { id: 'matchs', labelFr: '🤝 Matchs', labelAr: '🤝 توافق متبادل' },
+          ].map((sub) => {
+            const isSel = encounterSubTab === sub.id;
+            return (
+              <button
+                key={sub.id}
+                type="button"
+                onClick={() => {
+                  datingSounds.playTapSound();
+                  setEncounterSubTab(sub.id as any);
+                  setCurrentIndex(0);
+                }}
+                className={`px-3 py-1.5 rounded-full text-xs font-bold shrink-0 transition-all cursor-pointer ${
+                  isSel
+                    ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-md shadow-orange-500/25 ring-2 ring-white/30'
+                    : 'bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700'
+                }`}
+              >
+                {isArabic ? sub.labelAr : sub.labelFr}
+              </button>
+            );
+          })}
+        </div>
+
+        <div className="flex items-center justify-between gap-3 pt-1">
           <div className="flex items-center gap-2">
             <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
               <span>{t.discoverTitle}</span>
             </h2>
             <span className="px-2 py-0.5 rounded-full text-[10px] font-extrabold bg-orange-50 text-[#FF3823] dark:bg-orange-950/50 dark:text-[#FF6B35] border border-orange-200/60 dark:border-orange-900/40">
-              {filteredUsers.length}
+              {processedUsers.length}
             </span>
           </div>
 
           <div className="flex items-center gap-2">
-            {/* View Mode Toggle (Sleek minimalist icon pill with Red-Orange and Sky Blue) */}
+            {/* View Mode Toggle */}
             <div className="flex items-center bg-slate-100 dark:bg-slate-800 p-0.5 rounded-full border border-slate-200/60 dark:border-slate-700">
               <button
                 type="button"
@@ -492,7 +554,7 @@ export function DiscoverView({
       ) : (
         /* ===== GRID GALLERY VIEW ===== */
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filteredUsers.map((user, idx) => {
+          {processedUsers.map((user, idx) => {
             const hasVideo = user.videos && user.videos.length > 0;
             const shouldShowAd = idx > 0 && idx % 8 === 0 && activeAds.length > 0;
             const adToShow = activeAds.length > 0 ? activeAds[Math.floor(idx / 8) % activeAds.length] : null;

@@ -168,16 +168,98 @@ export type ActiveTab =
   | 'feed'
   | 'search'
   | 'discover'
+  | 'communities'
   | 'customs'
   | 'marketplace'
   | 'shop'
   | 'matches'
   | 'chat'
-  | 'lounge'
   | 'profile'
   | 'live'
   | 'chef_nadjet'
   | 'admin';
+
+export type CommunityCategory = 'wilaya' | 'diaspora' | 'theme' | 'social';
+
+export interface NisfyCommunity {
+  id: string;
+  name: string;
+  nameAr: string;
+  category: CommunityCategory;
+  description: string;
+  descriptionAr: string;
+  icon: string;
+  coverImage: string;
+  membersCount: number;
+  wilayaCode?: string;
+  country?: string;
+  isVerified?: boolean;
+  joined?: boolean;
+  activeLivesCount?: number;
+  recentTopic?: string;
+}
+
+export interface CommunityPostItem {
+  id: string;
+  communityId: string;
+  communityName: string;
+  authorId: string;
+  authorName: string;
+  authorAvatar: string;
+  authorCity?: string;
+  authorVerified?: boolean;
+  content: string;
+  mediaUrl?: string;
+  mediaType?: 'image' | 'video' | 'poll';
+  pollOptions?: { text: string; votes: number }[];
+  likesCount: number;
+  commentsCount: number;
+  timestamp: string;
+  likedBy?: string[];
+}
+
+export interface CommunityEventItem {
+  id: string;
+  communityId: string;
+  communityName: string;
+  title: string;
+  titleAr: string;
+  description: string;
+  date: string;
+  time: string;
+  type: 'live_audio' | 'live_video' | 'workshop' | 'gathering';
+  participantsCount: number;
+  isLiveNow?: boolean;
+  hostName: string;
+  hostAvatar: string;
+}
+
+export interface LiveRoom {
+  id: string;
+  title: string;
+  titleAr: string;
+  topic: string;
+  communityName?: string;
+  type: 'audio' | 'video';
+  host: {
+    id: string;
+    name: string;
+    avatar: string;
+    city: string;
+    verified: boolean;
+  };
+  speakers: {
+    id: string;
+    name: string;
+    avatar: string;
+    isMuted?: boolean;
+    isHost?: boolean;
+  }[];
+  listenersCount: number;
+  category: string;
+  startedAt: string;
+  isLive: boolean;
+}
 
 export interface WilayaCustom {
   id: string;

@@ -214,17 +214,17 @@ export function Navbar({
             <span>{t.tabDiscover}</span>
           </button>
 
-          {/* 5. 🌸 Salhiya / Lounge */}
+          {/* 5. 👥 Nisfy Communautés (Wilayas, Diaspora, Thèmes, Live Rooms) */}
           <button
-            onClick={() => onSelectTab('lounge')}
+            onClick={() => onSelectTab('communities')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'lounge'
-                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+              activeTab === 'communities'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
                 : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Users className="w-3.5 h-3.5 text-emerald-600" />
-            <span>{t.tabLounge}</span>
+            <Users className={`w-3.5 h-3.5 ${activeTab === 'communities' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{isArabic ? 'المجتمعات 🇩🇿' : 'Communautés 🇩🇿'}</span>
           </button>
 
           {/* 6. 💬 Messagerie */}
