@@ -373,7 +373,7 @@ export function SearchView({
               </h3>
             </div>
             <button
-              onClick={() => onSelectTab('lounge')}
+              onClick={() => onSelectTab('communities')}
               className="text-xs font-bold text-[#FF3823] hover:underline flex items-center gap-1 cursor-pointer"
             >
               <span>{isArabic ? 'صالون الصالحية' : 'Accéder au Salon'}</span>
@@ -385,7 +385,7 @@ export function SearchView({
             {matchedGroups.map((grp) => (
               <div
                 key={grp.id}
-                onClick={() => onSelectTab('lounge')}
+                onClick={() => onSelectTab('communities')}
                 className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 rounded-3xl p-3.5 flex items-center gap-3.5 shadow-xs hover:shadow-md transition-all cursor-pointer group"
               >
                 <img

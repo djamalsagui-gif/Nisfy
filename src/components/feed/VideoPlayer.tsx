@@ -155,6 +155,11 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
     }
   };
 
+  const formatCount = (count: number) => {
+    if (count >= 1000) return (count / 1000).toFixed(1).replace(/\.0$/, '') + 'K';
+    return count.toString();
+  };
+
   return (
     <div ref={ref} className="relative w-full h-full snap-start snap-always bg-black flex items-center justify-center select-none">
       {/* Video layer */}
@@ -231,7 +236,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
             <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'fill-[#FF3823] text-[#FF3823] scale-110' : 'text-white'}`} />
           </div>
-          <span className="text-white text-[11px] font-black drop-shadow-md">{likesCount}</span>
+          <span className="text-white text-[11px] font-black drop-shadow-md">{formatCount(likesCount)}</span>
         </div>
 
         {/* Comments Button */}
@@ -239,7 +244,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
             <MessageCircle className="w-6 h-6 text-white" />
           </div>
-          <span className="text-white text-[11px] font-black drop-shadow-md">{post.commentsCount || (post.comments ? post.comments.length : 0)}</span>
+          <span className="text-white text-[11px] font-black drop-shadow-md">{formatCount(post.commentsCount || (post.comments ? post.comments.length : 0))}</span>
         </div>
 
         {/* Music / Story Button */}
@@ -262,7 +267,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
           <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
             <Share2 className="w-6 h-6 text-white" />
           </div>
-          <span className="text-white text-[10px] font-bold drop-shadow-md">Partager</span>
+          <span className="text-white text-[10px] font-bold drop-shadow-md">{formatCount(post.sharesCount || 32)}</span>
         </div>
 
         {/* Sound Toggle */}

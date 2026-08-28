@@ -267,9 +267,9 @@ export const TRANSLATIONS: Record<Language, Translations> = {
 
     // Tabs
     tabHome: 'Accueil',
-    tabFeed: 'Fil Social',
+    tabFeed: 'Feed',
     tabSearch: 'Recherche',
-    tabPublish: 'Publier',
+    tabPublish: 'Créer',
     tabDiscover: 'Rencontre',
     tabMatches: 'Mes Matchs',
     tabChat: 'Messagerie',

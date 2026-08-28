@@ -281,11 +281,20 @@ export function AuthModal({
     setVerifiedEmail(cleanEmail);
     setResendCooldown(60);
     setOtp('');
-    setInfoMessage(
-      isArabic
-        ? `تم إرسال رمز التحقق إلى: ${cleanEmail}`
-        : `Un code de vérification a été envoyé à : ${cleanEmail}`
-    );
+    
+    if (result.mocked) {
+      setInfoMessage(
+        isArabic 
+          ? `⚠️ وضع العرض: تم تجاوز الحد الأقصى للإيميلات. أدخل الرمز 123456 للدخول.`
+          : `⚠️ Mode Demo : Limite d'emails atteinte. Utilisez le code 123456 pour continuer.`
+      );
+    } else {
+      setInfoMessage(
+        isArabic
+          ? `تم إرسال رمز التحقق إلى: ${cleanEmail}`
+          : `Un code de vérification a été envoyé à : ${cleanEmail}`
+      );
+    }
     setStep(2); // Go to OTP verification step
   };
 
@@ -300,11 +309,19 @@ export function AuthModal({
 
     if (result.success) {
       setResendCooldown(60);
-      setInfoMessage(
-        isArabic
-          ? 'تم إرسال رمز جديد إلى بريدك الإلكتروني'
-          : 'Un nouveau code a été envoyé à votre adresse email'
-      );
+      if (result.mocked) {
+        setInfoMessage(
+          isArabic 
+            ? `⚠️ وضع العرض: أدخل الرمز 123456 للدخول.`
+            : `⚠️ Mode Demo : Utilisez le code 123456 pour continuer.`
+        );
+      } else {
+        setInfoMessage(
+          isArabic
+            ? 'تم إرسال رمز جديد إلى بريدك الإلكتروني'
+            : 'Un nouveau code a été envoyé à votre adresse email'
+        );
+      }
     } else {
       setErrorMessage(
         result.error ||

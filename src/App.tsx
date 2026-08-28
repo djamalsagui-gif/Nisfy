@@ -36,7 +36,7 @@ import { SearchView } from './components/SearchView';
 import { CreateActionModal } from './components/CreateActionModal';
 import { MatchesView } from './components/MatchesView';
 import { PrivateChatView } from './components/PrivateChatView';
-import { CommunityLoungeView } from './components/CommunityLoungeView';
+import { NisfyCommunitiesView } from './components/NisfyCommunitiesView';
 import { LiveStreamView } from './components/LiveStreamView';
 import { MyProfileView } from './components/MyProfileView';
 import { ChefNadjetView } from './components/chef-nadjet/ChefNadjetView';
@@ -594,14 +594,12 @@ export default function App() {
             />
           )}
 
-          {activeTab === 'lounge' && (
-            <CommunityLoungeView
+          {activeTab === 'communities' && (
+            <NisfyCommunitiesView
               currentUser={currentUser}
               allUsers={registeredUsers}
-              messages={communityMessages}
-              onPostMessage={handlePostCommunityMessage}
-              onLikeMessage={handleLikeCommunityMessage}
               onStartDirectChat={handleStartDirectChat}
+              onOpenCreateModal={() => setIsCreateActionModalOpen(true)}
             />
           )}
 
