@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import {
+  Home,
+  Plus,
   Heart,
   Compass,
   MessageCircle,
@@ -49,6 +51,7 @@ interface NavbarProps {
   searchQuery?: string;
   onSearchChange?: (query: string) => void;
   onOpenStories?: () => void;
+  onOpenCreateModal?: () => void;
   allUsers?: UserProfile[];
   onSelectUser?: (user: UserProfile) => void;
   isDarkMode?: boolean;
@@ -71,6 +74,7 @@ export function Navbar({
   searchQuery = '',
   onSearchChange,
   onOpenStories,
+  onOpenCreateModal,
   allUsers = [],
   onSelectUser,
   isDarkMode = false,
@@ -161,21 +165,8 @@ export function Navbar({
         </div>
 
         {/* Primary Streamlined Navigation (Desktop & Tablet) */}
-        <nav className="hidden sm:flex items-center gap-1 bg-slate-100/70 dark:bg-slate-800/70 p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-md">
-          {/* 1. Découvrir */}
-          <button
-            onClick={() => onSelectTab('discover')}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'discover'
-                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Compass className={`w-3.5 h-3.5 ${activeTab === 'discover' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
-            <span>{t.tabDiscover}</span>
-          </button>
-
-          {/* 2. Reels DZ */}
+        <nav className="hidden lg:flex items-center gap-1 bg-slate-100/70 dark:bg-slate-800/70 p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-md">
+          {/* 1. 🏠 Feed Social */}
           <button
             onClick={() => onSelectTab('feed')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
@@ -184,29 +175,59 @@ export function Navbar({
                 : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Film className={`w-3.5 h-3.5 ${activeTab === 'feed' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
-            <span>{isArabic ? 'ريلز' : 'Reels'}</span>
+            <Home className={`w-3.5 h-3.5 ${activeTab === 'feed' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{t.tabFeed}</span>
           </button>
 
-          {/* 3. Matchs */}
+          {/* 2. 🔎 Recherche */}
           <button
-            onClick={() => onSelectTab('matches')}
-            className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'matches'
-                ? 'bg-white dark:bg-slate-900 text-amber-600 dark:text-amber-400 shadow-xs'
+            onClick={() => onSelectTab('search')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'search'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
                 : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>{t.tabMatches}</span>
-            {matchesCount > 0 && (
-              <span className="px-1.5 py-0.2 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-full text-[9px] font-extrabold shadow-xs shadow-orange-500/30">
-                {matchesCount}
-              </span>
-            )}
+            <Search className={`w-3.5 h-3.5 ${activeTab === 'search' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{t.tabSearch}</span>
           </button>
 
-          {/* 4. Chat */}
+          {/* 3. ＋ Publier Modal Trigger */}
+          <button
+            onClick={() => onOpenCreateModal && onOpenCreateModal()}
+            className="px-3 py-1.5 rounded-full text-xs font-black bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs hover:opacity-95 active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>{t.tabPublish}</span>
+          </button>
+
+          {/* 4. ❤️ Rencontre / Discover */}
+          <button
+            onClick={() => onSelectTab('discover')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'discover'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Heart className={`w-3.5 h-3.5 fill-current ${activeTab === 'discover' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{t.tabDiscover}</span>
+          </button>
+
+          {/* 5. 🌸 Salhiya / Lounge */}
+          <button
+            onClick={() => onSelectTab('lounge')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'lounge'
+                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Users className="w-3.5 h-3.5 text-emerald-600" />
+            <span>{t.tabLounge}</span>
+          </button>
+
+          {/* 6. 💬 Messagerie */}
           <button
             onClick={() => onSelectTab('chat')}
             className={`relative px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
@@ -222,19 +243,6 @@ export function Navbar({
                 {unreadCount}
               </span>
             )}
-          </button>
-
-          {/* 5. Lounge */}
-          <button
-            onClick={() => onSelectTab('lounge')}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'lounge'
-                ? 'bg-white dark:bg-slate-900 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            <Users className="w-3.5 h-3.5 text-emerald-600" />
-            <span className="hidden md:inline">{t.tabLounge}</span>
           </button>
 
           {/* Admin Direct Button (When Super Admin or activeTab === 'admin') */}
@@ -548,61 +556,70 @@ export function Navbar({
       </div>
     </header>
 
-    {/* Mobile Fixed Bottom Navigation Bar - Super clean 4-pill layout */}
+    {/* Mobile Fixed Bottom Navigation Bar - Strict 5-Pill Master Schema */}
     <nav
-      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/70 dark:border-slate-800/70 px-3 py-2 flex items-center justify-around shadow-lg transition-colors duration-200"
+      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/70 dark:border-slate-800/70 px-2 py-1.5 flex items-center justify-around shadow-lg transition-colors duration-200"
       dir={isArabic ? 'rtl' : 'ltr'}
     >
-      {/* 1. Découvrir */}
+      {/* 1. 🏠 Feed */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('feed')}
+        className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
+          activeTab === 'feed' || activeTab === 'home'
+            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
+            : 'text-slate-500 dark:text-slate-400'
+        }`}
+      >
+        <Home className="w-5 h-5" />
+        <span className="text-[10px] mt-0.5">{t.tabFeed}</span>
+      </button>
+
+      {/* 2. 🔎 Recherche */}
+      <button
+        type="button"
+        onClick={() => onSelectTab('search')}
+        className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
+          activeTab === 'search'
+            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
+            : 'text-slate-500 dark:text-slate-400'
+        }`}
+      >
+        <Search className="w-5 h-5" />
+        <span className="text-[10px] mt-0.5">{t.tabSearch}</span>
+      </button>
+
+      {/* 3. ＋ Publier (Center Action Button) */}
+      <button
+        type="button"
+        onClick={() => onOpenCreateModal && onOpenCreateModal()}
+        className="flex flex-col items-center justify-center -mt-4 cursor-pointer group"
+      >
+        <div className="w-11 h-11 rounded-full bg-gradient-to-tr from-[#FF6B35] to-[#FF3823] text-white flex items-center justify-center shadow-lg shadow-orange-500/40 group-active:scale-95 transition-transform border-2 border-white dark:border-slate-900">
+          <Plus className="w-6 h-6 stroke-[2.5]" />
+        </div>
+        <span className="text-[9px] font-black text-[#FF3823] mt-0.5">{t.tabPublish}</span>
+      </button>
+
+      {/* 4. ❤️ Rencontre */}
       <button
         type="button"
         onClick={() => onSelectTab('discover')}
-        className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
+        className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
           activeTab === 'discover'
             ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
             : 'text-slate-500 dark:text-slate-400'
         }`}
       >
-        <Compass className="w-5 h-5" />
+        <Heart className={`w-5 h-5 ${activeTab === 'discover' ? 'fill-[#FF3823]' : ''}`} />
         <span className="text-[10px] mt-0.5">{t.tabDiscover}</span>
       </button>
 
-      {/* 2. Reels DZ */}
-      <button
-        type="button"
-        onClick={() => onSelectTab('feed')}
-        className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
-          activeTab === 'feed'
-            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
-            : 'text-slate-500 dark:text-slate-400'
-        }`}
-      >
-        <Film className="w-5 h-5" />
-        <span className="text-[10px] mt-0.5">{isArabic ? 'ريلز' : 'Reels'}</span>
-      </button>
-
-      {/* 3. Messages */}
-      <button
-        type="button"
-        onClick={() => onSelectTab('chat')}
-        className={`relative flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
-          activeTab === 'chat'
-            ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
-            : 'text-slate-500 dark:text-slate-400'
-        }`}
-      >
-        <MessageCircle className="w-5 h-5" />
-        {unreadCount > 0 && (
-          <span className="absolute top-1 right-2 w-2 h-2 bg-[#FF3823] rounded-full animate-ping" />
-        )}
-        <span className="text-[10px] mt-0.5">{t.tabChat}</span>
-      </button>
-
-      {/* 4. Profil / Menu */}
+      {/* 5. 👤 Profil */}
       <button
         type="button"
         onClick={() => onSelectTab('profile')}
-        className={`flex flex-col items-center justify-center py-1 px-3 rounded-2xl transition-all cursor-pointer ${
+        className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
           activeTab === 'profile'
             ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
             : 'text-slate-500 dark:text-slate-400'
@@ -611,22 +628,6 @@ export function Navbar({
         <User className="w-5 h-5" />
         <span className="text-[10px] mt-0.5">{isArabic ? 'حسابي' : 'Profil'}</span>
       </button>
-
-      {/* 5. Admin Pubs & Paiements (When Super Admin or on admin tab) */}
-      {(isMasterUser || activeTab === 'admin') && (
-        <button
-          type="button"
-          onClick={() => onSelectTab('admin')}
-          className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
-            activeTab === 'admin'
-              ? 'text-white font-black bg-gradient-to-r from-amber-500 to-[#FF3823] shadow-xs'
-              : 'text-amber-600 dark:text-amber-400 font-bold bg-amber-500/10'
-          }`}
-        >
-          <ShieldCheck className="w-5 h-5" />
-          <span className="text-[10px] mt-0.5">{isArabic ? 'الإدارة' : 'Admin'}</span>
-        </button>
-      )}
     </nav>
     </>
   );

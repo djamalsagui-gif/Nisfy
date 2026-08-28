@@ -164,8 +164,10 @@ export interface LikeAction {
 }
 
 export type ActiveTab =
-  | 'discover'
+  | 'home'
   | 'feed'
+  | 'search'
+  | 'discover'
   | 'customs'
   | 'marketplace'
   | 'shop'

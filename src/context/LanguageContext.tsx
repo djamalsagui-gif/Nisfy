@@ -38,6 +38,10 @@ export interface Translations {
   langAria: string;
 
   // Tabs
+  tabHome: string;
+  tabFeed: string;
+  tabSearch: string;
+  tabPublish: string;
   tabDiscover: string;
   tabMatches: string;
   tabChat: string;
@@ -262,10 +266,14 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     langAria: 'Changer la langue',
 
     // Tabs
-    tabDiscover: 'Découvrir',
+    tabHome: 'Accueil',
+    tabFeed: 'Fil Social',
+    tabSearch: 'Recherche',
+    tabPublish: 'Publier',
+    tabDiscover: 'Rencontre',
     tabMatches: 'Mes Matchs',
     tabChat: 'Messagerie',
-    tabLounge: 'Salon Public',
+    tabLounge: 'Salon Salhiya',
     tabProfile: 'Mon Profil',
     tabChefNadjet: 'Recettes & Gastronomie',
     tabLive: 'En Direct (Live)',
@@ -486,10 +494,14 @@ export const TRANSLATIONS: Record<Language, Translations> = {
     langAria: 'تغيير اللغة',
 
     // Tabs
-    tabDiscover: 'اكتشاف الأعضاء',
+    tabHome: 'الرئيسية',
+    tabFeed: 'المنشورات',
+    tabSearch: 'بحث شامل',
+    tabPublish: 'نشر محتوى',
+    tabDiscover: 'التعارف والزواج',
     tabMatches: 'مطابقاتي',
     tabChat: 'الدردشة والرسائل',
-    tabLounge: 'الصالون العام',
+    tabLounge: 'صالون الصالحية',
     tabProfile: 'ملفي الشخصي',
     tabChefNadjet: 'وصفات وفنون الطهي',
     tabLive: 'بث مباشر (Live)',

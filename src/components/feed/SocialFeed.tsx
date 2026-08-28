@@ -15,7 +15,7 @@ interface SocialFeedProps {
 
 export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: SocialFeedProps) {
   const { isArabic } = useLanguage();
-  const [selectedCategory, setSelectedCategory] = useState<SocialPostCategory | 'all'>('all');
+  const [selectedCategory, setSelectedCategory] = useState<any>('all');
   const [posts, setPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
@@ -25,9 +25,21 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
   const [newCommentText, setNewCommentText] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const filteredPosts = posts.filter(
-    (post) => selectedCategory === 'all' || post.category === selectedCategory
-  );
+  const filteredPosts = posts.filter((post) => {
+    if (selectedCategory === 'all') return true;
+    if (selectedCategory === 'following') {
+      // Show verified creators or user's network
+      return post.authorVerified || post.likesCount > 400;
+    }
+    if (selectedCategory === 'nearby') {
+      // Prioritize user wilaya or central/regional posts
+      return post.authorCity?.includes(currentUser?.city || 'Alger') || post.authorCity?.includes('16') || post.authorCity?.includes('31');
+    }
+    if (selectedCategory === 'wilayas') {
+      return !!post.authorCity;
+    }
+    return post.category === selectedCategory;
+  });
 
   const currentIndex = filteredPosts.findIndex((p) => p.id === activePostId);
   const activeIndex = currentIndex >= 0 ? currentIndex : 0;

@@ -30,7 +30,10 @@ import { datingSounds } from './utils/soundEffects';
 
 import { Navbar } from './components/Navbar';
 import { AuthModal } from './components/auth/AuthModal';
+import { HomeDashboardView } from './components/HomeDashboardView';
 import { DiscoverView } from './components/DiscoverView';
+import { SearchView } from './components/SearchView';
+import { CreateActionModal } from './components/CreateActionModal';
 import { MatchesView } from './components/MatchesView';
 import { PrivateChatView } from './components/PrivateChatView';
 import { CommunityLoungeView } from './components/CommunityLoungeView';
@@ -66,7 +69,13 @@ export default function App() {
   const [registeredUsers, setRegisteredUsers] = useState<UserProfile[]>(() =>
     getRegisteredUsers()
   );
-  const [activeTab, setActiveTab] = useState<ActiveTab>('discover');
+  const [activeTab, setActiveTab] = useState<ActiveTab>(() => {
+    try {
+      const stored = sessionStorage.getItem('nisfy_target_tab');
+      if (stored) return stored as ActiveTab;
+    } catch {}
+    return 'home';
+  });
   const [isMuted, setIsMuted] = useState(false);
 
   // Dark Mode State
@@ -97,6 +106,7 @@ export default function App() {
   };
 
   // Modals state
+  const [isCreateActionModalOpen, setIsCreateActionModalOpen] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
@@ -465,6 +475,7 @@ export default function App() {
           onToggleMute={handleToggleMute}
           allUsers={registeredUsers}
           onSelectUser={(u) => handleStartDirectChat(u)}
+          onOpenCreateModal={() => setIsCreateActionModalOpen(true)}
           isDarkMode={isDarkMode}
           onToggleDarkMode={handleToggleDarkMode}
           onOpenPremium={() => setIsPremiumModalOpen(true)}
@@ -475,6 +486,29 @@ export default function App() {
 
         {/* Main Content Area */}
         <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+          {activeTab === 'home' && (
+            <HomeDashboardView
+              currentUser={currentUser}
+              allUsers={registeredUsers}
+              matches={matches}
+              onSelectTab={setActiveTab}
+              onSelectUserForChat={(u) => handleStartDirectChat(u)}
+              onExploreFiltered={(cat) => {
+                setActiveTab('discover');
+              }}
+            />
+          )}
+
+          {activeTab === 'search' && (
+            <SearchView
+              currentUser={currentUser}
+              allUsers={registeredUsers}
+              onSelectUserForChat={(u) => handleStartDirectChat(u)}
+              onSelectUserForProfile={(u) => handleStartDirectChat(u)}
+              onSelectTab={setActiveTab}
+            />
+          )}
+
           {activeTab === 'discover' && (
             <DiscoverView
               currentUser={currentUser}
@@ -666,6 +700,38 @@ export default function App() {
           </div>
         </div>
       )}
+
+      {/* ===== POPUP MODAL: CREATE ACTION (POST / SHORT / STORY / LIVE / POLL) ===== */}
+      <CreateActionModal
+        isOpen={isCreateActionModalOpen}
+        onClose={() => setIsCreateActionModalOpen(false)}
+        currentUser={currentUser}
+        onPublishPost={(postData) => {
+          setToastMessage(
+            isArabic
+              ? 'تم نشر المحتوى بنجاح في مجتمع نصفي 🇩🇿✨'
+              : 'Votre publication a été partagée sur Nisfy 🇩🇿✨'
+          );
+          setTimeout(() => setToastMessage(null), 4000);
+        }}
+        onPublishStory={(storyData) => {
+          setToastMessage(
+            isArabic
+              ? 'تمت إضافة قصتك (Story) بنجاح وستبقى لمدة 24 ساعة ⭕'
+              : 'Votre Story a été ajoutée pour 24 heures ⭕'
+          );
+          setTimeout(() => setToastMessage(null), 4000);
+        }}
+        onStartLive={(liveData) => {
+          setActiveTab('live');
+          setToastMessage(
+            isArabic
+              ? 'جاري تجهيز البث المباشر (Nisfy Live)... 🔴'
+              : 'Lancement du direct Nisfy Live... 🔴'
+          );
+          setTimeout(() => setToastMessage(null), 4000);
+        }}
+      />
 
       {/* ===== POPUP MODAL: AUDIO CALL ===== */}
       {callingUser && (
