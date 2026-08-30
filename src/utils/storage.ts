@@ -13,33 +13,57 @@ import {
 } from '../data/initialData';
 
 const STORAGE_KEYS = {
-  USERS: 'lovio_registered_users',
-  CURRENT_USER: 'lovio_current_session',
-  CHATS: 'lovio_private_chats',
-  COMMUNITY: 'lovio_community_feed',
-  MATCHES: 'lovio_matches_list',
-  LIKES: 'lovio_likes_sent',
+  USERS: 'nisfy_registered_users',
+  CURRENT_USER: 'nisfy_current_session',
+  CHATS: 'nisfy_private_chats',
+  COMMUNITY: 'nisfy_community_feed',
+  MATCHES: 'nisfy_matches_list',
+  LIKES: 'nisfy_likes_sent',
   REMEMBERED_ACCOUNT: 'nisfy_remembered_account',
 };
+
+// Helper for migrating legacy keys seamlessly
+function getMigratedItem(key: string, legacyKey?: string): string | null {
+  const current = localStorage.getItem(key);
+  if (current) return current;
+  if (legacyKey) {
+    const legacy = localStorage.getItem(legacyKey);
+    if (legacy) {
+      localStorage.setItem(key, legacy);
+      localStorage.removeItem(legacyKey);
+      return legacy;
+    }
+  }
+  return null;
+}
 
 // 1. Get or initialize registered users
 export function getRegisteredUsers(): UserProfile[] {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.USERS);
+    const data = getMigratedItem(STORAGE_KEYS.USERS, 'lovio_registered_users');
     if (!data) {
       localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(INITIAL_USERS));
       return INITIAL_USERS;
     }
     const saved: UserProfile[] = JSON.parse(data);
-    // Merge any missing initial users by id
-    const existingIds = new Set(saved.map((u) => u.id));
-    const missing = INITIAL_USERS.filter((u) => !existingIds.has(u.id));
-    if (missing.length > 0) {
-      const merged = [...saved, ...missing];
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(merged));
-      return merged;
+    // Deduplicate saved array by user ID to prevent duplicate keys
+    const userMap = new Map<string, UserProfile>();
+    if (Array.isArray(saved)) {
+      saved.forEach((u) => {
+        if (u && u.id) {
+          userMap.set(u.id, u);
+        }
+      });
     }
-    return saved;
+    // Merge any missing initial users by id
+    INITIAL_USERS.forEach((u) => {
+      if (u && u.id && !userMap.has(u.id)) {
+        userMap.set(u.id, u);
+      }
+    });
+    const uniqueUsers = Array.from(userMap.values());
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(uniqueUsers));
+    return uniqueUsers;
   } catch {
     return INITIAL_USERS;
   }
@@ -47,7 +71,16 @@ export function getRegisteredUsers(): UserProfile[] {
 
 export function saveRegisteredUsers(users: UserProfile[]): void {
   try {
-    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(users));
+    const userMap = new Map<string, UserProfile>();
+    if (Array.isArray(users)) {
+      users.forEach((u) => {
+        if (u && u.id) {
+          userMap.set(u.id, u);
+        }
+      });
+    }
+    const uniqueUsers = Array.from(userMap.values());
+    localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(uniqueUsers));
   } catch (e) {
     console.error('Error saving users', e);
   }
@@ -56,7 +89,7 @@ export function saveRegisteredUsers(users: UserProfile[]): void {
 // 2. Current Logged In User Session
 export function getCurrentUser(): UserProfile | null {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.CURRENT_USER);
+    const data = getMigratedItem(STORAGE_KEYS.CURRENT_USER, 'lovio_current_session');
     if (!data) return null;
     return JSON.parse(data);
   } catch {
@@ -79,7 +112,7 @@ export function setCurrentUser(user: UserProfile | null): void {
 // 3. Private Chats
 export function getPrivateChats(): Record<string, ChatMessage[]> {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.CHATS);
+    const data = getMigratedItem(STORAGE_KEYS.CHATS, 'lovio_private_chats');
     if (!data) {
       localStorage.setItem(STORAGE_KEYS.CHATS, JSON.stringify(INITIAL_MESSAGES));
       return INITIAL_MESSAGES;
@@ -101,7 +134,7 @@ export function savePrivateChats(chats: Record<string, ChatMessage[]>): void {
 // 4. Community Messages
 export function getCommunityMessages(): CommunityMessage[] {
   try {
-    const data = localStorage.getItem(STORAGE_KEYS.COMMUNITY);
+    const data = getMigratedItem(STORAGE_KEYS.COMMUNITY, 'lovio_community_feed');
     if (!data) {
       localStorage.setItem(
         STORAGE_KEYS.COMMUNITY,
@@ -126,7 +159,10 @@ export function saveCommunityMessages(messages: CommunityMessage[]): void {
 // 5. Likes sent by the user
 export function getLikesSent(currentUserId: string): LikeAction[] {
   try {
-    const data = localStorage.getItem(`${STORAGE_KEYS.LIKES}_${currentUserId}`);
+    const data = getMigratedItem(
+      `${STORAGE_KEYS.LIKES}_${currentUserId}`,
+      `lovio_likes_sent_${currentUserId}`
+    );
     return data ? JSON.parse(data) : [];
   } catch {
     return [];
@@ -147,17 +183,20 @@ export function saveLikesSent(currentUserId: string, likes: LikeAction[]): void 
 // 6. Matches
 export function getMatchesList(currentUserId: string): MatchRelation[] {
   try {
-    const data = localStorage.getItem(`${STORAGE_KEYS.MATCHES}_${currentUserId}`);
+    const data = getMigratedItem(
+      `${STORAGE_KEYS.MATCHES}_${currentUserId}`,
+      `lovio_matches_list_${currentUserId}`
+    );
     if (!data) {
-      // Default initial match with Claire
+      // Default initial match with Leïla
       const initialMatch: MatchRelation[] = [
         {
-          id: 'match_claire',
+          id: 'match_leila',
           user1Id: currentUserId,
-          user2Id: 'user_claire',
+          user2Id: 'user_leila',
           matchedAt: 'Aujourd’hui à 11:30',
-          lastMessageSnippet: 'Tu es plutôt escapade citadine ou nature sauvage... ?',
-          lastMessageTime: '11:32',
+          lastMessageSnippet: 'Salam ! Enchantée de faire ta connaissance sur la plateforme des 69 wilayas 🇩🇿🌸',
+          lastMessageTime: '11:30',
           unreadCount: 1,
         },
       ];

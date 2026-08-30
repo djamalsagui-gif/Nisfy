@@ -4,19 +4,25 @@ import { CategoryTabs } from './CategoryTabs';
 import { VideoPlayer } from './VideoPlayer';
 import { PublishVideoModal } from './PublishVideoModal';
 import { INITIAL_SOCIAL_POSTS } from '../../data/socialFeedData';
-import { Plus, ChevronUp, ChevronDown, Send, Heart, Sparkles, X, Compass } from 'lucide-react';
+import { Plus, Send, Heart, Sparkles, X, Compass } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 interface SocialFeedProps {
   onSelectUser?: (userId: string) => void;
   onNavigateToDiscover?: () => void;
+  onNavigateToShop?: (productId?: string) => void;
   currentUser?: UserProfile;
+  posts?: SocialPost[];
+  onUpdatePosts?: (posts: SocialPost[]) => void;
 }
 
-export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: SocialFeedProps) {
+export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToShop, currentUser, posts: externalPosts, onUpdatePosts }: SocialFeedProps) {
   const { isArabic } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<any>('all');
-  const [posts, setPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
+  const [localPosts, setLocalPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
+  
+  const posts = externalPosts || localPosts;
+  const setPosts = onUpdatePosts || setLocalPosts;
   const [activePostId, setActivePostId] = useState<string | null>(null);
   const [isCommentsOpen, setIsCommentsOpen] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
@@ -149,19 +155,17 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
       emojiReaction: '❤️',
     };
 
-    setPosts((prev) =>
-      prev.map((post) => {
-        if (post.id === activePostId) {
-          const currentComments = post.comments || [];
-          return {
-            ...post,
-            commentsCount: (post.commentsCount || currentComments.length) + 1,
-            comments: [newComment, ...currentComments],
-          };
-        }
-        return post;
-      })
-    );
+    setPosts(posts.map((post) => {
+      if (post.id === activePostId) {
+        const currentComments = post.comments || [];
+        return {
+          ...post,
+          commentsCount: (post.commentsCount || currentComments.length) + 1,
+          comments: [newComment, ...currentComments],
+        };
+      }
+      return post;
+    }));
     setNewCommentText('');
   };
 
@@ -207,6 +211,7 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
                 onOpenComments={() => setIsCommentsOpen(true)}
                 onSelectUser={onSelectUser}
                 currentUser={currentUser}
+                onNavigateToShop={onNavigateToShop}
                 onCreateStoryFromClip={(p) => {
                   setPublishInitialTrackId(p.musicThemeId);
                   setPublishInitialIsStory(true);
@@ -230,24 +235,7 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, currentUser }: 
         )}
       </div>
 
-      {/* TikTok Navigation Buttons (Float Right Center on desktop & tablet) */}
-      <div className="hidden sm:flex absolute right-4 top-1/2 -translate-y-1/2 z-30 flex-col items-center gap-3">
-        <button
-          onClick={handlePrevVideo}
-          disabled={activeIndex === 0}
-          className="w-11 h-11 rounded-full bg-black/60 hover:bg-black/90 backdrop-blur-md border border-white/20 text-white flex items-center justify-center transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-xl active:scale-90"
-          title="Vidéo précédente (Touche Haut)"
-        >
-          <ChevronUp className="w-6 h-6" />
-        </button>
-        <button
-          onClick={handleNextVideo}
-          className="w-11 h-11 rounded-full bg-slate-800/90 hover:bg-slate-700 text-white flex items-center justify-center transition-all shadow-xl active:scale-90 border border-white/10"
-          title="Vidéo suivante (Touche Bas)"
-        >
-          <ChevronDown className="w-6 h-6" />
-        </button>
-      </div>
+
 
       {/* Bouton doux & discret : Publier une vidéo */}
       <button 

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
   Send,
   Phone,
+  Video,
   Smile,
   Mic,
   MoreVertical,
@@ -21,6 +22,9 @@ import {
   Pause,
   Play,
   Share2,
+  Image as ImageIcon,
+  Gift,
+  X,
 } from 'lucide-react';
 import { UserProfile, ChatMessage, ChatMessageReaction } from '../types';
 import { AUTOMATED_RESPONSES } from '../data/initialData';
@@ -34,7 +38,7 @@ interface PrivateChatViewProps {
   onSendMessage: (receiverId: string, content: string, type?: 'text' | 'image' | 'voice' | 'lounge_invite' | 'jasmin') => void;
   activeChatUserId: string | null;
   onSelectChatUser: (userId: string) => void;
-  onStartCall: (user: UserProfile) => void;
+  onStartCall: (user: UserProfile, isVideo?: boolean) => void;
   onReportUser?: (user: UserProfile) => void;
   onBlockUser?: (user: UserProfile) => void;
   onReactToMessage?: (messageId: string, emoji: '❤️' | '😂' | '🤲' | '☕' | '🌹') => void;
@@ -55,6 +59,7 @@ export function PrivateChatView({
 }: PrivateChatViewProps) {
   const { t, isArabic } = useLanguage();
   const [inputText, setInputText] = useState('');
+  const [contactSearchQuery, setContactSearchQuery] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [showEmojiBar, setShowEmojiBar] = useState(false);
   const [showOptionsMenu, setShowOptionsMenu] = useState(false);
@@ -63,7 +68,10 @@ export function PrivateChatView({
   const [recordDuration, setRecordDuration] = useState(0);
   const [translatedMsgIds, setTranslatedMsgIds] = useState<Record<string, boolean>>({});
   const [localReactions, setLocalReactions] = useState<Record<string, string[]>>({});
+  const [showImageModal, setShowImageModal] = useState(false);
+  const [showJasminCelebration, setShowJasminCelebration] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   const recordTimerRef = useRef<any>(null);
 
   // Available conversation partners
@@ -146,6 +154,67 @@ export function PrivateChatView({
     }, 1900);
   };
 
+  const handleSendJasminGift = () => {
+    if (!activeUser) return;
+    datingSounds.playJasminSendSound();
+    setShowJasminCelebration(true);
+    setTimeout(() => setShowJasminCelebration(false), 2400);
+
+    onSendMessage(
+      activeUser.id,
+      isArabic
+        ? '🌸 أهديك باقة ورد الياسمين الجزائرية كتعبير عن التقدير والاحترام 🇩🇿'
+        : '🌸 Je t’envoie un bouquet de Jasmin d’Or algérien en gage de considération et de respect sincère 🇩🇿',
+      'jasmin'
+    );
+
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      datingSounds.playMessageReceived();
+      onSendMessage(
+        currentUser.id,
+        isArabic
+          ? '« بارك الله فيك على هذه اللفتة الطيبة والجميلة جداً ! 🌸🤲 »'
+          : '« Merci infiniment pour cette délicate attention et ce Jasmin d’honneur ! 🌸🤲 »',
+        'text'
+      );
+    }, 2000);
+  };
+
+  const handleSendImage = (imageUrl: string) => {
+    if (!activeUser) return;
+    datingSounds.playMessageSent();
+    setShowImageModal(false);
+    onSendMessage(activeUser.id, imageUrl, 'image');
+
+    setIsTyping(true);
+    setTimeout(() => {
+      setIsTyping(false);
+      datingSounds.playMessageReceived();
+      onSendMessage(
+        currentUser.id,
+        isArabic
+          ? '« ما شاء الله، صورة جميلة جداً ! 🇩🇿✨ »'
+          : '« MachaAllah, magnifique photo ! 🇩🇿✨ »',
+        'text'
+      );
+    }, 2000);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (uploadEvent) => {
+      const result = uploadEvent.target?.result as string;
+      if (result) {
+        handleSendImage(result);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleInviteToVoiceLounge = () => {
     if (!activeUser) return;
     datingSounds.playMessageSent();
@@ -223,7 +292,22 @@ export function PrivateChatView({
       ];
 
   return (
-    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden h-[80vh] flex flex-col md:flex-row select-none">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden h-[80vh] flex flex-col md:flex-row select-none relative">
+      {/* Jasmin Send Celebration Popup */}
+      {showJasminCelebration && (
+        <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-xs pointer-events-none animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-amber-300 rounded-3xl p-6 text-center shadow-2xl space-y-2 animate-in zoom-in-75">
+            <div className="text-5xl animate-bounce">🌸💍✨</div>
+            <h4 className="text-sm font-black text-slate-900 dark:text-white">
+              {isArabic ? 'تم إرسال ياسمين الشرف بنجاح !' : 'Jasmin d’Or envoyé avec succès !'}
+            </h4>
+            <p className="text-xs text-amber-600 font-bold">
+              {isArabic ? 'هدية احترام وتقدير جزائري 🇩🇿' : 'Symbole de respect et de projet sérieux 🇩🇿'}
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* ===== LEFT CONVERSATIONS LIST ===== */}
       <div
         className={`w-full md:w-80 border-r border-slate-200 bg-slate-50/50 flex flex-col ${
@@ -231,20 +315,44 @@ export function PrivateChatView({
         }`}
       >
         {/* Header */}
-        <div className="p-4 border-b border-slate-200 bg-white">
+        <div className="p-3 sm:p-4 border-b border-slate-200 bg-white space-y-2">
           <h3 className="font-extrabold text-sm text-slate-900 flex items-center justify-between">
             <span>{t.messagesTitle}</span>
             <span className="text-[11px] font-bold text-slate-400">
               {allUsers.filter((u) => u.id !== currentUser.id).length} {t.contacts}
             </span>
           </h3>
+          <div className="relative">
+            <input
+              type="text"
+              placeholder={isArabic ? 'بحث في المحادثات...' : 'Rechercher un contact...'}
+              value={contactSearchQuery}
+              onChange={(e) => setContactSearchQuery(e.target.value)}
+              className="w-full pl-3 pr-3 py-1.5 bg-slate-100 dark:bg-slate-800 text-xs rounded-xl border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-orange-500"
+            />
+          </div>
         </div>
 
         {/* Contacts List */}
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
-          {allUsers
-            .filter((u) => u.id !== currentUser.id)
-            .map((user) => {
+          {(() => {
+            const seen = new Set<string>();
+            return allUsers
+              .filter((u) => {
+                if (!u || !u.id || seen.has(u.id) || u.id === currentUser.id) return false;
+                seen.add(u.id);
+                return true;
+              })
+              .filter((u) => {
+                if (!contactSearchQuery.trim()) return true;
+                const q = contactSearchQuery.toLowerCase();
+                return (
+                  u.pseudo.toLowerCase().includes(q) ||
+                  u.city.toLowerCase().includes(q) ||
+                  (u.bio && u.bio.toLowerCase().includes(q))
+                );
+              })
+              .map((user) => {
               const userChat = chats[user.id] || [];
               const lastMsg = userChat[userChat.length - 1];
               const isSelected = activeUser?.id === user.id;
@@ -295,7 +403,8 @@ export function PrivateChatView({
                   </div>
                 </button>
               );
-            })}
+            });
+          })()}
         </div>
       </div>
 
@@ -370,10 +479,21 @@ export function PrivateChatView({
                 <span className="hidden sm:inline">{isArabic ? 'صالون صوتي' : 'Lounge'}</span>
               </button>
 
-              {/* Call */}
+              {/* Video Call */}
               <button
                 type="button"
-                onClick={() => onStartCall(activeUser)}
+                onClick={() => onStartCall(activeUser, true)}
+                className="p-2.5 bg-sky-50 hover:bg-sky-100 text-sky-700 rounded-2xl border border-sky-200 transition-colors flex items-center gap-1 text-xs font-bold cursor-pointer"
+                title="Appel Vidéo"
+              >
+                <Video className="w-4 h-4 text-sky-600" />
+                <span className="hidden sm:inline">{isArabic ? 'فيديو' : 'Vidéo'}</span>
+              </button>
+
+              {/* Audio Call */}
+              <button
+                type="button"
+                onClick={() => onStartCall(activeUser, false)}
                 className="p-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 rounded-2xl border border-emerald-200 transition-colors flex items-center gap-1.5 text-xs font-bold cursor-pointer"
                 title={t.callBtn}
               >
@@ -512,6 +632,28 @@ export function PrivateChatView({
                               {playingVoiceId === msg.id ? 'Lecture en cours...' : 'Note vocale (0:14)'}
                             </span>
                           </div>
+                        </div>
+                      ) : msg.type === 'image' ? (
+                        <div className="space-y-1.5 py-1">
+                          <img
+                            src={msg.content}
+                            alt="Partage photo"
+                            className="max-h-60 rounded-xl object-cover w-full cursor-pointer hover:opacity-95 transition-opacity"
+                            onClick={() => window.open(msg.content, '_blank')}
+                          />
+                          <span className={`text-[10px] block font-bold ${isMe ? 'text-orange-100' : 'text-slate-500'}`}>
+                            {isArabic ? 'صورة مرفقة' : 'Photo partagée'}
+                          </span>
+                        </div>
+                      ) : msg.type === 'jasmin' ? (
+                        <div className="space-y-2 py-1">
+                          <div className="flex items-center gap-2">
+                            <span className="text-2xl animate-bounce">🌸</span>
+                            <span className="font-black text-xs text-amber-200">
+                              {isArabic ? 'هدية ياسمين الشرف 🇩🇿' : 'Jasmin d’Or Offert 🇩🇿'}
+                            </span>
+                          </div>
+                          <p className="leading-relaxed font-bold">{msg.content}</p>
                         </div>
                       ) : msg.type === 'lounge_invite' ? (
                         <div className="space-y-1.5">
@@ -680,6 +822,24 @@ export function PrivateChatView({
 
               <button
                 type="button"
+                onClick={handleSendJasminGift}
+                className="p-2 text-amber-500 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition-colors cursor-pointer"
+                title="Offrir un Jasmin"
+              >
+                <Flower2 className="w-5 h-5" />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setShowImageModal(true)}
+                className="p-2 text-slate-400 hover:text-[#FF3823] hover:bg-orange-50 rounded-xl transition-colors cursor-pointer"
+                title="Partager une photo"
+              >
+                <ImageIcon className="w-5 h-5" />
+              </button>
+
+              <button
+                type="button"
                 onClick={startVoiceRecording}
                 className="p-2 text-slate-400 hover:text-[#FF3823] hover:bg-orange-50 rounded-xl transition-colors cursor-pointer"
                 title="Enregistrer note vocale"
@@ -708,6 +868,72 @@ export function PrivateChatView({
       ) : (
         <div className="flex-1 flex items-center justify-center p-8 text-center text-slate-400">
           {t.selectContact}
+        </div>
+      )}
+      {/* Photo Picker Modal */}
+      {showImageModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 w-full max-w-sm sm:max-w-md shadow-2xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <ImageIcon className="w-5 h-5 text-[#FF3823]" />
+                <h3 className="font-black text-sm text-slate-900 dark:text-white">
+                  {isArabic ? 'مشاركة صورة' : 'Partager une photo'}
+                </h3>
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                className="w-7 h-7 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-slate-500 hover:text-slate-900"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Upload from device */}
+            <input
+              type="file"
+              ref={fileInputRef}
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              className="w-full py-3 px-4 border-2 border-dashed border-orange-300 hover:border-[#FF3823] bg-orange-50/50 hover:bg-orange-50 rounded-2xl flex items-center justify-center gap-2 text-xs font-black text-[#FF3823] transition-all cursor-pointer"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>{isArabic ? 'اختر صورة من جهازك' : 'Téléverser depuis votre appareil'}</span>
+            </button>
+
+            {/* Quick cultural presets */}
+            <div>
+              <div className="text-[11px] font-bold text-slate-400 mb-2">
+                {isArabic ? 'أو اختر صورة رمزية سريعة :' : 'Ou choisir un visuel culturel :'}
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {[
+                  { label: 'Thé DZ', url: 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=500&auto=format&fit=crop&q=80' },
+                  { label: 'Jasmin', url: 'https://images.unsplash.com/photo-1596704017254-9b121068fb31?w=500&auto=format&fit=crop&q=80' },
+                  { label: 'Paysage DZ', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=80' },
+                ].map((preset) => (
+                  <button
+                    key={preset.label}
+                    type="button"
+                    onClick={() => handleSendImage(preset.url)}
+                    className="group relative rounded-xl overflow-hidden aspect-video border border-slate-200 hover:ring-2 hover:ring-[#FF3823] transition-all"
+                  >
+                    <img src={preset.url} alt={preset.label} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
+                    <span className="absolute inset-x-0 bottom-0 bg-black/60 text-[10px] font-bold text-white text-center py-0.5">
+                      {preset.label}
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       )}
     </div>

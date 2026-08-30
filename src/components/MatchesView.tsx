@@ -29,15 +29,20 @@ export function MatchesView({
 }: MatchesViewProps) {
   const { t, isArabic } = useLanguage();
 
-  // Get matched user profiles
-  const matchedUsers = matches
-    .map((m) => {
-      const otherUserId =
-        m.user1Id === currentUser.id ? m.user2Id : m.user1Id;
-      const userObj = allUsers.find((u) => u.id === otherUserId);
-      return userObj ? { ...userObj, matchMeta: m } : null;
-    })
-    .filter(Boolean) as (UserProfile & { matchMeta: MatchRelation })[];
+  // Get matched user profiles with guaranteed unique keys
+  const matchedUsers = React.useMemo(() => {
+    const seen = new Set<string>();
+    return matches
+      .map((m) => {
+        const otherUserId =
+          m.user1Id === currentUser.id ? m.user2Id : m.user1Id;
+        const userObj = allUsers.find((u) => u.id === otherUserId);
+        if (!userObj || seen.has(userObj.id)) return null;
+        seen.add(userObj.id);
+        return { ...userObj, matchMeta: m };
+      })
+      .filter(Boolean) as (UserProfile & { matchMeta: MatchRelation })[];
+  }, [matches, currentUser.id, allUsers]);
 
   return (
     <div className="space-y-6">

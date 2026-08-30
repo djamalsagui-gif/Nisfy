@@ -47,6 +47,7 @@ export interface UserProfile {
   height?: number; // cm
   educationLevel?: string;
   familyOrigin?: string; // Kabyle, Chaoui, Mzabite, Touareg, Arabe, etc.
+  wilayaOrigin?: string; // Wilaya d'origine
   languagesSpoken?: string[]; // Arabe (Darija), Français, Tamazight, Anglais...
   maritalStatus?: MaritalStatus;
   childrenCount?: number;
@@ -63,6 +64,17 @@ export interface UserProfile {
   lastActive: string;
   verified: boolean;
   marriageVerified?: boolean; // Verified badge for serious marriage candidates
+  verificationStatus?: {
+    email: boolean;
+    phone: boolean;
+    identity: boolean; // Selfie / ID
+    social: boolean;
+  };
+  trustScore?: {
+    score: number; // 0 - 100
+    label: 'Faible' | 'Moyen' | 'Bon' | 'Excellent';
+    color: string; // e.g. '#22c55e'
+  };
   marriageTimeline?: MarriageTimeline; // Project timeline
   relocation?: RelocationPreference; // Willing to relocate/move
   hidePhotoInitially?: boolean; // Discreet blur mode until mutual match
@@ -197,6 +209,8 @@ export interface NisfyCommunity {
   joined?: boolean;
   activeLivesCount?: number;
   recentTopic?: string;
+  tags?: string[];
+  activityLevel?: string;
 }
 
 export interface CommunityPostItem {
@@ -383,6 +397,18 @@ export interface SocialPost {
   musicThemeUrl?: string;
   isStoryOnWall?: boolean;
   comments?: SocialComment[];
+  // Social Commerce & TikTok Shop Features
+  taggedProductId?: string;
+  taggedProductTitle?: string;
+  taggedProductPriceDzd?: number;
+  taggedProductImage?: string;
+  taggedProductBadge?: string;
+  // Creative Studio Features (TikTok / IG Pro)
+  appliedFilter?: string; // 'none' | 'vintage_alger' | 'sunset_oran' | 'warm_sahara' | 'noir_casbah' | 'glamour_fete'
+  captionText?: string;
+  captionStyle?: string; // 'darija_gold' | 'neon_nisfy' | 'subtitles_clean' | 'badge_authentic'
+  videoSpeed?: number; // 0.5 | 1 | 1.5 | 2
+  audioVoiceoverEffect?: string; // 'none' | 'studio_echo' | 'vintage_radio' | 'warm_podcast'
 }
 
 export interface UserBadge {

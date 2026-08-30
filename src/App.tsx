@@ -26,6 +26,8 @@ import {
   saveMatchesList,
 } from './utils/storage';
 import { INITIAL_LIVES, INITIAL_LIVE_COMMENTS } from './data/initialData';
+import { INITIAL_SOCIAL_POSTS } from './data/socialFeedData';
+import { SocialPost } from './types';
 import { datingSounds } from './utils/soundEffects';
 
 import { Navbar } from './components/Navbar';
@@ -48,7 +50,6 @@ import { YouthShopView } from './components/YouthShopView';
 import { CallModal } from './components/CallModal';
 import { FooterProverbs } from './components/FooterProverbs';
 import { PremiumModal } from './components/PremiumModal';
-import { VerificationModal } from './components/auth/VerificationModal';
 import { ContactModal } from './components/ContactModal';
 import { useLanguage } from './context/LanguageContext';
 import { SplashScreen } from './components/SplashScreen';
@@ -69,6 +70,9 @@ export default function App() {
   const [registeredUsers, setRegisteredUsers] = useState<UserProfile[]>(() =>
     getRegisteredUsers()
   );
+  
+  // Phase 2: Social Feed Global State
+  const [socialPosts, setSocialPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
   const [activeTab, setActiveTab] = useState<ActiveTab>(() => {
     try {
       const stored = sessionStorage.getItem('nisfy_target_tab');
@@ -108,7 +112,6 @@ export default function App() {
   // Modals state
   const [isCreateActionModalOpen, setIsCreateActionModalOpen] = useState(false);
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
-  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -138,6 +141,7 @@ export default function App() {
 
   // 3. Modals state
   const [callingUser, setCallingUser] = useState<UserProfile | null>(null);
+  const [isVideoCall, setIsVideoCall] = useState(false);
   const [newMatchAlert, setNewMatchAlert] = useState<UserProfile | null>(null);
 
   // Load user-specific matches and likes
@@ -170,9 +174,12 @@ export default function App() {
   };
 
   const handleRegisterUser = (newUser: UserProfile) => {
-    const updated = [newUser, ...registeredUsers];
-    setRegisteredUsers(updated);
-    saveRegisteredUsers(updated);
+    setRegisteredUsers((prev) => {
+      const filtered = prev.filter((u) => u.id !== newUser.id);
+      const updated = [newUser, ...filtered];
+      saveRegisteredUsers(updated);
+      return updated;
+    });
   };
 
   const handleLogout = () => {
@@ -479,7 +486,6 @@ export default function App() {
           isDarkMode={isDarkMode}
           onToggleDarkMode={handleToggleDarkMode}
           onOpenPremium={() => setIsPremiumModalOpen(true)}
-          onOpenVerification={() => setIsVerificationModalOpen(true)}
           onOpenContact={() => setIsContactModalOpen(true)}
           onOpenPwaInstall={() => setIsPwaModalOpen(true)}
         />
@@ -527,6 +533,8 @@ export default function App() {
             <div className="-mt-6 -mx-4 sm:-mx-6 lg:-mx-8 h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)]">
               <SocialFeed 
                 currentUser={currentUser}
+                posts={socialPosts}
+                onUpdatePosts={setSocialPosts}
                 onSelectUser={(userId) => {
                   const target = registeredUsers.find((u) => u.id === userId);
                   if (target) {
@@ -534,6 +542,9 @@ export default function App() {
                   }
                 }}
                 onNavigateToDiscover={() => setActiveTab('discover')}
+                onNavigateToShop={(productId) => {
+                  setActiveTab('shop');
+                }}
               />
             </div>
           )}
@@ -588,7 +599,10 @@ export default function App() {
               onSendMessage={handleSendMessage}
               activeChatUserId={activeChatUserId}
               onSelectChatUser={setActiveChatUserId}
-              onStartCall={setCallingUser}
+              onStartCall={(user, isVideo) => {
+                setCallingUser(user);
+                setIsVideoCall(!!isVideo);
+              }}
               onReportUser={handleReportUser}
               onBlockUser={handleBlockUser}
             />
@@ -705,6 +719,32 @@ export default function App() {
         onClose={() => setIsCreateActionModalOpen(false)}
         currentUser={currentUser}
         onPublishPost={(postData) => {
+          if (!currentUser) return;
+          const newPost: SocialPost = {
+            id: 'post_new_' + Date.now(),
+            authorId: currentUser.id,
+            authorPseudo: currentUser.pseudo,
+            authorAvatar: currentUser.avatar,
+            authorCity: currentUser.city,
+            authorVerified: currentUser.hasBlueBadge,
+            createdAt: new Date().toISOString(),
+            description: postData.description,
+            title: postData.title,
+            category: postData.category,
+            posterUrl: postData.imageUrl,
+            videoUrl: postData.videoUrl || 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+            viewsCount: 1,
+            likedBy: [],
+            bookmarkedBy: [],
+            likesCount: 0,
+            commentsCount: 0,
+            sharesCount: 0,
+            tags: [postData.category || 'NisfyDZ'],
+
+            comments: []
+          };
+          setSocialPosts([newPost, ...socialPosts]);
+          
           setToastMessage(
             isArabic
               ? 'تم نشر المحتوى بنجاح في مجتمع نصفي 🇩🇿✨'
@@ -713,6 +753,21 @@ export default function App() {
           setTimeout(() => setToastMessage(null), 4000);
         }}
         onPublishStory={(storyData) => {
+          if (!currentUser) return;
+          const newStory: ProfileVideo = {
+            id: 'story_' + Date.now(),
+            url: storyData.mediaUrl,
+            title: storyData.caption || (isArabic ? 'قصتي' : 'Ma Story'),
+            thumbnail: storyData.mediaUrl, // Mock
+            createdAt: new Date().toISOString(),
+            isStoryOnWall: true
+          };
+          const updatedUser = {
+            ...currentUser,
+            videos: [newStory, ...(currentUser.videos || [])]
+          };
+          handleUpdateProfile(updatedUser);
+          
           setToastMessage(
             isArabic
               ? 'تمت إضافة قصتك (Story) بنجاح وستبقى لمدة 24 ساعة ⭕'
@@ -731,10 +786,11 @@ export default function App() {
         }}
       />
 
-      {/* ===== POPUP MODAL: AUDIO CALL ===== */}
+      {/* ===== POPUP MODAL: AUDIO/VIDEO CALL ===== */}
       {callingUser && (
         <CallModal
           targetUser={callingUser}
+          initialVideoMode={isVideoCall}
           onEndCall={() => setCallingUser(null)}
         />
       )}
@@ -751,21 +807,7 @@ export default function App() {
         }}
       />
 
-      {/* ===== POPUP MODAL: SELF-IDENTITY VERIFICATION ===== */}
-      <VerificationModal
-        isOpen={isVerificationModalOpen}
-        onClose={() => setIsVerificationModalOpen(false)}
-        currentUser={currentUser}
-        onVerificationSuccess={(updatedUser) => {
-          handleUpdateProfile(updatedUser);
-          setToastMessage(
-            isArabic
-              ? 'تهانينا ! تم اعتماد حسابك وتوثيق نية الزواج بنجاح 🇩🇿💍'
-              : 'Félicitations ! Votre profil est officiellement vérifié 🇩🇿💍'
-          );
-          setTimeout(() => setToastMessage(null), 4000);
-        }}
-      />
+
 
       {/* ===== POPUP MODAL: CONTACT & SUPPORT ===== */}
       <ContactModal

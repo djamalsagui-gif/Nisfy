@@ -27,6 +27,7 @@ import {
   Smile,
   Clock,
   ExternalLink,
+  Compass,
 } from 'lucide-react';
 import { UserProfile, NisfyCommunity, CommunityPostItem, CommunityEventItem, LiveRoom, CommunityCategory } from '../types';
 import {
@@ -35,6 +36,7 @@ import {
   INITIAL_COMMUNITY_EVENTS,
   INITIAL_LIVE_ROOMS,
 } from '../data/communitiesData';
+import { WILAYAS_69 } from '../data/wilayas';
 import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -373,6 +375,50 @@ export function NisfyCommunitiesView({
       {/* ============================================================ */}
       {activeViewMode === 'explore' && (
         <div className="space-y-6">
+          {/* 69 Wilayas & Diaspora Quick Selector Carousel */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm">
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center gap-2">
+                <Compass className="w-4 h-4 text-[#FF3823]" />
+                <h3 className="text-xs sm:text-sm font-black text-slate-900 dark:text-white uppercase tracking-wider">
+                  {isArabic ? 'استكشاف سريع حسب الولاية والمهجر (69)' : 'Explorer par Wilaya & Diaspora (69 Régions)'}
+                </h3>
+              </div>
+              <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400">
+                58 DZ + 11 Diaspora
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide no-scrollbar">
+              {WILAYAS_69.map((w) => {
+                const isMatching = searchQuery === w.name || searchQuery === w.code;
+                return (
+                  <button
+                    key={w.code}
+                    type="button"
+                    onClick={() => {
+                      datingSounds.playTapSound();
+                      if (searchQuery === w.name || searchQuery === w.code) {
+                        setSearchQuery('');
+                      } else {
+                        setSearchQuery(w.name);
+                        setActiveCategory('all');
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-2xl text-xs font-bold shrink-0 transition-all cursor-pointer flex items-center gap-1.5 border ${
+                      isMatching
+                        ? 'bg-[#FF3823] text-white border-[#FF3823] shadow-md shadow-red-500/20'
+                        : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700/60 hover:border-orange-400'
+                    }`}
+                  >
+                    <span className="text-[10px] font-black opacity-60">{w.code}</span>
+                    <span>{isArabic ? w.arabicName : w.name}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Spotlight Active Live Rooms preview */}
           {liveRooms.filter((r) => r.isLive).length > 0 && (
             <div className="space-y-3">
@@ -1047,6 +1093,178 @@ export function NisfyCommunitiesView({
               >
                 {isArabic ? 'مغادرة الغرفة' : 'Quitter'}
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================ */}
+      {/* SECTION E: COMMUNITY DETAIL MODAL                            */}
+      {/* ============================================================ */}
+      {selectedCommunity && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white dark:bg-slate-900 rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col shadow-2xl border border-slate-200 dark:border-slate-800">
+            {/* Modal Header & Cover */}
+            <div className="relative h-44 sm:h-52 w-full shrink-0">
+              <img
+                src={selectedCommunity.coverImage}
+                alt={selectedCommunity.name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              
+              <button
+                type="button"
+                onClick={() => setSelectedCommunity(null)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/50 text-white flex items-center justify-center hover:bg-black/80 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="absolute bottom-4 left-4 right-4 text-white">
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="text-2xl">{selectedCommunity.icon}</span>
+                  <span className="text-xs bg-orange-500/80 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider">
+                    {selectedCommunity.category}
+                  </span>
+                  {selectedCommunity.wilayaCode && (
+                    <span className="text-xs bg-slate-900/80 border border-white/20 px-2 py-0.5 rounded-full font-black">
+                      Wilaya {selectedCommunity.wilayaCode}
+                    </span>
+                  )}
+                </div>
+                <h2 className="text-lg sm:text-2xl font-black">
+                  {isArabic ? selectedCommunity.nameAr : selectedCommunity.name}
+                </h2>
+              </div>
+            </div>
+
+            {/* Modal Body */}
+            <div className="p-4 sm:p-6 overflow-y-auto space-y-5">
+              {/* Description */}
+              <div>
+                <p className="text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+                  {isArabic ? selectedCommunity.descriptionAr : selectedCommunity.description}
+                </p>
+                <div className="flex flex-wrap items-center gap-2 mt-3">
+                  {(selectedCommunity.tags || []).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs font-semibold px-2.5 py-1 rounded-xl bg-orange-500/10 text-[#FF3823] dark:text-orange-300"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              {/* Stats & Actions */}
+              <div className="flex flex-wrap items-center justify-between gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-4">
+                  <div>
+                    <div className="text-xs text-slate-400 font-bold">{isArabic ? 'الأعضاء' : 'Membres'}</div>
+                    <div className="text-base font-black text-slate-900 dark:text-white">
+                      {selectedCommunity.membersCount.toLocaleString()}
+                    </div>
+                  </div>
+                  <div className="w-px h-8 bg-slate-200 dark:bg-slate-700" />
+                  <div>
+                    <div className="text-xs text-slate-400 font-bold">{isArabic ? 'التفاعل اليومي' : 'Activité'}</div>
+                    <div className="text-base font-black text-emerald-600 flex items-center gap-1">
+                      <Flame className="w-4 h-4" /> {selectedCommunity.activityLevel || 'Très actif'}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => handleToggleJoin(selectedCommunity.id)}
+                  className={`px-5 py-2.5 rounded-2xl text-xs font-black transition-all flex items-center gap-2 cursor-pointer ${
+                    selectedCommunity.joined
+                      ? 'bg-slate-200 dark:bg-slate-700 text-slate-800 dark:text-white hover:bg-red-100 hover:text-red-600'
+                      : 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-lg shadow-orange-500/30 hover:opacity-95'
+                  }`}
+                >
+                  {selectedCommunity.joined ? (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                      <span>{isArabic ? 'مشترك بالفعل (إلغاء)' : 'Membre inscrit'}</span>
+                    </>
+                  ) : (
+                    <>
+                      <Plus className="w-4 h-4" />
+                      <span>{isArabic ? 'انضمام للمجتمع' : 'Rejoindre la communauté'}</span>
+                    </>
+                  )}
+                </button>
+              </div>
+
+              {/* Members in this Wilaya / Community */}
+              <div>
+                <h3 className="text-xs font-black text-slate-900 dark:text-white uppercase tracking-wider mb-3 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-[#FF3823]" />
+                  <span>{isArabic ? 'أعضاء متواجدون في هذه المنطقة' : 'Membres dans cette région'}</span>
+                </h3>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {(() => {
+                    const seen = new Set<string>();
+                    return allUsers
+                      .filter((u) => {
+                        if (!u || !u.id || seen.has(u.id)) return false;
+                        if (!selectedCommunity.wilayaCode) {
+                          seen.add(u.id);
+                          return true;
+                        }
+                        const matches =
+                          u.city?.toLowerCase().includes(selectedCommunity.name.toLowerCase()) ||
+                          u.wilayaOrigin?.toLowerCase().includes(selectedCommunity.name.toLowerCase()) ||
+                          selectedCommunity.wilayaCode === '16';
+                        if (matches) {
+                          seen.add(u.id);
+                          return true;
+                        }
+                        return false;
+                      })
+                      .slice(0, 4)
+                      .map((user) => (
+                        <div
+                          key={user.id}
+                          className="p-2.5 rounded-2xl bg-white dark:bg-slate-800/80 border border-slate-200/80 dark:border-slate-700/60 flex items-center justify-between gap-2"
+                        >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <img
+                            src={user.avatar}
+                            alt={user.pseudo}
+                            className="w-9 h-9 rounded-full object-cover shrink-0"
+                          />
+                          <div className="min-w-0">
+                            <div className="text-xs font-black text-slate-900 dark:text-white truncate">
+                              {user.pseudo}, {user.age}
+                            </div>
+                            <div className="text-[11px] text-slate-500 dark:text-slate-400 truncate">
+                              {user.city}
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={() => {
+                            datingSounds.playTapSound();
+                            setSelectedCommunity(null);
+                            onStartDirectChat(user);
+                          }}
+                          className="px-2.5 py-1.5 rounded-xl bg-orange-500/10 hover:bg-orange-500/20 text-[#FF3823] dark:text-orange-300 text-xs font-bold shrink-0 flex items-center gap-1 transition-colors"
+                        >
+                          <MessageCircle className="w-3.5 h-3.5" />
+                          <span>{isArabic ? 'محادثة' : 'Chat'}</span>
+                        </button>
+                      </div>
+                    ));
+                  })()}
+                </div>
+              </div>
             </div>
           </div>
         </div>

@@ -84,10 +84,12 @@ export function DiscoverView({
     wilaya: 'all',
     ageMin: 18,
     ageMax: 55,
-    gender: 'all' as 'all' | 'homme' | 'femme',
-    educationLevel: 'all'
+    gender: 'all' as 'all' | 'men' | 'women',
+    educationLevel: 'all',
+    marriageTimeline: 'all',
+    familyOrigin: 'all',
+    relocation: 'all',
   });
-  const [filterGender, setFilterGender] = useState<'tous' | 'femme' | 'homme' | 'non-binaire'>('tous');
   const [filterCity, setFilterCity] = useState('');
   const [onlyOnline, setOnlyOnline] = useState(false);
   const [onlyMarriage, setOnlyMarriage] = useState(false);
@@ -96,7 +98,7 @@ export function DiscoverView({
   const [onlyBookmarked, setOnlyBookmarked] = useState(false);
   const [minAge, setMinAge] = useState(18);
   const [maxAge, setMaxAge] = useState(55);
-  const [selectedInterest, setSelectedInterest] = useState('');
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
 
   // Advertising & Partner Modals state
   const [activeAds, setActiveAds] = useState<Advertisement[]>(() => getActiveAdvertisements());
@@ -126,19 +128,29 @@ export function DiscoverView({
   // Rotate sponsored banner ad (from active ads only)
   const currentBannerAd = activeAds.length > 0 ? activeAds[activeBannerAdIndex % activeAds.length] : null;
 
-  // Filtered profiles (excluding current user and blocked users)
+  // Filtered profiles (excluding current user, blocked users, and duplicates)
   const filteredUsers = useMemo(() => {
+    const seen = new Set<string>();
     return allUsers.filter((u) => {
+      if (!u || !u.id || seen.has(u.id)) return false;
       // Exclude current user and blocked
       if (u.id === currentUser.id) return false;
       if (currentUser.blockedUsers && currentUser.blockedUsers.includes(u.id)) return false;
       
-      // Gender
-      if (discoveryFilters.gender !== 'all' && u.gender !== discoveryFilters.gender) return false;
+      seen.add(u.id);
       
-      // Wilaya
+      // Gender
+      if (discoveryFilters.gender !== 'all') {
+        const targetGender = discoveryFilters.gender === 'women' ? 'femme' : 'homme';
+        if (u.gender !== targetGender) return false;
+      }
+      
+      // Wilaya code or city name
       if (discoveryFilters.wilaya !== 'all') {
         if (u.wilayaCode !== discoveryFilters.wilaya) return false;
+      }
+      if (filterCity && u.city.toLowerCase() !== filterCity.toLowerCase()) {
+        return false;
       }
       
       // Age
@@ -146,12 +158,38 @@ export function DiscoverView({
       
       // Education
       if (discoveryFilters.educationLevel !== 'all') {
-        if (u.educationLevel !== discoveryFilters.educationLevel) return false;
+        if (u.educationLevel && !u.educationLevel.toLowerCase().includes(discoveryFilters.educationLevel.toLowerCase())) {
+          return false;
+        }
       }
+
+      // Marriage Timeline
+      if (discoveryFilters.marriageTimeline !== 'all') {
+        if (u.marriageTimeline !== discoveryFilters.marriageTimeline) return false;
+      }
+
+      // Family Origin
+      if (discoveryFilters.familyOrigin !== 'all') {
+        if (u.familyOrigin && !u.familyOrigin.toLowerCase().includes(discoveryFilters.familyOrigin.toLowerCase())) {
+          return false;
+        }
+      }
+
+      // Relocation
+      if (discoveryFilters.relocation !== 'all') {
+        if (u.relocation !== discoveryFilters.relocation) return false;
+      }
+
+      // Online & Verified toggles
+      if (onlyOnline && !u.isOnline) return false;
+      if (onlyVerified && !u.verified && !u.hasBlueBadge) return false;
+      if (onlyMarriage && !u.marriageVerified && !u.marriageTimeline) return false;
+      if (onlyWithVideo && (!u.videos || u.videos.length === 0)) return false;
+      if (onlyBookmarked && !bookmarkedUserIds.includes(u.id)) return false;
       
       return true;
     });
-  }, [allUsers, currentUser.id, currentUser.blockedUsers, discoveryFilters]);
+  }, [allUsers, currentUser.id, currentUser.blockedUsers, discoveryFilters, filterCity, onlyOnline, onlyVerified, onlyMarriage, onlyWithVideo, onlyBookmarked, bookmarkedUserIds]);
 
   // Process profiles according to encounterSubTab (Section 8)
   const processedUsers = useMemo(() => {
@@ -300,17 +338,17 @@ export function DiscoverView({
             {/* Comprehensive Filter Trigger Button */}
             <button
               type="button"
-              onClick={() => setShowFilters(!showFilters)}
+              onClick={() => setIsFilterModalOpen(true)}
               className={`p-1.5 px-3 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
-                showFilters || onlyMarriage || onlyWithVideo || onlyBookmarked
-                  ? 'bg-orange-50 dark:bg-orange-950/50 text-[#FF3823] dark:text-[#FF6B35] border-orange-200 dark:border-orange-900/60 shadow-xs'
+                isFilterModalOpen || discoveryFilters.wilaya !== 'all' || discoveryFilters.gender !== 'all' || discoveryFilters.marriageTimeline !== 'all' || discoveryFilters.familyOrigin !== 'all' || onlyMarriage || onlyWithVideo || onlyBookmarked
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white border-transparent shadow-xs'
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-200'
               }`}
             >
               <SlidersHorizontal className="w-3.5 h-3.5" />
               <span className="text-[11px]">{t.filters}</span>
-              {(onlyMarriage || onlyWithVideo || onlyBookmarked) && (
-                <span className="w-1.5 h-1.5 rounded-full bg-[#FF3823]" />
+              {(discoveryFilters.wilaya !== 'all' || discoveryFilters.gender !== 'all' || discoveryFilters.marriageTimeline !== 'all' || discoveryFilters.familyOrigin !== 'all' || onlyMarriage || onlyWithVideo || onlyBookmarked) && (
+                <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
               )}
             </button>
           </div>
@@ -371,14 +409,13 @@ export function DiscoverView({
               <div>
                 <label className="block font-bold text-slate-600 dark:text-slate-400 mb-1">{t.genderFilterAll}</label>
                 <select
-                  value={filterGender}
-                  onChange={(e) => setFilterGender(e.target.value as any)}
+                  value={discoveryFilters.gender}
+                  onChange={(e) => setDiscoveryFilters((prev) => ({ ...prev, gender: e.target.value as any }))}
                   className="w-full p-2 bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl text-slate-900 dark:text-white font-semibold focus:outline-none"
                 >
-                  <option value="tous">{t.allGenders}</option>
-                  <option value="femme">{t.onlyWomen}</option>
-                  <option value="homme">{t.onlyMen}</option>
-                  <option value="non-binaire">{isArabic ? 'آخر' : 'Non-binaires'}</option>
+                  <option value="all">{t.allGenders}</option>
+                  <option value="women">{t.onlyWomen}</option>
+                  <option value="men">{t.onlyMen}</option>
                 </select>
               </div>
 
@@ -725,6 +762,17 @@ export function DiscoverView({
         <SponsoredAdModal
           ad={selectedAdForModal}
           onClose={() => setSelectedAdForModal(null)}
+        />
+      )}
+
+      {/* Advanced Algerian Filters Modal */}
+      {isFilterModalOpen && (
+        <Filters
+          filters={discoveryFilters}
+          onChange={(key, val) => {
+            setDiscoveryFilters((prev) => ({ ...prev, [key]: val }));
+          }}
+          onClose={() => setIsFilterModalOpen(false)}
         />
       )}
 

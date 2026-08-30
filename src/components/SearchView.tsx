@@ -99,8 +99,9 @@ export function SearchView({
 
   // Filtered Users
   const matchedUsers = useMemo(() => {
+    const seen = new Set<string>();
     return allUsers.filter((user) => {
-      if (user.id === currentUser.id) return false;
+      if (!user || !user.id || seen.has(user.id) || user.id === currentUser.id) return false;
       const query = searchQuery.toLowerCase().trim();
       const matchQuery =
         !query ||
@@ -112,7 +113,11 @@ export function SearchView({
 
       const matchWilaya = !selectedWilayaFilter || user.wilayaCode === selectedWilayaFilter;
 
-      return matchQuery && matchWilaya;
+      if (matchQuery && matchWilaya) {
+        seen.add(user.id);
+        return true;
+      }
+      return false;
     });
   }, [allUsers, currentUser, searchQuery, selectedWilayaFilter]);
 

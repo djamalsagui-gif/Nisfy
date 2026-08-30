@@ -21,10 +21,18 @@ export function NisfyStoriesBar({
   const currentUserVideos = currentUser.videos || [];
   const hasUserVideos = currentUserVideos.length > 0;
 
-  // Filter other users who have videos
-  const otherUsersWithVideos = users.filter(
-    (u) => u.videos && u.videos.length > 0 && u.id !== currentUser.id
-  );
+  // Filter other users who have videos with guaranteed uniqueness by ID
+  const otherUsersWithVideos = React.useMemo(() => {
+    const seen = new Set<string>();
+    return users.filter((u) => {
+      if (!u || !u.id || seen.has(u.id) || u.id === currentUser.id) return false;
+      if (u.videos && u.videos.length > 0) {
+        seen.add(u.id);
+        return true;
+      }
+      return false;
+    });
+  }, [users, currentUser.id]);
 
   return (
     <div className="w-full bg-white rounded-3xl p-3 sm:p-4 border border-slate-200/80 shadow-xs mb-4 select-none">

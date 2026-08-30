@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, Play, MessageSquarePlus, Sparkles, CheckCircle2, Disc } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, Play, MessageSquarePlus, Sparkles, CheckCircle2, Disc, ShoppingBag, ArrowRight, Tag } from 'lucide-react';
 import { SocialPost, UserProfile } from '../../types';
 import { useAppStore } from '../../stores/appStore';
 import confetti from 'canvas-confetti';
@@ -8,6 +8,7 @@ import { datingSounds } from '../../utils/soundEffects';
 import { MusicShareModal } from '../music/MusicShareModal';
 import { getTrackById, NISFY_MUSIC_CATALOG } from '../../data/musicThemes';
 import { getReliableVideoUrl } from '../../utils/videoHelpers';
+import { VIDEO_FILTERS, CAPTION_STYLES } from '../../data/videoStudioPresets';
 
 interface VideoPlayerProps {
   post: SocialPost;
@@ -16,9 +17,10 @@ interface VideoPlayerProps {
   onSelectUser?: (userId: string) => void;
   currentUser?: UserProfile;
   onCreateStoryFromClip?: (post: SocialPost) => void;
+  onNavigateToShop?: (productId?: string) => void;
 }
 
-export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, currentUser, onCreateStoryFromClip }: VideoPlayerProps) {
+export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, currentUser, onCreateStoryFromClip, onNavigateToShop }: VideoPlayerProps) {
   const { ref, inView } = useInView({
     threshold: 0.6,
   });
@@ -160,29 +162,52 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
     return count.toString();
   };
 
+  const appliedFilterPreset = VIDEO_FILTERS.find((f) => f.id === post.appliedFilter);
+  const appliedCaptionPreset = CAPTION_STYLES.find((c) => c.id === post.captionStyle) || CAPTION_STYLES[0];
+
   return (
     <div ref={ref} className="relative w-full h-full snap-start snap-always bg-black flex items-center justify-center select-none">
       {/* Video layer */}
-      <div className="absolute inset-0 cursor-pointer" onClick={handleTogglePlay}>
+      <div className="absolute inset-0 cursor-pointer overflow-hidden" onClick={handleTogglePlay}>
         {hasError ? (
           <div className="w-full h-full flex flex-col items-center justify-center text-white/50 bg-slate-900 gap-2">
             <span className="text-3xl">🎬</span>
             <span className="text-sm font-semibold">Vidéo en cours de chargement...</span>
           </div>
         ) : (
-          <video
-            ref={videoRef}
-            src={getReliableVideoUrl(post.videoUrl)}
-            poster={post.posterUrl}
-            className="w-full h-full object-cover"
-            loop
-            playsInline
-            muted={isMuted}
-            onTimeUpdate={handleTimeUpdate}
-            onError={() => setHasError(true)}
-          />
+          <>
+            <video
+              ref={videoRef}
+              src={getReliableVideoUrl(post.videoUrl)}
+              poster={post.posterUrl}
+              preload="auto"
+              className="w-full h-full object-cover transition-all duration-300"
+              style={{ filter: appliedFilterPreset?.cssFilter || 'none' }}
+              loop
+              playsInline
+              muted={isMuted}
+              onTimeUpdate={handleTimeUpdate}
+              onError={() => setHasError(true)}
+            />
+            {/* Filter Overlay Gradient */}
+            {appliedFilterPreset?.overlayGradient && (
+              <div 
+                className="absolute inset-0 pointer-events-none mix-blend-overlay"
+                style={{ background: appliedFilterPreset.overlayGradient }}
+              />
+            )}
+          </>
         )}
       </div>
+
+      {/* 🌟 Dynamic Caption / Studio Text Overlay (TikTok / IG Style) */}
+      {post.captionText && (
+        <div className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none max-w-[85%] text-center animate-in fade-in zoom-in-90 duration-300">
+          <span className={appliedCaptionPreset.classes}>
+            {post.captionText}
+          </span>
+        </div>
+      )}
 
       {/* Burst Heart Animation on Double Tap */}
       {showHeartAnim && (
@@ -294,6 +319,9 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
                 DZ69
               </span>
             )}
+            <span className="px-1.5 py-0.2 bg-emerald-500/80 text-white rounded-md text-[9px] font-black tracking-wider uppercase">
+              HD 1080p
+            </span>
             {post.authorCity && (
               <span className="text-[#38BDF8] text-[10px] font-semibold">• {post.authorCity}</span>
             )}
@@ -312,6 +340,53 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
             ))}
           </div>
         </div>
+
+        {/* 🛍️ Social Commerce Tagged Product (TikTok Shop Style) */}
+        {post.taggedProductTitle && (
+          <div
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigateToShop?.(post.taggedProductId);
+            }}
+            className="flex items-center justify-between gap-3 p-2 sm:p-2.5 rounded-2xl bg-slate-900/85 hover:bg-slate-900 backdrop-blur-xl border border-emerald-500/40 hover:border-emerald-400 text-white shadow-xl shadow-emerald-950/40 pointer-events-auto cursor-pointer transition-all hover:scale-[1.02] active:scale-95 group max-w-sm"
+            title="Commander ce produit directement"
+          >
+            <div className="flex items-center gap-2.5 min-w-0">
+              {post.taggedProductImage ? (
+                <img
+                  src={post.taggedProductImage}
+                  alt={post.taggedProductTitle}
+                  className="w-10 h-10 rounded-xl object-cover border border-emerald-400/40 shrink-0"
+                />
+              ) : (
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0">
+                  <ShoppingBag className="w-5 h-5" />
+                </div>
+              )}
+              <div className="min-w-0">
+                <div className="flex items-center gap-1.5">
+                  <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-black tracking-wide uppercase border border-emerald-400/30">
+                    {post.taggedProductBadge || 'Boutique DZ'}
+                  </span>
+                  <span className="text-[10px] text-emerald-400 font-bold">Livraison 69 Wilayas</span>
+                </div>
+                <h4 className="text-xs font-bold text-white truncate group-hover:text-emerald-300 transition-colors">
+                  {post.taggedProductTitle}
+                </h4>
+                {post.taggedProductPriceDzd && (
+                  <p className="text-xs font-black text-amber-300">
+                    {post.taggedProductPriceDzd.toLocaleString()} DZD
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <div className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xs font-black flex items-center gap-1 shadow-md shrink-0 group-hover:shadow-emerald-500/30">
+              <span>Acheter</span>
+              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+            </div>
+          </div>
+        )}
 
         {/* Music / Audio Title - Clickable */}
         {(post.musicTitle || matchedTrack) && (

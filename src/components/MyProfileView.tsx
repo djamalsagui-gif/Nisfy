@@ -34,6 +34,7 @@ import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
 import { MediaViewerModal } from './MediaViewerModal';
 import { PublishVideoModal } from './PublishVideoModal';
+import { TrustVerificationModal } from './TrustVerificationModal';
 import {
   NISFY_MUSIC_CATALOG,
   getAllAvailableTracks,
@@ -126,6 +127,7 @@ export function MyProfileView({
   );
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [isPublishModalOpen, setIsPublishModalOpen] = useState(false);
+  const [isTrustModalOpen, setIsTrustModalOpen] = useState(false);
 
   // 🎵 Wedding Music Theme & Sharing State
   const [weddingThemeMusicId, setWeddingThemeMusicId] = useState<string>(
@@ -438,6 +440,47 @@ export function MyProfileView({
             </span>
           </div>
         </div>
+      </div>
+
+      {/* Trust & Safety Section */}
+      <div className="bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="flex items-center gap-4">
+          <div className="relative w-16 h-16 flex items-center justify-center">
+            <svg className="absolute inset-0 w-full h-full transform -rotate-90">
+              <circle cx="32" cy="32" r="28" className="stroke-slate-200 dark:stroke-slate-700" strokeWidth="6" fill="none" />
+              <circle 
+                cx="32" cy="32" r="28" 
+                className={`stroke-current ${currentUser.trustScore?.color?.replace('text-', '') || 'text-[#FF3823]'} transition-all duration-1000`}
+                strokeWidth="6" 
+                fill="none" 
+                strokeDasharray="175.9" 
+                strokeDashoffset={175.9 - (175.9 * (currentUser.trustScore?.score || 40)) / 100}
+                strokeLinecap="round" 
+              />
+            </svg>
+            <div className="flex flex-col items-center justify-center z-10">
+              <span className="text-sm font-black text-slate-900 dark:text-white">{currentUser.trustScore?.score || 40}</span>
+            </div>
+          </div>
+          <div>
+            <h3 className="text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-[#FF3823]" />
+              {isArabic ? 'مؤشر الثقة (Trust Score)' : 'Trust Score'}
+              {currentUser.verified && <CheckCircle2 className="w-5 h-5 text-emerald-500" />}
+            </h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-sm">
+              {currentUser.verified 
+                ? (isArabic ? 'ملفك الشخصي موثق بالكامل.' : 'Votre profil est vérifié à 100%.')
+                : (isArabic ? 'أكمل التحقق من هويتك لزيادة فرص التطابق.' : 'Complétez votre vérification pour obtenir le badge bleu.')}
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => setIsTrustModalOpen(true)}
+          className="w-full sm:w-auto px-6 py-2.5 bg-white dark:bg-slate-800 border-2 border-slate-200 dark:border-slate-700 hover:border-[#FF3823] dark:hover:border-[#FF3823] text-slate-900 dark:text-white font-bold rounded-xl transition-all whitespace-nowrap shadow-sm hover:shadow-md"
+        >
+          {currentUser.verified ? (isArabic ? 'عرض التفاصيل' : 'Voir les détails') : (isArabic ? 'توثيق الحساب' : 'Vérifier mon profil')}
+        </button>
       </div>
 
       {/* Media Management Section (Photos & Videos) */}
@@ -1080,6 +1123,14 @@ export function MyProfileView({
           authorCity={currentUser.city}
         />
       )}
+
+      {/* Trust Verification Modal */}
+      <TrustVerificationModal
+        isOpen={isTrustModalOpen}
+        onClose={() => setIsTrustModalOpen(false)}
+        currentUser={currentUser}
+        onUpdateUser={onUpdateProfile}
+      />
 
       {/* Publish Video Modal */}
       {isPublishModalOpen && (
