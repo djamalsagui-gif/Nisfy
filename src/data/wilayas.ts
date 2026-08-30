@@ -84,8 +84,8 @@ export const WILAYAS_69: WilayaItem[] = [
 
 export const WILAYAS_LIST = WILAYAS_69;
 
-export const getWilayaLabel = (codeOrName?: string): string => {
-  if (!codeOrName) return '';
+export const getWilayaLabel = (codeOrName?: string | any): string => {
+  if (!codeOrName || typeof codeOrName !== 'string') return '';
   const searchKey = codeOrName.toLowerCase().trim();
   const match = WILAYAS_69.find(
     (w) => w.code === codeOrName || (w.name && w.name.toLowerCase() === searchKey)
@@ -93,5 +93,5 @@ export const getWilayaLabel = (codeOrName?: string): string => {
   if (match) {
     return `${match.code} - ${match.name} (${match.arabicName})`;
   }
-  return codeOrName;
+  return String(codeOrName);
 };

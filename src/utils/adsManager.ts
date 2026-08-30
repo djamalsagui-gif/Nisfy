@@ -353,9 +353,9 @@ export function checkIsAdmin(email?: string, pinEntered?: string): boolean {
     }
   }
   if (pinEntered) {
-    const cleanPin = pinEntered.trim();
+    const cleanPin = (pinEntered || '').trim();
     if (
-      cleanPin === config.masterPin.trim() ||
+      cleanPin === (config.masterPin || '').trim() ||
       cleanPin === '7788' ||
       cleanPin === '2026' ||
       cleanPin.toLowerCase() === 'djamalsagui@gmail.com' ||

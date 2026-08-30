@@ -98,8 +98,8 @@ export function AuthModal({
     setAdminAuthError(null);
     setErrorMessage(null);
 
-    const targetEmail = (customEmail || adminEmail).trim().toLowerCase();
-    const pin = (customPin !== undefined ? customPin : adminPin).trim();
+    const targetEmail = (customEmail || adminEmail || '').trim().toLowerCase();
+    const pin = (customPin !== undefined ? customPin : adminPin || '').trim();
 
     // Check admin credentials
     const isMasterEmail = targetEmail === 'djamalsagui@gmail.com' || targetEmail === 'admin@nisfy.app';
@@ -222,7 +222,7 @@ export function AuthModal({
     setErrorMessage(null);
     setInfoMessage(null);
 
-    const cleanEmail = emailInput.trim().toLowerCase();
+    const cleanEmail = (emailInput || '').trim().toLowerCase();
     if (!cleanEmail) {
       setErrorMessage(
         isArabic
@@ -892,7 +892,7 @@ export function AuthModal({
                   </div>
 
                   {/* Detected Super-Admin Fast Shortcut */}
-                  {emailInput.trim().toLowerCase() === 'djamalsagui@gmail.com' && (
+                  {(emailInput || '').trim().toLowerCase() === 'djamalsagui@gmail.com' && (
                     <div className="p-3 bg-amber-500/10 border border-amber-500/30 rounded-xl space-y-2 text-xs animate-in fade-in">
                       <div className="flex items-center gap-2 font-black text-amber-800 dark:text-amber-300">
                         <Shield className="w-4 h-4 text-amber-600" />

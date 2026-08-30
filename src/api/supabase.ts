@@ -35,7 +35,7 @@ export async function sendEmailOtp(email: string): Promise<{ success: boolean; e
     if (error) {
       console.error('Supabase OTP Send Error:', error);
       // BYPASS FOR DEMO / RATE LIMITS
-      if (error.message.includes('magic link email') || error.message.includes('rate limit')) {
+      if (error?.message && (error.message.includes('magic link email') || error.message.includes('rate limit'))) {
         console.warn('⚠️ Rate limit hit. Using Demo mode. Enter code 123456 to login.');
         return { success: true, mocked: true };
       }
