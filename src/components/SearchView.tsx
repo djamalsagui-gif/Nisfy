@@ -102,14 +102,14 @@ export function SearchView({
     const seen = new Set<string>();
     return allUsers.filter((user) => {
       if (!user || !user.id || seen.has(user.id) || user.id === currentUser.id) return false;
-      const query = searchQuery.toLowerCase().trim();
+      const query = (searchQuery || '').toLowerCase().trim();
       const matchQuery =
         !query ||
-        user.pseudo.toLowerCase().includes(query) ||
+        (user.pseudo && user.pseudo.toLowerCase().includes(query)) ||
         (user.city && user.city.toLowerCase().includes(query)) ||
         (user.occupation && user.occupation.toLowerCase().includes(query)) ||
         (user.bio && user.bio.toLowerCase().includes(query)) ||
-        (user.interests && user.interests.some((i) => i.toLowerCase().includes(query)));
+        (user.interests && user.interests.some((i) => Boolean(i) && i.toLowerCase().includes(query)));
 
       const matchWilaya = !selectedWilayaFilter || user.wilayaCode === selectedWilayaFilter;
 
@@ -124,13 +124,13 @@ export function SearchView({
   // Filtered Videos & Posts
   const matchedPosts = useMemo(() => {
     return INITIAL_SOCIAL_POSTS.filter((post) => {
-      const query = searchQuery.toLowerCase().trim();
+      const query = (searchQuery || '').toLowerCase().trim();
       return (
         !query ||
-        post.title.toLowerCase().includes(query) ||
-        post.description.toLowerCase().includes(query) ||
-        post.authorPseudo.toLowerCase().includes(query) ||
-        post.category.toLowerCase().includes(query)
+        (post.title && post.title.toLowerCase().includes(query)) ||
+        (post.description && post.description.toLowerCase().includes(query)) ||
+        (post.authorPseudo && post.authorPseudo.toLowerCase().includes(query)) ||
+        (post.category && post.category.toLowerCase().includes(query))
       );
     });
   }, [searchQuery]);
@@ -138,25 +138,25 @@ export function SearchView({
   // Filtered Groups
   const matchedGroups = useMemo(() => {
     return COMMUNITY_GROUPS.filter((g) => {
-      const query = searchQuery.toLowerCase().trim();
+      const query = (searchQuery || '').toLowerCase().trim();
       return (
         !query ||
-        g.titleFr.toLowerCase().includes(query) ||
-        g.titleAr.includes(query) ||
-        g.wilaya.toLowerCase().includes(query)
+        (g.titleFr && g.titleFr.toLowerCase().includes(query)) ||
+        (g.titleAr && g.titleAr.includes(query)) ||
+        (g.wilaya && g.wilaya.toLowerCase().includes(query))
       );
     });
   }, [searchQuery]);
 
   // Filtered Wilayas (DZ69)
   const matchedWilayas = useMemo(() => {
-    const query = searchQuery.toLowerCase().trim();
+    const query = (searchQuery || '').toLowerCase().trim();
     if (!query) return WILAYAS_LIST.slice(0, 8);
     return WILAYAS_LIST.filter(
       (w) =>
-        w.code.includes(query) ||
-        w.name.toLowerCase().includes(query) ||
-        w.arabicName.includes(query)
+        (w.code && w.code.includes(query)) ||
+        (w.name && w.name.toLowerCase().includes(query)) ||
+        (w.arabicName && w.arabicName.includes(query))
     );
   }, [searchQuery]);
 

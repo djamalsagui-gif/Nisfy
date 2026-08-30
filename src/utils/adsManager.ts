@@ -342,13 +342,13 @@ export function checkIsAdmin(email?: string, pinEntered?: string): boolean {
   if (email) {
     const cleanEmail = email.toLowerCase().trim();
     if (
-      cleanEmail === config.superAdminEmail.toLowerCase().trim() ||
+      (config.superAdminEmail && cleanEmail === config.superAdminEmail.toLowerCase().trim()) ||
       cleanEmail === 'djamalsagui@gmail.com' ||
       cleanEmail === 'admin@nisfy.app'
     ) {
       return true;
     }
-    if (config.designatedAdmins.some((adm) => adm.toLowerCase().trim() === cleanEmail)) {
+    if (config.designatedAdmins && config.designatedAdmins.some((adm) => Boolean(adm) && adm.toLowerCase().trim() === cleanEmail)) {
       return true;
     }
   }

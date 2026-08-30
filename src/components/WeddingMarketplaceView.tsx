@@ -65,10 +65,10 @@ export const WeddingMarketplaceView: React.FC = () => {
       }
       if (searchQuery.trim()) {
         const q = searchQuery.toLowerCase().trim();
-        const matchesName = vendor.name.toLowerCase().includes(q);
-        const matchesWilaya = vendor.wilayaName.toLowerCase().includes(q);
-        const matchesDesc = vendor.descriptionFr.toLowerCase().includes(q);
-        const matchesServices = vendor.services.some((s) => s.toLowerCase().includes(q));
+        const matchesName = Boolean(vendor.name && vendor.name.toLowerCase().includes(q));
+        const matchesWilaya = Boolean(vendor.wilayaName && vendor.wilayaName.toLowerCase().includes(q));
+        const matchesDesc = Boolean(vendor.descriptionFr && vendor.descriptionFr.toLowerCase().includes(q));
+        const matchesServices = Boolean(vendor.services && vendor.services.some((s) => Boolean(s) && s.toLowerCase().includes(q)));
         if (!matchesName && !matchesWilaya && !matchesDesc && !matchesServices) {
           return false;
         }

@@ -265,9 +265,9 @@ export const YouthShopView: React.FC = () => {
         }
         if (searchQuery.trim()) {
           const q = searchQuery.toLowerCase().trim();
-          const matchTitle = p.titleFr.toLowerCase().includes(q) || p.titleAr.includes(q);
-          const matchDesc = p.descriptionFr.toLowerCase().includes(q) || p.descriptionAr.includes(q);
-          const matchSeller = p.sellerName.toLowerCase().includes(q);
+          const matchTitle = (p.titleFr && p.titleFr.toLowerCase().includes(q)) || (p.titleAr && p.titleAr.includes(q));
+          const matchDesc = (p.descriptionFr && p.descriptionFr.toLowerCase().includes(q)) || (p.descriptionAr && p.descriptionAr.includes(q));
+          const matchSeller = (p.sellerName && p.sellerName.toLowerCase().includes(q));
           if (!matchTitle && !matchDesc && !matchSeller) {
             return false;
           }

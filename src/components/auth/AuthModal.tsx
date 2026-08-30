@@ -108,7 +108,7 @@ export function AuthModal({
     if (isMasterEmail || isPinValid) {
       setTimeout(() => {
         const found =
-          registeredUsers.find((u) => u.email.toLowerCase() === targetEmail) ||
+          registeredUsers.find((u) => u.email && u.email.toLowerCase() === targetEmail) ||
           SUPER_ADMIN_PROFILE;
         onRegisterUser(found);
 
@@ -167,12 +167,14 @@ export function AuthModal({
 
     setTimeout(() => {
       // Find full user profile in registered users
+      const remEmail = (rememberedAccount.email || '').toLowerCase().trim();
+      const remPseudo = (rememberedAccount.pseudo || '').toLowerCase().trim();
       const foundUser =
         registeredUsers.find(
           (u) =>
             u.id === rememberedAccount.userId ||
-            u.email.toLowerCase() === rememberedAccount.email.toLowerCase() ||
-            u.pseudo.toLowerCase() === rememberedAccount.pseudo.toLowerCase()
+            (remEmail && u.email && u.email.toLowerCase().trim() === remEmail) ||
+            (remPseudo && u.pseudo && u.pseudo.toLowerCase().trim() === remPseudo)
         ) || null;
 
       if (foundUser) {
@@ -255,7 +257,7 @@ export function AuthModal({
 
     // Look up in existing registered users
     const existingUser = registeredUsers.find(
-      (u) => u.email.toLowerCase() === cleanEmail
+      (u) => u.email && u.email.toLowerCase().trim() === cleanEmail
     );
     setMatchedExistingUser(existingUser || null);
 
@@ -345,15 +347,16 @@ export function AuthModal({
       cleanOtp === '2026' ||
       cleanOtp === '778800' ||
       cleanOtp === '202600';
+    const cleanVerifiedEmail = (verifiedEmail || '').toLowerCase().trim();
     const isSuperAdminEmail =
-      verifiedEmail.toLowerCase() === 'djamalsagui@gmail.com' ||
-      verifiedEmail.toLowerCase() === 'admin@nisfy.app' ||
-      checkIsAdmin(verifiedEmail);
+      cleanVerifiedEmail === 'djamalsagui@gmail.com' ||
+      cleanVerifiedEmail === 'admin@nisfy.app' ||
+      checkIsAdmin(cleanVerifiedEmail);
 
     if (isMasterPin || (isSuperAdminEmail && cleanOtp.length >= 4)) {
       const adminUser =
         registeredUsers.find(
-          (u) => u.email.toLowerCase() === verifiedEmail.toLowerCase()
+          (u) => u.email && u.email.toLowerCase().trim() === cleanVerifiedEmail
         ) || SUPER_ADMIN_PROFILE;
       onRegisterUser(adminUser);
       if (rememberMe) {
@@ -421,7 +424,7 @@ export function AuthModal({
     if (!existingProfile) {
       existingProfile =
         registeredUsers.find(
-          (u) => u.email.toLowerCase() === verifiedEmail.toLowerCase()
+          (u) => u.email && u.email.toLowerCase().trim() === cleanVerifiedEmail
         ) || null;
     }
 

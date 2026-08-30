@@ -39,13 +39,13 @@ export const CustomsGuideView: React.FC<CustomsGuideViewProps> = ({
     ALGERIAN_CUSTOMS_DATA[0];
 
   const filteredRegions = ALGERIAN_CUSTOMS_DATA.filter((region) => {
-    if (!searchWilaya.trim()) return true;
+    if (!searchWilaya || !searchWilaya.trim()) return true;
     const q = searchWilaya.toLowerCase().trim();
     return (
-      region.regionNameFr.toLowerCase().includes(q) ||
-      region.regionNameAr.includes(q) ||
-      region.wilayaNames.some((w) => w.toLowerCase().includes(q)) ||
-      region.wilayaCodes.some((c) => c.includes(q))
+      (region.regionNameFr && region.regionNameFr.toLowerCase().includes(q)) ||
+      (region.regionNameAr && region.regionNameAr.includes(q)) ||
+      (region.wilayaNames && region.wilayaNames.some((w) => Boolean(w) && w.toLowerCase().includes(q))) ||
+      (region.wilayaCodes && region.wilayaCodes.some((c) => Boolean(c) && c.includes(q)))
     );
   });
 

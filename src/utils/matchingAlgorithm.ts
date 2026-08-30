@@ -82,8 +82,8 @@ export function calculateCompatibilityScore(
   }
 
   // 3. Cultural & Family Roots Affinities (+15pts)
-  if (userA.familyOrigin && userB.familyOrigin) {
-    if (userA.familyOrigin.toLowerCase() === userB.familyOrigin.toLowerCase()) {
+  if (userA?.familyOrigin && userB?.familyOrigin) {
+    if (userA.familyOrigin.toLowerCase().trim() === userB.familyOrigin.toLowerCase().trim()) {
       points += 15;
       factors.push({
         labelFr: `Mêmes racines culturelles & traditions (${userA.familyOrigin})`,
@@ -103,7 +103,7 @@ export function calculateCompatibilityScore(
   }
 
   // 4. Religious Practice & Values Alignment (+15pts)
-  if (userA.religiousPractice && userB.religiousPractice) {
+  if (userA?.religiousPractice && userB?.religiousPractice) {
     if (userA.religiousPractice === userB.religiousPractice) {
       points += 15;
       factors.push({
@@ -118,9 +118,10 @@ export function calculateCompatibilityScore(
   }
 
   // 5. Shared Interests & Lifestyle Values (+6pts each, max 24pts)
-  const commonInterests = (userA.interests || []).filter((interest) =>
-    (userB.interests || []).some(
-      (bInterest) => bInterest.toLowerCase() === interest.toLowerCase()
+  const commonInterests = (userA?.interests || []).filter((interest) =>
+    Boolean(interest) &&
+    (userB?.interests || []).some(
+      (bInterest) => Boolean(bInterest) && bInterest.toLowerCase().trim() === interest.toLowerCase().trim()
     )
   );
 

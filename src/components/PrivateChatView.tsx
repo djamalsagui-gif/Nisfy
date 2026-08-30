@@ -345,10 +345,10 @@ export function PrivateChatView({
               })
               .filter((u) => {
                 if (!contactSearchQuery.trim()) return true;
-                const q = contactSearchQuery.toLowerCase();
+                const q = contactSearchQuery.toLowerCase().trim();
                 return (
-                  u.pseudo.toLowerCase().includes(q) ||
-                  u.city.toLowerCase().includes(q) ||
+                  (u.pseudo && u.pseudo.toLowerCase().includes(q)) ||
+                  (u.city && u.city.toLowerCase().includes(q)) ||
                   (u.bio && u.bio.toLowerCase().includes(q))
                 );
               })

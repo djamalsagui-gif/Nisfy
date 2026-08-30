@@ -234,11 +234,13 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
   // Filtered Ads for Step 1
   const filteredAds = useMemo(() => {
     return ads.filter((ad) => {
+      const q = (searchQuery || '').toLowerCase().trim();
       const matchSearch =
-        ad.brandName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ad.brandNameAr?.includes(searchQuery) ||
-        ad.advertiserContactPerson?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        ad.phone.includes(searchQuery);
+        !q ||
+        (ad.brandName && ad.brandName.toLowerCase().includes(q)) ||
+        (ad.brandNameAr && ad.brandNameAr.includes(searchQuery)) ||
+        (ad.advertiserContactPerson && ad.advertiserContactPerson.toLowerCase().includes(q)) ||
+        (ad.phone && ad.phone.includes(searchQuery));
 
       if (!matchSearch) return false;
 
@@ -476,8 +478,8 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
       transactionReference: `VIR-BARIDI-${Date.now().toString().slice(-6)}`,
       amount: defaultAmount,
       proofDate: new Date().toISOString().split('T')[0],
-      proofNotes: `Justificatif de règlement transmis pour remise en ligne immédiate de ${ad.brandName}.`,
-      proofFileName: `recu_paiement_${ad.brandName.toLowerCase().replace(/\s+/g, '_')}.jpg`,
+      proofNotes: `Justificatif de règlement transmis pour remise en ligne immédiate de ${ad.brandName || 'Annonce'}.`,
+      proofFileName: `recu_paiement_${(ad.brandName || 'annonce').toLowerCase().replace(/\s+/g, '_')}.jpg`,
     });
     setReactivateModalAd(ad);
   };

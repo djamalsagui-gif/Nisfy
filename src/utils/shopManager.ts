@@ -65,14 +65,14 @@ export function getActiveShopProducts(): ShopProduct[] {
   const allProducts = getManagedShopProducts();
   const allVendors = getManagedShopVendors();
   const activeVendorNames = new Set(
-    allVendors.filter((v) => v.isActive).map((v) => v.name.toLowerCase().trim())
+    allVendors.filter((v) => v.isActive && v.name).map((v) => (v.name || '').toLowerCase().trim())
   );
 
   return allProducts.filter((product) => {
     if (product.isActive === false) return false;
     const sellerKey = (product.sellerName || '').toLowerCase().trim();
     // If seller is in vendors list, check if active; otherwise allow
-    const vendorRecord = allVendors.find((v) => v.name.toLowerCase().trim() === sellerKey);
+    const vendorRecord = allVendors.find((v) => (v.name || '').toLowerCase().trim() === sellerKey);
     if (vendorRecord && !vendorRecord.isActive) {
       return false;
     }

@@ -149,7 +149,7 @@ export function DiscoverView({
       if (discoveryFilters.wilaya !== 'all') {
         if (u.wilayaCode !== discoveryFilters.wilaya) return false;
       }
-      if (filterCity && u.city.toLowerCase() !== filterCity.toLowerCase()) {
+      if (filterCity && (u.city || '').toLowerCase().trim() !== filterCity.toLowerCase().trim()) {
         return false;
       }
       
@@ -157,8 +157,9 @@ export function DiscoverView({
       if (u.age < discoveryFilters.ageMin || u.age > discoveryFilters.ageMax) return false;
       
       // Education
-      if (discoveryFilters.educationLevel !== 'all') {
-        if (u.educationLevel && !u.educationLevel.toLowerCase().includes(discoveryFilters.educationLevel.toLowerCase())) {
+      if (discoveryFilters.educationLevel !== 'all' && discoveryFilters.educationLevel) {
+        const eduFilter = discoveryFilters.educationLevel.toLowerCase().trim();
+        if (u.educationLevel && !u.educationLevel.toLowerCase().includes(eduFilter)) {
           return false;
         }
       }
@@ -169,8 +170,9 @@ export function DiscoverView({
       }
 
       // Family Origin
-      if (discoveryFilters.familyOrigin !== 'all') {
-        if (u.familyOrigin && !u.familyOrigin.toLowerCase().includes(discoveryFilters.familyOrigin.toLowerCase())) {
+      if (discoveryFilters.familyOrigin !== 'all' && discoveryFilters.familyOrigin) {
+        const famFilter = discoveryFilters.familyOrigin.toLowerCase().trim();
+        if (u.familyOrigin && !u.familyOrigin.toLowerCase().includes(famFilter)) {
           return false;
         }
       }
@@ -707,7 +709,8 @@ export function DiscoverView({
                       {user.interests && user.interests.length > 0 && (
                         <div className="flex flex-wrap gap-1 mt-2">
                           {user.interests.slice(0, 3).map((tag, tIdx) => {
-                            const isMarriage = tag.toLowerCase().includes('mariage') || tag.includes('زواج');
+                            if (!tag) return null;
+                            const isMarriage = (tag || '').toLowerCase().includes('mariage') || tag.includes('زواج');
                             return (
                               <span
                                 key={tIdx}

@@ -128,8 +128,12 @@ export function ProfileCard({ profile, currentUser }: ProfileCardProps) {
         {profile.interests && profile.interests.length > 0 && (
           <div className="flex flex-wrap gap-1.5 mt-3">
             {profile.interests.slice(0, 4).map((tag, idx) => {
-              const isCommon = currentUser.interests?.some(
-                i => i.toLowerCase() === tag.toLowerCase()
+              if (!tag) return null;
+              const tagLower = tag.toLowerCase().trim();
+              const isCommon = Boolean(
+                currentUser?.interests?.some(
+                  i => Boolean(i) && i.toLowerCase().trim() === tagLower
+                )
               );
               return (
                 <span 

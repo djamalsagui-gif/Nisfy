@@ -218,12 +218,13 @@ export function NisfyCommunitiesView({
         ? c.joined
         : c.category === activeCategory;
 
+    const q = (searchQuery || '').toLowerCase().trim();
     const matchesSearch =
-      searchQuery === '' ||
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.nameAr.includes(searchQuery) ||
+      !q ||
+      (c.name && c.name.toLowerCase().includes(q)) ||
+      (c.nameAr && c.nameAr.includes(searchQuery)) ||
       (c.wilayaCode && c.wilayaCode.includes(searchQuery)) ||
-      (c.country && c.country.toLowerCase().includes(searchQuery.toLowerCase()));
+      (c.country && c.country.toLowerCase().includes(q));
 
     return matchesCategory && matchesSearch;
   });
@@ -1216,9 +1217,11 @@ export function NisfyCommunitiesView({
                           seen.add(u.id);
                           return true;
                         }
+                        const communityName = (selectedCommunity?.name || '').toLowerCase().trim();
                         const matches =
-                          u.city?.toLowerCase().includes(selectedCommunity.name.toLowerCase()) ||
-                          u.wilayaOrigin?.toLowerCase().includes(selectedCommunity.name.toLowerCase()) ||
+                          !communityName ||
+                          (u.city && u.city.toLowerCase().includes(communityName)) ||
+                          (u.wilayaOrigin && u.wilayaOrigin.toLowerCase().includes(communityName)) ||
                           selectedCommunity.wilayaCode === '16';
                         if (matches) {
                           seen.add(u.id);

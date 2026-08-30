@@ -57,8 +57,8 @@ export async function verifyEmailOtp(
   token: string
 ): Promise<{ success: boolean; user?: any; error?: string }> {
   try {
-    const cleanEmail = email.trim().toLowerCase();
-    const cleanToken = token.trim().replace(/\s+/g, '').replace(/-/g, '');
+    const cleanEmail = (email || '').trim().toLowerCase();
+    const cleanToken = (token || '').trim().replace(/\s+/g, '').replace(/-/g, '');
 
     if (!cleanEmail || !cleanToken) {
       return {
