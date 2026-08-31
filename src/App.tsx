@@ -55,7 +55,6 @@ import { useLanguage } from './context/LanguageContext';
 import { SplashScreen } from './components/SplashScreen';
 import { PwaInstallModal } from './components/PwaInstallModal';
 import { PwaInstallBanner } from './components/PwaInstallBanner';
-import { PromoVideoModal } from './components/PromoVideoModal';
 
 export default function App() {
   const { t, isArabic } = useLanguage();
@@ -115,10 +114,9 @@ export default function App() {
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
-  const [isPromoVideoModalOpen, setIsPromoVideoModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
-  // Bookmarks State
+  // Bookmarks State (Personal Favorites List)
   const [bookmarkedUserIds, setBookmarkedUserIds] = useState<string[]>(() => {
     try {
       const saved = localStorage.getItem('nisfy_bookmarked_ids');
@@ -127,6 +125,30 @@ export default function App() {
       return [];
     }
   });
+
+  const handleToggleBookmark = (targetUser: UserProfile) => {
+    datingSounds.playTapSound();
+    setBookmarkedUserIds((prev) => {
+      const isAlready = prev.includes(targetUser.id);
+      const next = isAlready
+        ? prev.filter((id) => id !== targetUser.id)
+        : [...prev, targetUser.id];
+      try {
+        localStorage.setItem('nisfy_bookmarked_ids', JSON.stringify(next));
+      } catch {}
+      setToastMessage(
+        isAlready
+          ? isArabic
+            ? `تمت إزالة ${targetUser.pseudo} من المفضلة`
+            : `Profil ${targetUser.pseudo} retiré des favoris`
+          : isArabic
+          ? `⭐ تمت إضافة ${targetUser.pseudo} إلى قائمة المفضلة الشخصية !`
+          : `⭐ ${targetUser.pseudo} ajouté à vos favoris personnels !`
+      );
+      setTimeout(() => setToastMessage(null), 3000);
+      return next;
+    });
+  };
 
   // 2. Data State
   const [chats, setChats] = useState<Record<string, ChatMessage[]>>(() =>
@@ -159,20 +181,6 @@ export default function App() {
     setCurrentUser(user);
     setLoggedInUser(user);
     setActiveTab('discover');
-  };
-
-  const handleToggleBookmark = (targetUser: UserProfile) => {
-    datingSounds.playTapSound();
-    setBookmarkedUserIds((prev) => {
-      const isAlready = prev.includes(targetUser.id);
-      const next = isAlready ? prev.filter((id) => id !== targetUser.id) : [...prev, targetUser.id];
-      try {
-        localStorage.setItem('nisfy_bookmarked_ids', JSON.stringify(next));
-      } catch {
-        // ignore
-      }
-      return next;
-    });
   };
 
   const handleRegisterUser = (newUser: UserProfile) => {
@@ -490,7 +498,6 @@ export default function App() {
           onOpenPremium={() => setIsPremiumModalOpen(true)}
           onOpenContact={() => setIsContactModalOpen(true)}
           onOpenPwaInstall={() => setIsPwaModalOpen(true)}
-          onOpenPromoVideo={() => setIsPromoVideoModalOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -505,7 +512,6 @@ export default function App() {
               onExploreFiltered={(cat) => {
                 setActiveTab('discover');
               }}
-              onOpenPromoVideo={() => setIsPromoVideoModalOpen(true)}
             />
           )}
 
@@ -590,6 +596,8 @@ export default function App() {
               currentUser={currentUser}
               matches={matches}
               allUsers={registeredUsers}
+              bookmarkedUserIds={bookmarkedUserIds}
+              onToggleBookmark={handleToggleBookmark}
               onStartDirectChat={handleStartDirectChat}
               onExploreMore={() => setActiveTab('discover')}
             />
@@ -812,16 +820,6 @@ export default function App() {
       />
 
 
-
-      {/* ===== POPUP MODAL: PROMO VIDEO & VIRAL KIT ===== */}
-      <PromoVideoModal
-        isOpen={isPromoVideoModalOpen}
-        onClose={() => setIsPromoVideoModalOpen(false)}
-        onNavigateToFeed={() => {
-          setIsPromoVideoModalOpen(false);
-          setActiveTab('feed');
-        }}
-      />
 
       {/* ===== POPUP MODAL: CONTACT & SUPPORT ===== */}
       <ContactModal

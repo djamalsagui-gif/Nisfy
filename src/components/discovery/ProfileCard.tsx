@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
-import { ShieldCheck, MapPin, Briefcase, GraduationCap, Sparkles, ChevronDown, ChevronUp, HeartHandshake } from 'lucide-react';
+import { ShieldCheck, MapPin, Briefcase, GraduationCap, Sparkles, ChevronDown, ChevronUp, HeartHandshake, Bookmark } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { calculateCompatibilityScore } from '../../utils/matchingAlgorithm';
 
 interface ProfileCardProps {
   profile: UserProfile;
   currentUser: UserProfile;
+  isBookmarked?: boolean;
+  onToggleBookmark?: () => void;
 }
 
-export function ProfileCard({ profile, currentUser }: ProfileCardProps) {
+export function ProfileCard({ profile, currentUser, isBookmarked = false, onToggleBookmark }: ProfileCardProps) {
   const [showCompatibilityDetails, setShowCompatibilityDetails] = useState(false);
   // Compatibility
   const compatibility = calculateCompatibilityScore(currentUser, profile);
@@ -43,20 +45,41 @@ export function ProfileCard({ profile, currentUser }: ProfileCardProps) {
         )}
       </div>
 
-      {/* Compatibility Badge Top Right (Clickable to reveal reasons) */}
-      <button
-        type="button"
-        onClick={() => setShowCompatibilityDetails(!showCompatibilityDetails)}
-        className="absolute top-4 right-4 z-20 cursor-pointer active:scale-95 transition-transform"
-        title="Voir les détails de compatibilité"
-      >
-        <div className="bg-gradient-to-br from-[#FF6B35] to-[#FF3823] text-white text-sm font-black px-3 py-1.5 rounded-full shadow-lg shadow-orange-500/30 border-2 border-white/20 flex flex-col items-center leading-none">
-          <span>{compatibility.score}%</span>
-          <span className="text-[8px] uppercase font-bold tracking-wider mt-0.5 flex items-center gap-0.5">
-            Match {showCompatibilityDetails ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
-          </span>
-        </div>
-      </button>
+      {/* Top Right Controls: Compatibility Badge + Bookmark Button */}
+      <div className="absolute top-4 right-4 z-20 flex items-center gap-2">
+        {onToggleBookmark && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleBookmark();
+            }}
+            className={`p-2.5 rounded-full backdrop-blur-md shadow-lg border transition-all cursor-pointer active:scale-90 ${
+              isBookmarked
+                ? 'bg-amber-400 text-slate-950 border-amber-300 ring-2 ring-amber-300/40'
+                : 'bg-black/50 hover:bg-black/70 text-white border-white/20 hover:text-amber-300'
+            }`}
+            title={isBookmarked ? 'Retirer des favoris' : 'Sauvegarder dans mes favoris'}
+          >
+            <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-current' : ''}`} />
+          </button>
+        )}
+
+        {/* Compatibility Badge Top Right (Clickable to reveal reasons) */}
+        <button
+          type="button"
+          onClick={() => setShowCompatibilityDetails(!showCompatibilityDetails)}
+          className="cursor-pointer active:scale-95 transition-transform"
+          title="Voir les détails de compatibilité"
+        >
+          <div className="bg-gradient-to-br from-[#FF6B35] to-[#FF3823] text-white text-sm font-black px-3 py-1.5 rounded-full shadow-lg shadow-orange-500/30 border-2 border-white/20 flex flex-col items-center leading-none">
+            <span>{compatibility.score}%</span>
+            <span className="text-[8px] uppercase font-bold tracking-wider mt-0.5 flex items-center gap-0.5">
+              Match {showCompatibilityDetails ? <ChevronUp className="w-2.5 h-2.5" /> : <ChevronDown className="w-2.5 h-2.5" />}
+            </span>
+          </div>
+        </button>
+      </div>
 
       {/* Popover Breakdown of Compatibility */}
       {showCompatibilityDetails && (

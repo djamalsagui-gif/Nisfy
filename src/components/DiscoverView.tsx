@@ -559,13 +559,44 @@ export function DiscoverView({
               <ProfileCard
                 profile={activeCardUser}
                 currentUser={currentUser}
+                isBookmarked={bookmarkedUserIds.includes(activeCardUser.id)}
+                onToggleBookmark={onToggleBookmark ? () => onToggleBookmark(activeCardUser) : undefined}
               />
               <MatchingActions 
                 onPass={() => handleDislike(activeCardUser)}
                 onLike={() => handleLike(activeCardUser)}
                 onSuperLike={() => handleSuperLike(activeCardUser, false)}
                 onJasmin={() => handleSuperLike(activeCardUser, true)}
+                isBookmarked={bookmarkedUserIds.includes(activeCardUser.id)}
+                onBookmark={onToggleBookmark ? () => onToggleBookmark(activeCardUser) : undefined}
               />
+            </div>
+          ) : encounterSubTab === 'favoris' ? (
+            /* Empty state specifically for Favorites */
+            <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl p-8 text-center border border-slate-200 dark:border-slate-800 shadow-lg space-y-4">
+              <div className="w-16 h-16 bg-amber-50 dark:bg-amber-950/50 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto">
+                ⭐
+              </div>
+              <h3 className="text-lg font-black text-slate-900 dark:text-white">
+                {isArabic ? 'قائمة المفضلة فارغة حالياً' : 'Aucun profil dans vos favoris'}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto leading-relaxed">
+                {isArabic
+                  ? 'يمكنكم حفظ الملفات الشخصية التي ترغبون في مراجعتها لاحقاً بالنقر على أيقونة الإشارة المرجعية (⭐).'
+                  : 'Enregistrez les profils qui vous intéressent en cliquant sur l’icône signet (⭐) pour les retrouver facilement ici à tout moment.'}
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  datingSounds.playTapSound();
+                  setEncounterSubTab('pour_vous');
+                  setCurrentIndex(0);
+                }}
+                className="py-2.5 px-5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-2xl text-xs font-bold transition-all inline-flex items-center gap-2 shadow-md shadow-orange-500/20 cursor-pointer hover:opacity-95"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>{isArabic ? 'استكشاف الملفات الشخصية' : 'Explorer les profils'}</span>
+              </button>
             </div>
           ) : (
             /* Empty state when deck is finished */
@@ -588,6 +619,40 @@ export function DiscoverView({
                 <span>{t.restartDeckBtn}</span>
               </button>
             </div>
+          )}
+        </div>
+      ) : processedUsers.length === 0 ? (
+        /* Grid Empty State */
+        <div className="w-full max-w-md mx-auto bg-white dark:bg-slate-900 rounded-3xl p-8 text-center border border-slate-200 dark:border-slate-800 shadow-lg space-y-4 my-8">
+          <div className="w-16 h-16 bg-amber-50 dark:bg-amber-950/50 text-amber-500 rounded-full flex items-center justify-center text-3xl mx-auto">
+            {encounterSubTab === 'favoris' ? '⭐' : '✨'}
+          </div>
+          <h3 className="text-lg font-black text-slate-900 dark:text-white">
+            {encounterSubTab === 'favoris'
+              ? isArabic
+                ? 'قائمة المفضلة فارغة حالياً'
+                : 'Aucun profil dans vos favoris'
+              : t.noProfileFound}
+          </h3>
+          <p className="text-xs text-slate-500 dark:text-slate-400 max-w-xs mx-auto">
+            {encounterSubTab === 'favoris'
+              ? isArabic
+                ? 'انقر على أيقونة ⭐ على أي ملف لحفظه ومراجعته لاحقاً.'
+                : 'Cliquez sur l’icône ⭐ d’un profil pour l’ajouter à vos favoris personnels.'
+              : t.noProfileFoundDesc}
+          </p>
+          {encounterSubTab === 'favoris' && (
+            <button
+              type="button"
+              onClick={() => {
+                datingSounds.playTapSound();
+                setEncounterSubTab('pour_vous');
+              }}
+              className="py-2.5 px-5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white rounded-2xl text-xs font-bold transition-all inline-flex items-center gap-2 shadow-md shadow-orange-500/20 cursor-pointer"
+            >
+              <Sparkles className="w-4 h-4" />
+              <span>{isArabic ? 'استكشاف الملفات الشخصية' : 'Découvrir des profils'}</span>
+            </button>
           )}
         </div>
       ) : (
@@ -742,6 +807,35 @@ export function DiscoverView({
                       >
                         <MessageCircle className="w-4 h-4" />
                       </button>
+
+                      {onToggleBookmark && (
+                        <button
+                          type="button"
+                          onClick={() => onToggleBookmark(user)}
+                          className={`p-2 rounded-xl transition-colors cursor-pointer ${
+                            bookmarkedUserIds.includes(user.id)
+                              ? 'bg-amber-50 text-amber-600 border border-amber-300 shadow-xs'
+                              : 'bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-amber-500'
+                          }`}
+                          title={
+                            bookmarkedUserIds.includes(user.id)
+                              ? isArabic
+                                ? 'إزالة من المفضلة'
+                                : 'Retirer des favoris'
+                              : isArabic
+                              ? 'حفظ في المفضلة'
+                              : 'Ajouter aux favoris'
+                          }
+                        >
+                          <Bookmark
+                            className={`w-4 h-4 ${
+                              bookmarkedUserIds.includes(user.id)
+                                ? 'fill-amber-500 text-amber-500'
+                                : ''
+                            }`}
+                          />
+                        </button>
+                      )}
 
                       <button
                         type="button"

@@ -60,7 +60,6 @@ interface NavbarProps {
   onOpenVerification?: () => void;
   onOpenContact?: () => void;
   onOpenPwaInstall?: () => void;
-  onOpenPromoVideo?: () => void;
 }
 
 export function Navbar({
@@ -84,7 +83,6 @@ export function Navbar({
   onOpenVerification,
   onOpenContact,
   onOpenPwaInstall,
-  onOpenPromoVideo,
 }: NavbarProps) {
   const { t, isArabic } = useLanguage();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -329,21 +327,6 @@ export function Navbar({
                   <span>{t.tabLive}</span>
                 </button>
 
-                {onOpenPromoVideo && (
-                  <button
-                    onClick={() => { setShowExplorerMenu(false); onOpenPromoVideo(); }}
-                    className="w-full px-3 py-2 text-left text-xs font-bold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer bg-gradient-to-r from-orange-500/15 to-rose-500/15 text-[#FF3823] dark:text-[#FF6B35] hover:bg-orange-500/25 border border-orange-500/30"
-                  >
-                    <Film className="w-4 h-4 text-[#FF3823] shrink-0" />
-                    <div className="flex flex-col min-w-0">
-                      <span className="truncate">{isArabic ? '🎬 فيديو إعلاني Nisfy (تحميل & نشر)' : '🎬 Vidéo Promo Nisfy (Kit Pub)'}</span>
-                      <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
-                        {isArabic ? 'جاهز للنشر على TikTok و Reels' : 'MP4 HD + Texte Viral'}
-                      </span>
-                    </div>
-                  </button>
-                )}
-
                 {onOpenPwaInstall && (
                   <button
                     onClick={() => { setShowExplorerMenu(false); onOpenPwaInstall(); }}
@@ -518,19 +501,6 @@ export function Navbar({
                   <Mail className="w-4 h-4 text-[#38BDF8]" />
                   <span>{isArabic ? 'اتصل بالإدارة' : 'Contact & Support'}</span>
                 </button>
-
-                {onOpenPromoVideo && (
-                  <button
-                    onClick={() => {
-                      setShowUserMenu(false);
-                      onOpenPromoVideo();
-                    }}
-                    className="w-full px-3 py-2 text-left text-xs font-bold text-[#FF3823] bg-orange-50/60 dark:bg-orange-950/30 hover:bg-orange-100 dark:hover:bg-orange-950/60 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
-                  >
-                    <Film className="w-4 h-4 text-[#FF3823]" />
-                    <span>{isArabic ? '🎬 فيديو إعلاني Nisfy (تحميل & نشر)' : '🎬 Vidéo Promo Nisfy (Kit Pub)'}</span>
-                  </button>
-                )}
 
                 {onOpenPwaInstall && (
                   <button
