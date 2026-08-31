@@ -656,6 +656,9 @@ export function MyProfileView({
                       loop
                       playsInline
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      onError={(e) => {
+                        e.currentTarget.style.display = 'none';
+                      }}
                     />
                     <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
                       <div className="p-3 rounded-full bg-[#FF3823]/90 text-white shadow-lg group-hover:scale-110 transition-transform">

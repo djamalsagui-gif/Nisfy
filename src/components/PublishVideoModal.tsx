@@ -512,6 +512,10 @@ export function PublishVideoModal({
                     autoPlay
                     playsInline
                     className="w-full h-full object-cover"
+                    onError={(e) => {
+                      // Fallback gracefully on media error
+                      e.currentTarget.style.display = 'none';
+                    }}
                   />
                   <button
                     type="button"
@@ -587,7 +591,13 @@ export function PublishVideoModal({
                     <CheckCircle2 className="w-4 h-4 text-emerald-600" />
                     <span>{isArabic ? 'تم تحميل الفيديو بنجاح !' : 'Vidéo chargée avec succès !'}</span>
                   </div>
-                  <video src={videoUrl} className="w-16 h-12 rounded-lg object-cover bg-black" />
+                  <video
+                    src={videoUrl}
+                    className="w-16 h-12 rounded-lg object-cover bg-black"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
                 </div>
               )}
             </div>

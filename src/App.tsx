@@ -55,6 +55,7 @@ import { useLanguage } from './context/LanguageContext';
 import { SplashScreen } from './components/SplashScreen';
 import { PwaInstallModal } from './components/PwaInstallModal';
 import { PwaInstallBanner } from './components/PwaInstallBanner';
+import { PromoVideoModal } from './components/PromoVideoModal';
 
 export default function App() {
   const { t, isArabic } = useLanguage();
@@ -114,6 +115,7 @@ export default function App() {
   const [isPremiumModalOpen, setIsPremiumModalOpen] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [isPwaModalOpen, setIsPwaModalOpen] = useState(false);
+  const [isPromoVideoModalOpen, setIsPromoVideoModalOpen] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   // Bookmarks State
@@ -488,6 +490,7 @@ export default function App() {
           onOpenPremium={() => setIsPremiumModalOpen(true)}
           onOpenContact={() => setIsContactModalOpen(true)}
           onOpenPwaInstall={() => setIsPwaModalOpen(true)}
+          onOpenPromoVideo={() => setIsPromoVideoModalOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -502,6 +505,7 @@ export default function App() {
               onExploreFiltered={(cat) => {
                 setActiveTab('discover');
               }}
+              onOpenPromoVideo={() => setIsPromoVideoModalOpen(true)}
             />
           )}
 
@@ -808,6 +812,16 @@ export default function App() {
       />
 
 
+
+      {/* ===== POPUP MODAL: PROMO VIDEO & VIRAL KIT ===== */}
+      <PromoVideoModal
+        isOpen={isPromoVideoModalOpen}
+        onClose={() => setIsPromoVideoModalOpen(false)}
+        onNavigateToFeed={() => {
+          setIsPromoVideoModalOpen(false);
+          setActiveTab('feed');
+        }}
+      />
 
       {/* ===== POPUP MODAL: CONTACT & SUPPORT ===== */}
       <ContactModal

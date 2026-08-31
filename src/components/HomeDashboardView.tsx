@@ -23,6 +23,9 @@ import {
   Tag,
   Truck,
   Eye,
+  Film,
+  Play,
+  Share2,
 } from 'lucide-react';
 import { UserProfile, MatchRelation } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -37,6 +40,7 @@ interface HomeDashboardViewProps {
   onSelectTab: (tab: any) => void;
   onSelectUserForChat: (user: UserProfile) => void;
   onExploreFiltered: (category: 'high_compatibility' | 'verified' | 'marriage_ready' | 'same_wilaya' | 'diaspora') => void;
+  onOpenPromoVideo?: () => void;
 }
 
 export function HomeDashboardView({
@@ -46,6 +50,7 @@ export function HomeDashboardView({
   onSelectTab,
   onSelectUserForChat,
   onExploreFiltered,
+  onOpenPromoVideo,
 }: HomeDashboardViewProps) {
   const { t, isArabic } = useLanguage();
 
@@ -125,6 +130,13 @@ export function HomeDashboardView({
 
           <div className="flex items-center gap-2.5 flex-wrap">
             <button
+              onClick={() => (onOpenPromoVideo ? onOpenPromoVideo() : onSelectTab('feed'))}
+              className="px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-[#FF3823] text-white font-black text-xs sm:text-sm shadow-lg shadow-orange-500/25 hover:opacity-95 active:scale-95 transition-all flex items-center gap-2 cursor-pointer shrink-0"
+            >
+              <Film className="w-4 h-4" />
+              <span>{isArabic ? '🎬 فيديو إعلاني Nisfy' : '🎬 Vidéo Promo Nisfy'}</span>
+            </button>
+            <button
               onClick={() => onSelectTab('shop')}
               className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer shrink-0"
             >
@@ -137,6 +149,69 @@ export function HomeDashboardView({
             >
               <Heart className="w-4 h-4 fill-current" />
               <span>{isArabic ? 'التوافقات' : 'Rencontres'}</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* 🎬 2. BANNIÈRE VIDÉO PROMOTIONNELLE & PUB RÉSEAUX SOCIAUX */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-orange-950/40 to-slate-900 border border-orange-500/30 p-4 sm:p-6 shadow-xl">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-5">
+          <div className="flex items-center gap-4">
+            <div
+              onClick={() => (onOpenPromoVideo ? onOpenPromoVideo() : onSelectTab('feed'))}
+              className="relative w-20 h-28 sm:w-24 sm:h-32 rounded-2xl overflow-hidden shadow-lg border border-orange-500/40 shrink-0 cursor-pointer group"
+            >
+              <img
+                src="https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80&w=400"
+                alt="Vidéo Promo Nisfy"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center group-hover:bg-black/20 transition-colors">
+                <div className="w-10 h-10 rounded-full bg-[#FF3823] text-white flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                  <Play className="w-5 h-5 fill-white ml-0.5" />
+                </div>
+              </div>
+              <span className="absolute bottom-1 right-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-bold text-amber-300">
+                0:45
+              </span>
+            </div>
+
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-[#FF3823]/20 text-[#FF6B35] border border-[#FF3823]/30 uppercase tracking-wider flex items-center gap-1">
+                  <Flame className="w-3 h-3 text-[#FF3823]" />
+                  {isArabic ? 'حملة ترويجية رسمية' : 'Campagne Promo Officielle'}
+                </span>
+                <span className="text-xs text-slate-400">🇩🇿 69 Wilayas & Diaspora</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                {isArabic
+                  ? '🎬 شاهد وحمّل فيديو الترويج لتطبيق نصفي (Nisfy)'
+                  : '🎬 Regardez & Téléchargez le Spot Vidéo Nisfy'}
+              </h3>
+              <p className="text-xs text-slate-300 mt-1 max-w-xl">
+                {isArabic
+                  ? 'استخدم الفيديو الجاهز والنص الترويجي لجذب آلاف المستخدمين الجادين من جميع الولايات والمهجر.'
+                  : 'Téléchargez le clip publicitaire HD ou copiez le texte promotionnel pour vos réseaux sociaux (TikTok, Reels, Facebook, WhatsApp).'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 w-full md:w-auto shrink-0 flex-wrap sm:flex-nowrap">
+            <button
+              onClick={() => (onOpenPromoVideo ? onOpenPromoVideo() : onSelectTab('feed'))}
+              className="flex-1 sm:flex-none px-4 py-2.5 rounded-2xl bg-[#FF3823] hover:bg-[#FF6B35] text-white text-xs sm:text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-orange-500/25 transition-all cursor-pointer"
+            >
+              <Play className="w-4 h-4 fill-white" />
+              <span>{isArabic ? 'تشغيل الفيديو والتحميل' : 'Voir la vidéo & Kit Pub'}</span>
+            </button>
+            <button
+              onClick={() => onSelectTab('feed')}
+              className="flex-1 sm:flex-none px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs sm:text-sm font-bold flex items-center justify-center gap-2 border border-slate-700 transition-all cursor-pointer"
+            >
+              <Film className="w-4 h-4 text-[#FF3823]" />
+              <span>{isArabic ? 'قسم الفيد' : 'Ouvrir le Feed'}</span>
             </button>
           </div>
         </div>
