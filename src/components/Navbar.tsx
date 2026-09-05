@@ -32,6 +32,9 @@ import {
   Mail,
   MoreHorizontal,
   Smartphone,
+  PiggyBank,
+  ArrowRightLeft,
+  Calendar,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -144,38 +147,51 @@ export function Navbar({
 
   return (
     <>
-    <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 sticky top-0 z-40 transition-all duration-300">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-3">
-        {/* Brand Wordmark (Instagram style: clean typographic brand, logo hidden once window is open) */}
-        <div
-          onClick={() => onSelectTab('discover')}
-          className="flex items-center gap-2 cursor-pointer select-none group shrink-0"
-        >
-          <div className="flex items-center gap-2">
-            <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-100 dark:to-white bg-clip-text text-transparent group-hover:opacity-90 transition-opacity font-sans">
-              Nisfy
-            </span>
-            <span className="text-lg sm:text-xl font-bold text-[#FF3823] font-serif">
-              نصفي
-            </span>
-            <span className="hidden xl:inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
-              {t.wilayasBadge}
-            </span>
+      <header className="bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-b border-slate-200/60 dark:border-slate-800/60 sticky top-0 z-40 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-15 flex items-center justify-between gap-3">
+          {/* Brand Wordmark (Instagram style: clean typographic brand, logo hidden once window is open) */}
+          <div
+            onClick={() => onSelectTab('home')}
+            className="flex items-center gap-2 cursor-pointer select-none group shrink-0"
+          >
+            <div className="flex items-center gap-2">
+              <span className="text-xl sm:text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 dark:from-white dark:via-slate-100 dark:to-white bg-clip-text text-transparent group-hover:opacity-90 transition-opacity font-sans">
+                Nisfy
+              </span>
+              <span className="text-lg sm:text-xl font-bold text-[#FF3823] font-serif">
+                نصفي
+              </span>
+              <span className="hidden xl:inline-flex items-center px-1.5 py-0.2 rounded-full text-[9px] font-bold bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-300 border border-emerald-200/60 dark:border-emerald-800/60">
+                {t.wilayasBadge}
+              </span>
+            </div>
           </div>
-        </div>
 
         {/* Primary Streamlined Navigation (Desktop & Tablet) */}
         <nav className="hidden lg:flex items-center gap-1 bg-slate-100/70 dark:bg-slate-800/70 p-1 rounded-full border border-slate-200/50 dark:border-slate-700/50 backdrop-blur-md">
-          {/* 1. 🏠 Feed Social */}
+          {/* 0. 🏠 Menu Principal / Accueil */}
           <button
-            onClick={() => onSelectTab('feed')}
+            onClick={() => onSelectTab('home')}
             className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
-              activeTab === 'feed'
+              (activeTab as string) === 'home'
                 ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
                 : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
-            <Home className={`w-3.5 h-3.5 ${activeTab === 'feed' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <Home className={`w-3.5 h-3.5 ${(activeTab as string) === 'home' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
+            <span>{isArabic ? 'الرئيسية' : 'Accueil'}</span>
+          </button>
+
+          {/* 1. 🎬 Feed Vidéos */}
+          <button
+            onClick={() => onSelectTab('feed')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              (activeTab as string) === 'feed'
+                ? 'bg-white dark:bg-slate-900 text-[#FF3823] dark:text-[#FF6B35] shadow-xs ring-1 ring-[#FF3823]/20'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Film className={`w-3.5 h-3.5 ${(activeTab as string) === 'feed' ? 'text-[#FF3823]' : 'text-slate-400'}`} />
             <span>{t.tabFeed}</span>
           </button>
 
@@ -277,6 +293,33 @@ export function Navbar({
 
             {showExplorerMenu && (
               <div className="absolute right-0 mt-2 w-56 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl rounded-2xl shadow-xl border border-slate-200/80 dark:border-slate-800 p-1.5 z-50 animate-in fade-in zoom-in-95">
+                {/* 💍 Rétroplanning Dar Wa Drouj */}
+                <button
+                  onClick={() => { onSelectTab('retroplanning'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'retroplanning' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Calendar className="w-4 h-4 text-amber-600" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="truncate">{isArabic ? 'دار ودروج (مخطط الزواج)' : 'Dar Wa Drouj (Rétroplanning)'}</span>
+                    <span className="text-[10px] text-slate-400 font-normal">{isArabic ? 'تنظيم المراحل والمصاريف' : 'De la Fatiha au Jour J'}</span>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('finance'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'finance' ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <PiggyBank className="w-4 h-4 text-emerald-600" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="truncate">{isArabic ? 'مستشار الميزانية والتوفير IA' : 'Conseiller Épargne IA'}</span>
+                    <span className="text-[10px] text-slate-400 font-normal">Gemini 3.7 • Budget Zawaj</span>
+                  </div>
+                </button>
+
                 <button
                   onClick={() => { onSelectTab('shop'); setShowExplorerMenu(false); }}
                   className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
@@ -471,6 +514,14 @@ export function Navbar({
                   <span>{isArabic ? 'الملف الشخصي' : 'Mon Profil'}</span>
                 </button>
 
+                <button
+                  onClick={() => { onSelectTab('finance'); setShowUserMenu(false); }}
+                  className="w-full px-3 py-2 text-left text-xs font-semibold text-emerald-700 dark:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
+                >
+                  <PiggyBank className="w-4 h-4 text-emerald-600" />
+                  <span>{isArabic ? 'مستشار الميزانية والتوفير IA' : 'Conseiller Épargne & Budget IA'}</span>
+                </button>
+
                 {onOpenPremium && (
                   <button
                     onClick={() => { onOpenPremium(); setShowUserMenu(false); }}
@@ -542,6 +593,51 @@ export function Navbar({
 
                 <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
 
+                {/* Switch Profiles (Tester d'autres profils instantanément) */}
+                {onSelectUser && allUsers && allUsers.length > 1 && (
+                  <div className="px-1 py-1 space-y-1">
+                    <div className="flex items-center justify-between px-2 py-0.5 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-wider">
+                      <span className="flex items-center gap-1">
+                        <ArrowRightLeft className="w-3 h-3 text-[#FF3823]" />
+                        {isArabic ? 'تبديل الحساب للتجربة' : 'Changer de profil (Test)'}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-1">
+                      {allUsers.slice(0, 3).map((u) => {
+                        const isCurrent = u.id === currentUser.id;
+                        return (
+                          <button
+                            key={u.id}
+                            type="button"
+                            onClick={() => {
+                              if (!isCurrent) {
+                                onSelectUser(u);
+                                setShowUserMenu(false);
+                              }
+                            }}
+                            className={`p-1.5 rounded-lg border text-left flex flex-col items-center gap-1 transition-all cursor-pointer ${
+                              isCurrent
+                                ? 'bg-orange-50 dark:bg-orange-950/40 border-[#FF3823]/50 ring-1 ring-[#FF3823]/30'
+                                : 'bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 hover:bg-white dark:hover:bg-slate-700'
+                            }`}
+                          >
+                            <img
+                              src={u.avatar}
+                              alt={u.pseudo}
+                              className="w-6 h-6 rounded-full object-cover"
+                            />
+                            <span className="text-[10px] font-bold truncate max-w-full text-slate-700 dark:text-slate-200">
+                              {u.pseudo.split(' ')[0]}
+                            </span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+
                 <button
                   onClick={() => { setShowUserMenu(false); onLogout(); }}
                   className="w-full px-3 py-2 text-left text-xs font-semibold text-[#FF3823] hover:bg-orange-50 dark:hover:bg-orange-950/40 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
@@ -561,18 +657,24 @@ export function Navbar({
       className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border-t border-slate-200/70 dark:border-slate-800/70 px-2 py-1.5 flex items-center justify-around shadow-lg transition-colors duration-200"
       dir={isArabic ? 'rtl' : 'ltr'}
     >
-      {/* 1. 🏠 Feed */}
+      {/* 1. 🏠 Accueil / Menu Principal */}
       <button
         type="button"
-        onClick={() => onSelectTab('feed')}
+        onClick={() => {
+          if (activeTab === 'feed') {
+            onSelectTab('home');
+          } else {
+            onSelectTab('home');
+          }
+        }}
         className={`flex flex-col items-center justify-center py-1 px-2.5 rounded-2xl transition-all cursor-pointer ${
-          activeTab === 'feed' || activeTab === 'home'
+          activeTab === 'home'
             ? 'text-[#FF3823] dark:text-[#FF6B35] font-bold bg-orange-500/10 dark:bg-orange-500/20 ring-1 ring-[#FF3823]/25'
             : 'text-slate-500 dark:text-slate-400'
         }`}
       >
         <Home className="w-5 h-5" />
-        <span className="text-[10px] mt-0.5">{t.tabFeed}</span>
+        <span className="text-[10px] mt-0.5">{isArabic ? 'الرئيسية' : 'Accueil'}</span>
       </button>
 
       {/* 2. 🔎 Recherche */}

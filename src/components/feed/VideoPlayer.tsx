@@ -1,6 +1,6 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, Play, MessageSquarePlus, Sparkles, CheckCircle2, Disc, ShoppingBag, ArrowRight, Tag } from 'lucide-react';
+import { Heart, MessageCircle, Share2, Music, Volume2, VolumeX, Play, CheckCircle2, ShoppingBag } from 'lucide-react';
 import { SocialPost, UserProfile } from '../../types';
 import { useAppStore } from '../../stores/appStore';
 import confetti from 'canvas-confetti';
@@ -8,7 +8,7 @@ import { datingSounds } from '../../utils/soundEffects';
 import { MusicShareModal } from '../music/MusicShareModal';
 import { getTrackById, NISFY_MUSIC_CATALOG } from '../../data/musicThemes';
 import { getReliableVideoUrl } from '../../utils/videoHelpers';
-import { VIDEO_FILTERS, CAPTION_STYLES } from '../../data/videoStudioPresets';
+import { VIDEO_FILTERS } from '../../data/videoStudioPresets';
 
 interface VideoPlayerProps {
   post: SocialPost;
@@ -139,9 +139,7 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
       
       try {
         datingSounds.playLikeSound();
-      } catch (e) {
-        // ignore
-      }
+      } catch (e) {}
     } else {
       setIsLiked(false);
       setLikesCount((prev) => prev - 1);
@@ -163,16 +161,15 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
   };
 
   const appliedFilterPreset = VIDEO_FILTERS.find((f) => f.id === post.appliedFilter);
-  const appliedCaptionPreset = CAPTION_STYLES.find((c) => c.id === post.captionStyle) || CAPTION_STYLES[0];
 
   return (
-    <div ref={ref} className="relative w-full h-full snap-start snap-always bg-black flex items-center justify-center select-none">
+    <div ref={ref} className="relative w-full h-full snap-start snap-always bg-black flex items-center justify-center select-none overflow-hidden">
       {/* Video layer */}
       <div className="absolute inset-0 cursor-pointer overflow-hidden" onClick={handleTogglePlay}>
         {hasError ? (
-          <div className="w-full h-full flex flex-col items-center justify-center text-white/50 bg-slate-900 gap-2">
+          <div className="w-full h-full flex flex-col items-center justify-center text-white/50 bg-slate-950 gap-2">
             <span className="text-3xl">🎬</span>
-            <span className="text-sm font-semibold">Vidéo en cours de chargement...</span>
+            <span className="text-xs font-semibold">Vidéo en cours de chargement...</span>
           </div>
         ) : (
           <>
@@ -189,10 +186,10 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
               onTimeUpdate={handleTimeUpdate}
               onError={() => setHasError(true)}
             />
-            {/* Filter Overlay Gradient */}
+            {/* Subtle Filter Overlay if applied */}
             {appliedFilterPreset?.overlayGradient && (
               <div 
-                className="absolute inset-0 pointer-events-none mix-blend-overlay"
+                className="absolute inset-0 pointer-events-none mix-blend-overlay opacity-50"
                 style={{ background: appliedFilterPreset.overlayGradient }}
               />
             )}
@@ -200,20 +197,11 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
         )}
       </div>
 
-      {/* 🌟 Dynamic Caption / Studio Text Overlay (TikTok / IG Style) */}
-      {post.captionText && (
-        <div className="absolute top-20 sm:top-24 left-1/2 -translate-x-1/2 z-20 pointer-events-none max-w-[85%] text-center animate-in fade-in zoom-in-90 duration-300">
-          <span className={appliedCaptionPreset.classes}>
-            {post.captionText}
-          </span>
-        </div>
-      )}
-
       {/* Burst Heart Animation on Double Tap */}
       {showHeartAnim && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30 animate-in zoom-in-50 duration-200">
-          <div className="w-28 h-28 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] rounded-full flex items-center justify-center shadow-2xl shadow-orange-500/50">
-            <Heart className="w-16 h-16 fill-white text-white animate-bounce" />
+          <div className="w-24 h-24 bg-[#FF3823]/90 rounded-full flex items-center justify-center shadow-2xl shadow-red-500/50">
+            <Heart className="w-14 h-14 fill-white text-white animate-bounce" />
           </div>
         </div>
       )}
@@ -221,204 +209,157 @@ export function VideoPlayer({ post, isActive, onOpenComments, onSelectUser, curr
       {/* Play/Pause indicator center */}
       {!isPlaying && !hasError && (
         <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
-          <div className="w-20 h-20 bg-black/50 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-2xl">
-            <Play className="w-10 h-10 text-white translate-x-1" />
+          <div className="w-16 h-16 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center border border-white/20 shadow-xl">
+            <Play className="w-8 h-8 text-white translate-x-0.5" />
           </div>
         </div>
       )}
 
       {/* Share Toast */}
       {showShareToast && (
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 z-40 bg-slate-900/90 text-white text-xs font-bold px-4 py-2 rounded-full border border-slate-700 shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
-          <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-          <span>Lien copié dans le presse-papiers ! 🇩🇿</span>
+        <div className="absolute top-16 left-1/2 -translate-x-1/2 z-40 bg-slate-900/90 text-white text-xs font-semibold px-3.5 py-1.5 rounded-full border border-slate-700 shadow-xl flex items-center gap-2 animate-in fade-in slide-in-from-top-2">
+          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+          <span>Lien copié !</span>
         </div>
       )}
 
-      {/* Overlay controls - Right side (TikTok Style) */}
-      <div className="absolute right-3 sm:right-5 bottom-20 sm:bottom-24 flex flex-col items-center gap-5 sm:gap-6 z-20">
-        {/* Creator Avatar with Follow/Chat Plus Badge */}
+      {/* Overlay controls - Right side (Clean & Minimalist TikTok Style) */}
+      <div className="absolute right-3 bottom-16 sm:bottom-20 flex flex-col items-center gap-4.5 z-20">
+        {/* Creator Avatar */}
         <div 
           className="relative cursor-pointer group"
           onClick={(e) => {
             e.stopPropagation();
             onSelectUser?.(post.authorId);
           }}
-          title="Découvrir le profil"
+          title="Voir le profil"
         >
           <img 
             src={post.authorAvatar} 
             alt={post.authorPseudo} 
-            className="w-12 h-12 rounded-full border-2 border-white object-cover shadow-lg group-hover:scale-105 transition-transform" 
+            className="w-10 h-10 sm:w-11 sm:h-11 rounded-full border-2 border-white/90 object-cover shadow-lg group-hover:scale-105 transition-transform" 
           />
-          <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 w-5 h-5 bg-gradient-to-r from-[#FF6B35] to-[#FF3823] rounded-full flex items-center justify-center text-white text-[10px] font-black border border-white shadow-xs">
-            +
-          </div>
         </div>
 
         {/* Like Button */}
-        <div className="flex flex-col items-center gap-1 cursor-pointer group" onClick={handleLike}>
-          <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
-            <Heart className={`w-6 h-6 transition-colors ${isLiked ? 'fill-[#FF3823] text-[#FF3823] scale-110' : 'text-white'}`} />
+        <button 
+          type="button" 
+          className="flex flex-col items-center gap-1 cursor-pointer group bg-transparent border-0 p-0" 
+          onClick={handleLike}
+        >
+          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-black/35 backdrop-blur-sm rounded-full flex items-center justify-center group-active:scale-75 transition-transform shadow-md">
+            <Heart className={`w-5.5 h-5.5 transition-colors ${isLiked ? 'fill-[#FF3823] text-[#FF3823] scale-110' : 'text-white'}`} />
           </div>
-          <span className="text-white text-[11px] font-black drop-shadow-md">{formatCount(likesCount)}</span>
-        </div>
+          <span className="text-white text-[11px] font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{formatCount(likesCount)}</span>
+        </button>
 
         {/* Comments Button */}
-        <div className="flex flex-col items-center gap-1 cursor-pointer group" onClick={(e) => { e.stopPropagation(); onOpenComments(); }}>
-          <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
-            <MessageCircle className="w-6 h-6 text-white" />
-          </div>
-          <span className="text-white text-[11px] font-black drop-shadow-md">{formatCount(post.commentsCount || (post.comments ? post.comments.length : 0))}</span>
-        </div>
-
-        {/* Music / Story Button */}
-        <div 
-          className="flex flex-col items-center gap-1 cursor-pointer group" 
-          onClick={(e) => {
-            e.stopPropagation();
-            setIsMusicModalOpen(true);
-          }}
-          title="Musique & Story"
+        <button 
+          type="button" 
+          className="flex flex-col items-center gap-1 cursor-pointer group bg-transparent border-0 p-0" 
+          onClick={(e) => { e.stopPropagation(); onOpenComments(); }}
         >
-          <div className="w-12 h-12 bg-gradient-to-tr from-[#FF6B35]/90 to-[#FF3823]/90 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-orange-300/40 shadow-lg hover:scale-105">
-            <Disc className="w-6 h-6 text-white animate-spin" style={{ animationDuration: '6s' }} />
+          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-black/35 backdrop-blur-sm rounded-full flex items-center justify-center group-active:scale-75 transition-transform shadow-md">
+            <MessageCircle className="w-5.5 h-5.5 text-white" />
           </div>
-          <span className="text-orange-200 text-[10px] font-black drop-shadow-md">Son / Story</span>
-        </div>
+          <span className="text-white text-[11px] font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{formatCount(post.commentsCount || (post.comments ? post.comments.length : 0))}</span>
+        </button>
 
         {/* Share Button */}
-        <div className="flex flex-col items-center gap-1 cursor-pointer group" onClick={handleShare}>
-          <div className="w-12 h-12 bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center group-active:scale-75 transition-transform border border-white/10 shadow-lg hover:bg-black/60">
-            <Share2 className="w-6 h-6 text-white" />
+        <button 
+          type="button" 
+          className="flex flex-col items-center gap-1 cursor-pointer group bg-transparent border-0 p-0" 
+          onClick={handleShare}
+        >
+          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-black/35 backdrop-blur-sm rounded-full flex items-center justify-center group-active:scale-75 transition-transform shadow-md">
+            <Share2 className="w-5.5 h-5.5 text-white" />
           </div>
-          <span className="text-white text-[10px] font-bold drop-shadow-md">{formatCount(post.sharesCount || 32)}</span>
-        </div>
+          <span className="text-white text-[10px] font-bold drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">{formatCount(post.sharesCount || 32)}</span>
+        </button>
 
         {/* Sound Toggle */}
         <button 
+          type="button"
           onClick={handleToggleMute}
-          className="w-10 h-10 rounded-full bg-black/50 backdrop-blur-md border border-white/20 flex items-center justify-center hover:bg-black/70 transition-colors shadow-lg"
+          className="w-9 h-9 rounded-full bg-black/40 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white/90 hover:text-white transition-colors shadow-md cursor-pointer"
           title={isMuted ? 'Activer le son' : 'Couper le son'}
         >
-          {isMuted ? <VolumeX className="w-4 h-4 text-white/80" /> : <Volume2 className="w-4 h-4 text-[#38BDF8] animate-pulse" />}
+          {isMuted ? <VolumeX className="w-4 h-4 text-white/70" /> : <Volume2 className="w-4 h-4 text-[#38BDF8]" />}
         </button>
       </div>
 
-      {/* Overlay info - Bottom left */}
-      <div className="absolute bottom-4 left-3 sm:left-6 right-20 sm:right-24 z-20 flex flex-col gap-2.5 pointer-events-none">
-        {/* Author Header */}
-        <div className="flex items-center gap-2 pointer-events-auto">
-          <div 
+      {/* Overlay info - Bottom left (Clean, Uncluttered, Elegant) */}
+      <div className="absolute bottom-4 sm:bottom-6 left-3 sm:left-5 right-18 sm:right-22 z-20 flex flex-col gap-1.5 pointer-events-none">
+        {/* Author Pseudo & City */}
+        <div className="flex items-center gap-1.5 pointer-events-auto">
+          <button 
+            type="button"
             onClick={() => onSelectUser?.(post.authorId)}
-            className="flex items-center gap-2 cursor-pointer bg-black/40 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/15 hover:bg-black/60 transition-colors"
+            className="text-white font-bold text-sm drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] hover:underline cursor-pointer flex items-center gap-1"
           >
-            <span className="text-white font-bold text-xs drop-shadow-md">{post.authorPseudo}</span>
+            <span>@{post.authorPseudo}</span>
             {post.authorVerified && (
-              <span className="px-1.5 py-0.2 bg-[#FF3823] text-white rounded-full text-[9px] font-black">
-                DZ69
-              </span>
+              <span className="inline-block w-3.5 h-3.5 bg-[#FF3823] rounded-full text-white text-[8px] leading-tight text-center font-black">✓</span>
             )}
-            <span className="px-1.5 py-0.2 bg-emerald-500/80 text-white rounded-md text-[9px] font-black tracking-wider uppercase">
-              HD 1080p
+          </button>
+          {post.authorCity && (
+            <span className="text-white/75 text-xs font-medium drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]">
+              • {post.authorCity}
             </span>
-            {post.authorCity && (
-              <span className="text-[#38BDF8] text-[10px] font-semibold">• {post.authorCity}</span>
-            )}
-          </div>
+          )}
         </div>
 
-        {/* Title & Description */}
-        <div className="text-white drop-shadow-md">
-          <h2 className="font-extrabold text-sm sm:text-base leading-tight drop-shadow-lg">{post.title}</h2>
-          <p className="text-xs sm:text-sm font-medium opacity-90 line-clamp-2 mt-1 drop-shadow-md">{post.description}</p>
-          <div className="flex flex-wrap gap-1.5 mt-2">
-            {post.tags?.map((tag) => (
-              <span key={tag} className="text-[#38BDF8] font-bold text-[11px] pointer-events-auto hover:underline cursor-pointer">
-                {tag}
-              </span>
-            ))}
-          </div>
-        </div>
+        {/* Short clean caption */}
+        <p className="text-white text-xs sm:text-sm font-normal line-clamp-2 drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)] max-w-lg leading-snug">
+          {post.title || post.description}
+        </p>
 
-        {/* 🛍️ Social Commerce Tagged Product (TikTok Shop Style) */}
+        {/* Subtle Tagged Product Pill (if present) */}
         {post.taggedProductTitle && (
           <div
             onClick={(e) => {
               e.stopPropagation();
               onNavigateToShop?.(post.taggedProductId);
             }}
-            className="flex items-center justify-between gap-3 p-2 sm:p-2.5 rounded-2xl bg-slate-900/85 hover:bg-slate-900 backdrop-blur-xl border border-emerald-500/40 hover:border-emerald-400 text-white shadow-xl shadow-emerald-950/40 pointer-events-auto cursor-pointer transition-all hover:scale-[1.02] active:scale-95 group max-w-sm"
-            title="Commander ce produit directement"
+            className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/45 hover:bg-black/65 backdrop-blur-md border border-white/15 text-white shadow-md pointer-events-auto cursor-pointer transition-all w-max max-w-xs mt-0.5"
+            title="Voir le produit"
           >
-            <div className="flex items-center gap-2.5 min-w-0">
-              {post.taggedProductImage ? (
-                <img
-                  src={post.taggedProductImage}
-                  alt={post.taggedProductTitle}
-                  className="w-10 h-10 rounded-xl object-cover border border-emerald-400/40 shrink-0"
-                />
-              ) : (
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-300 flex items-center justify-center shrink-0">
-                  <ShoppingBag className="w-5 h-5" />
-                </div>
-              )}
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5">
-                  <span className="px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 text-[9px] font-black tracking-wide uppercase border border-emerald-400/30">
-                    {post.taggedProductBadge || 'Boutique DZ'}
-                  </span>
-                  <span className="text-[10px] text-emerald-400 font-bold">Livraison 69 Wilayas</span>
-                </div>
-                <h4 className="text-xs font-bold text-white truncate group-hover:text-emerald-300 transition-colors">
-                  {post.taggedProductTitle}
-                </h4>
-                {post.taggedProductPriceDzd && (
-                  <p className="text-xs font-black text-amber-300">
-                    {post.taggedProductPriceDzd.toLocaleString()} DZD
-                  </p>
-                )}
-              </div>
-            </div>
-
-            <div className="px-3 py-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xs font-black flex items-center gap-1 shadow-md shrink-0 group-hover:shadow-emerald-500/30">
-              <span>Acheter</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-            </div>
+            <ShoppingBag className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            <span className="text-[11px] font-semibold truncate text-white/95">{post.taggedProductTitle}</span>
+            {post.taggedProductPriceDzd && (
+              <span className="text-[11px] font-bold text-amber-300 shrink-0">• {post.taggedProductPriceDzd.toLocaleString()} DA</span>
+            )}
           </div>
         )}
 
-        {/* Music / Audio Title - Clickable */}
+        {/* Minimal Music Pill */}
         {(post.musicTitle || matchedTrack) && (
           <div 
             onClick={(e) => {
               e.stopPropagation();
               setIsMusicModalOpen(true);
             }}
-            className="flex items-center gap-2 text-white/90 bg-black/50 hover:bg-orange-950/60 w-max max-w-full px-3.5 py-1.5 rounded-full backdrop-blur-md border border-orange-400/30 mt-0.5 pointer-events-auto cursor-pointer transition-all hover:scale-102"
-            title="Écouter, Partager ou Créer une Story"
+            className="flex items-center gap-1.5 text-white/90 bg-black/40 hover:bg-black/60 w-max max-w-full px-2.5 py-1 rounded-full backdrop-blur-md border border-white/10 mt-0.5 pointer-events-auto cursor-pointer transition-colors"
+            title="Écouter le son"
           >
-            <Music className="w-3.5 h-3.5 text-[#38BDF8] shrink-0 animate-spin" style={{ animationDuration: '4s' }} />
-            <span className="text-[11px] font-bold truncate max-w-[200px] sm:max-w-[300px]">
+            <Music className="w-3 h-3 text-[#38BDF8] shrink-0" />
+            <span className="text-[11px] font-medium truncate max-w-[220px] sm:max-w-[320px]">
               {matchedTrack ? `${matchedTrack.title} • ${matchedTrack.artist}` : post.musicTitle}
-            </span>
-            <span className="text-[9px] font-black px-1.5 py-0.5 rounded-md bg-orange-500/20 text-orange-200">
-              DZ
             </span>
           </div>
         )}
       </div>
 
       {/* Progress Bar (Bottom Line) */}
-      <div className="absolute bottom-0 left-0 w-full h-1 bg-white/20 z-30">
+      <div className="absolute bottom-0 left-0 w-full h-[2px] bg-white/20 z-30">
         <div 
-          className="h-full bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#38BDF8] transition-all duration-100" 
+          className="h-full bg-[#FF3823] transition-all duration-100" 
           style={{ width: `${progress}%` }} 
         />
       </div>
 
-      {/* Overlay gradient bottom to top */}
-      <div className="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black/90 via-black/30 to-transparent pointer-events-none z-10" />
+      {/* Subtle bottom shadow gradient for legibility */}
+      <div className="absolute bottom-0 left-0 w-full h-44 bg-gradient-to-t from-black/75 via-black/25 to-transparent pointer-events-none z-10" />
 
       {/* Music & Story Modal */}
       {isMusicModalOpen && matchedTrack && (

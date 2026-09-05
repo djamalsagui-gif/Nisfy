@@ -146,6 +146,36 @@ export function AuthModal({
     }
   };
 
+  // 🌟 Direct Instant Login for Anyone (Démo / Test en 1-clic)
+  const handleInstantDemoLogin = (targetUser: UserProfile) => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    setInfoMessage(null);
+
+    setTimeout(() => {
+      onRegisterUser(targetUser);
+
+      if (rememberMe) {
+        saveRememberedAccount({
+          userId: targetUser.id,
+          identifier: targetUser.email || targetUser.pseudo,
+          type: 'email',
+          pseudo: targetUser.pseudo,
+          email: targetUser.email,
+          avatar: targetUser.avatar,
+          city: targetUser.city,
+          wilayaCode: targetUser.wilayaCode,
+          gender: targetUser.gender,
+          savedAt: new Date().toISOString(),
+          autoConnect: true,
+        });
+      }
+
+      onLoginSuccess(targetUser);
+      setIsLoading(false);
+    }, 300);
+  };
+
   // Timer for resend cooldown
   useEffect(() => {
     if (resendCooldown <= 0) return;
@@ -931,7 +961,7 @@ export function AuthModal({
               )}
 
               {/* Quick Admin Access Button */}
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
                 <button
                   type="button"
                   onClick={() => {
@@ -945,6 +975,65 @@ export function AuthModal({
                   <Shield className="w-4 h-4 text-amber-600 dark:text-amber-400" />
                   <span>{isArabic ? '👑 دخول المشرف العام (إدارة الإعلانات والمدفوعات)' : '👑 Accès Administrateur (Gestion des Pubs & Paiements)'}</span>
                 </button>
+
+                {/* 🚀 Connexion Express Découverte (1-Clic pour tous) */}
+                <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200/70 dark:border-slate-700/60 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                      <Sparkles className="w-3.5 h-3.5 text-[#FF3823]" />
+                      {isArabic ? 'تجربة سريعة وفورية (1 نقرة)' : 'Connexion Immédiate (Test 1 Clic)'}
+                    </span>
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-bold bg-emerald-50 dark:bg-emerald-950/60 px-1.5 py-0.5 rounded-full">
+                      Accès fluide
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2">
+                    {/* Profil Leïla */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const leila = registeredUsers.find((u) => u.id === 'user_leila') || registeredUsers[1] || registeredUsers[0];
+                        if (leila) handleInstantDemoLogin(leila);
+                      }}
+                      className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-[#FF3823]/50 hover:shadow-sm text-left flex items-center gap-2 transition-all cursor-pointer group"
+                    >
+                      <img
+                        src="https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80"
+                        alt="Leila"
+                        className="w-7 h-7 rounded-full object-cover border border-[#FF3823]/30"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-black text-slate-800 dark:text-slate-100 truncate group-hover:text-[#FF3823]">
+                          Leïla (Alger 16)
+                        </p>
+                        <p className="text-[9px] text-slate-400 truncate">Membre Féminin 🌺</p>
+                      </div>
+                    </button>
+
+                    {/* Profil Mehdi */}
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const mehdi = registeredUsers.find((u) => u.id === 'user_mehdi') || registeredUsers[2] || registeredUsers[0];
+                        if (mehdi) handleInstantDemoLogin(mehdi);
+                      }}
+                      className="p-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 hover:border-indigo-500/50 hover:shadow-sm text-left flex items-center gap-2 transition-all cursor-pointer group"
+                    >
+                      <img
+                        src="https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=500&auto=format&fit=crop&q=80"
+                        alt="Mehdi"
+                        className="w-7 h-7 rounded-full object-cover border border-indigo-500/30"
+                      />
+                      <div className="min-w-0 flex-1">
+                        <p className="text-[11px] font-black text-slate-800 dark:text-slate-100 truncate group-hover:text-indigo-500">
+                          Mehdi (Diaspora 69)
+                        </p>
+                        <p className="text-[9px] text-slate-400 truncate">Membre Masculin 🦁</p>
+                      </div>
+                    </button>
+                  </div>
+                </div>
               </div>
 
               {/* Security notice */}
@@ -1004,12 +1093,25 @@ export function AuthModal({
                 />
               </div>
 
-              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-center">
+              <div className="p-2.5 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-center space-y-1">
                 <p className="text-[11px] text-slate-600 dark:text-slate-300 font-medium">
                   {isArabic
                     ? '📩 أدخل رمز التحقق السري المستلم في بريدك الإلكتروني.'
                     : '📩 Saisissez le code secret reçu dans votre boîte email.'}
                 </p>
+                <div className="pt-1 flex items-center justify-center gap-1.5 text-[10px] text-slate-500">
+                  <span>{isArabic ? 'رمز الاختبار السريع:' : 'Code test démo :'}</span>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOtp('123456');
+                      setErrorMessage(null);
+                    }}
+                    className="font-mono font-bold text-[#FF3823] bg-orange-100 dark:bg-orange-950/60 px-1.5 py-0.5 rounded cursor-pointer hover:bg-orange-200"
+                  >
+                    123456
+                  </button>
+                </div>
               </div>
 
               <div className="flex items-center justify-between text-xs pt-1 px-1">

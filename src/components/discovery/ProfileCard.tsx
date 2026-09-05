@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ShieldCheck, MapPin, Briefcase, GraduationCap, Sparkles, ChevronDown, ChevronUp, HeartHandshake, Bookmark } from 'lucide-react';
+import { ShieldCheck, MapPin, Briefcase, GraduationCap, Sparkles, ChevronDown, ChevronUp, HeartHandshake, Bookmark, Shield } from 'lucide-react';
 import { UserProfile } from '../../types';
 import { calculateCompatibilityScore } from '../../utils/matchingAlgorithm';
 
@@ -15,6 +15,10 @@ export function ProfileCard({ profile, currentUser, isBookmarked = false, onTogg
   // Compatibility
   const compatibility = calculateCompatibilityScore(currentUser, profile);
 
+  // Trust score badge info
+  const trustScoreValue = profile.trustScore?.score || (profile.marriageVerified ? 95 : (profile.verified ? 85 : 70));
+  const trustLabel = profile.trustScore?.label || (trustScoreValue >= 90 ? 'Excellent' : 'Bon');
+
   return (
     <div className="relative w-full max-w-sm mx-auto aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl bg-slate-900 select-none">
       <img
@@ -24,22 +28,28 @@ export function ProfileCard({ profile, currentUser, isBookmarked = false, onTogg
       />
       
       {/* Top badges */}
-      <div className="absolute top-4 left-4 flex flex-col gap-2 z-10">
+      <div className="absolute top-4 left-4 flex flex-col gap-1.5 z-10">
+        {/* Trust Score Badge */}
+        <div className="bg-emerald-500/90 backdrop-blur-md text-white text-[11px] font-black px-2.5 py-1 rounded-full flex items-center gap-1 shadow-md border border-emerald-300/40">
+          <Shield className="w-3.5 h-3.5" />
+          <span>Trust {trustScoreValue}% • {trustLabel}</span>
+        </div>
+
         {profile.hasBlueBadge && (
-          <div className="bg-[#38BDF8] text-slate-950 text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1 shadow-md">
-            <ShieldCheck className="w-4 h-4" />
+          <div className="bg-[#38BDF8] text-slate-950 text-xs font-black px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+            <ShieldCheck className="w-3.5 h-3.5" />
             Vérifié
           </div>
         )}
         {profile.marriageVerified && (
-          <div className="bg-emerald-500 text-white text-xs font-black px-3 py-1.5 rounded-full flex items-center gap-1 shadow-md">
-            <HeartHandshake className="w-4 h-4" />
+          <div className="bg-rose-500 text-white text-xs font-black px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+            <HeartHandshake className="w-3.5 h-3.5" />
             Zawaj Certifié
           </div>
         )}
         {profile.isPremium && (
-          <div className="bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1.5 rounded-full flex items-center gap-1 shadow-md">
-            <Sparkles className="w-4 h-4" />
+          <div className="bg-amber-400 text-slate-900 text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-md">
+            <Sparkles className="w-3.5 h-3.5" />
             Premium
           </div>
         )}

@@ -4,19 +4,20 @@ import { CategoryTabs } from './CategoryTabs';
 import { VideoPlayer } from './VideoPlayer';
 import { PublishVideoModal } from './PublishVideoModal';
 import { INITIAL_SOCIAL_POSTS } from '../../data/socialFeedData';
-import { Plus, Send, Heart, Sparkles, X, Compass } from 'lucide-react';
+import { Plus, Send, Heart, Sparkles, X, Compass, Home, ArrowLeft } from 'lucide-react';
 import { useLanguage } from '../../context/LanguageContext';
 
 interface SocialFeedProps {
   onSelectUser?: (userId: string) => void;
   onNavigateToDiscover?: () => void;
   onNavigateToShop?: (productId?: string) => void;
+  onNavigateToHome?: () => void;
   currentUser?: UserProfile;
   posts?: SocialPost[];
   onUpdatePosts?: (posts: SocialPost[]) => void;
 }
 
-export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToShop, currentUser, posts: externalPosts, onUpdatePosts }: SocialFeedProps) {
+export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToShop, onNavigateToHome, currentUser, posts: externalPosts, onUpdatePosts }: SocialFeedProps) {
   const { isArabic } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<any>('all');
   const [localPosts, setLocalPosts] = useState<SocialPost[]>(INITIAL_SOCIAL_POSTS);
@@ -55,6 +56,17 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToSho
       setActivePostId(filteredPosts[0].id);
     }
   }, [filteredPosts, activePostId]);
+
+  // Keyboard shortcut: Press Escape to return to main menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onNavigateToHome?.();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onNavigateToHome]);
 
   // Scroll to index helper
   const scrollToIndex = (index: number) => {
@@ -172,7 +184,7 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToSho
   const activePost = filteredPosts.find((p) => p.id === activePostId) || filteredPosts[0];
 
   return (
-    <div className="relative w-full h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)] bg-black overflow-hidden flex flex-col select-none">
+    <div className="relative w-full h-full bg-black overflow-hidden flex flex-col select-none">
       {/* Category Tabs Header */}
       <CategoryTabs
         selectedCategory={selectedCategory}
@@ -183,17 +195,53 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToSho
         }}
       />
 
-      {/* Video Counter & Discover Button Overlay Top-Right */}
-      <div className="absolute top-16 right-4 z-30 flex items-center gap-2">
-        <div className="bg-black/50 backdrop-blur-md px-3 py-1 rounded-full border border-white/15 text-white text-[11px] font-black tracking-widest shadow-md">
-          {filteredPosts.length > 0 ? `${activeIndex + 1} / ${filteredPosts.length}` : '0 / 0'}
+      {/* Top Left Controls: Return to Main Menu (Unmistakable High-Contrast Pill) */}
+      <div className="absolute top-3 left-3 z-50 flex items-center gap-2">
+        {onNavigateToHome && (
+          <button
+            onClick={onNavigateToHome}
+            title={isArabic ? 'الرجوع إلى القائمة الرئيسية (Esc)' : 'Retour au menu principal (Échap)'}
+            className="bg-white text-slate-900 hover:bg-slate-100 active:scale-95 px-3.5 py-1.5 rounded-full border border-white/80 text-xs font-black flex items-center gap-1.5 shadow-2xl shadow-black/80 transition-all cursor-pointer group"
+          >
+            <ArrowLeft className="w-4 h-4 text-[#FF3823] group-hover:-translate-x-0.5 transition-transform rtl:rotate-180" />
+            <Home className="w-3.5 h-3.5 text-slate-800" />
+            <span>{isArabic ? 'الرئيسية' : 'Menu Principal'}</span>
+          </button>
+        )}
+
+        {onNavigateToDiscover && (
+          <button
+            onClick={onNavigateToDiscover}
+            className="bg-black/60 hover:bg-black/80 backdrop-blur-md text-white/90 hover:text-white px-3 py-1.5 rounded-full border border-white/20 text-xs font-semibold hidden sm:flex items-center gap-1.5 transition-colors cursor-pointer"
+          >
+            <Compass className="w-3.5 h-3.5 text-[#FF3823]" />
+            <span>{isArabic ? 'استكشاف' : 'Rencontres'}</span>
+          </button>
+        )}
+      </div>
+
+      {/* Top Right Controls: Quick Close / Exit button + Counter */}
+      <div className="absolute top-3 right-3 z-50 flex items-center gap-2">
+        {onNavigateToHome && (
+          <button
+            onClick={onNavigateToHome}
+            title={isArabic ? 'إغلاق والرجوع للقائمة' : 'Quitter le feed'}
+            className="bg-black/70 hover:bg-rose-600 text-white active:scale-95 px-3 py-1.5 rounded-full border border-white/20 text-xs font-bold flex items-center gap-1.5 shadow-xl transition-all cursor-pointer"
+          >
+            <X className="w-3.5 h-3.5" />
+            <span>{isArabic ? 'خروج' : 'Quitter'}</span>
+          </button>
+        )}
+
+        <div className="bg-black/50 backdrop-blur-md px-2.5 py-1 rounded-full border border-white/15 text-white/80 text-[10px] font-semibold tracking-wider">
+          {filteredPosts.length > 0 ? `${activeIndex + 1}/${filteredPosts.length}` : '0/0'}
         </div>
       </div>
 
       {/* Snap Scrolling Container */}
       <div 
         ref={containerRef}
-        className="flex-1 w-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide no-scrollbar relative"
+        className="flex-1 w-full h-full overflow-y-scroll snap-y snap-mandatory scrollbar-hide no-scrollbar relative"
         onScroll={(e) => {
           const container = e.currentTarget;
           const index = Math.round(container.scrollTop / container.clientHeight);
@@ -234,18 +282,6 @@ export function SocialFeed({ onSelectUser, onNavigateToDiscover, onNavigateToSho
           </div>
         )}
       </div>
-
-
-
-      {/* Bouton doux & discret : Publier une vidéo */}
-      <button 
-        onClick={() => setIsPublishModalOpen(true)}
-        className="absolute bottom-20 sm:bottom-6 right-3 sm:right-6 z-30 px-3.5 py-2 bg-[#FF3823]/85 hover:bg-[#FF3823] text-white text-xs font-bold rounded-xl border border-orange-300/40 backdrop-blur-md shadow-lg shadow-orange-500/25 flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
-        title="Publier une vidéo"
-      >
-        <Plus className="w-4 h-4 text-white" />
-        <span>{isArabic ? 'نشر فيديو' : 'Publier une vidéo'}</span>
-      </button>
 
       {/* Interactive Comments Drawer */}
       {isCommentsOpen && activePost && (

@@ -27,8 +27,10 @@ import {
   Disc,
   Smartphone,
   Download,
+  PiggyBank,
+  TrendingUp,
 } from 'lucide-react';
-import { UserProfile, Gender, LookingFor, ProfileVideo } from '../types';
+import { UserProfile, Gender, LookingFor, ProfileVideo, ActiveTab } from '../types';
 import { WILAYAS_69 } from '../data/wilayas';
 import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
@@ -58,6 +60,7 @@ interface MyProfileViewProps {
   onLogout: () => void;
   likesReceivedCount: number;
   onOpenPwaInstall?: () => void;
+  onSelectTab?: (tab: ActiveTab) => void;
 }
 
 const AVATAR_SELECTION = [
@@ -95,6 +98,7 @@ export function MyProfileView({
   onLogout,
   likesReceivedCount,
   onOpenPwaInstall,
+  onSelectTab,
 }: MyProfileViewProps) {
   const { t, isArabic } = useLanguage();
   const [pseudo, setPseudo] = useState(currentUser.pseudo);
@@ -482,6 +486,43 @@ export function MyProfileView({
           {currentUser.verified ? (isArabic ? 'عرض التفاصيل' : 'Voir les détails') : (isArabic ? 'توثيق الحساب' : 'Vérifier mon profil')}
         </button>
       </div>
+
+      {/* 💰 Financial & Wedding Savings Advisor Access */}
+      {onSelectTab && (
+        <div
+          onClick={() => onSelectTab('finance')}
+          className="bg-gradient-to-r from-emerald-500/10 via-teal-500/10 to-emerald-500/5 dark:from-emerald-950/40 dark:via-teal-950/40 dark:to-slate-900 rounded-3xl p-5 border border-emerald-300 dark:border-emerald-800 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 cursor-pointer hover:border-emerald-400 transition-all group"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-emerald-500 text-white flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+              <PiggyBank className="w-6 h-6" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h4 className="text-sm font-black text-slate-900 dark:text-white">
+                  {isArabic ? 'مستشار الميزانية والتوفير IA' : 'Conseiller Épargne & Budget IA'}
+                </h4>
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500 text-white">
+                  Gemini 3.7
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                {isArabic
+                  ? 'حلّل نفقاتك، احصل على خطة ادخار لزواجك، واكتشف سبل التوفير الذكي.'
+                  : 'Analysez vos habitudes de dépenses, simulez votre épargne et optimisez vos préparatifs.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-black shadow-sm shrink-0 flex items-center gap-1.5"
+          >
+            <span>{isArabic ? 'فتح المستشار' : 'Gérer mon budget'}</span>
+            <TrendingUp className="w-3.5 h-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Media Management Section (Photos & Videos) */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-6">

@@ -23,6 +23,9 @@ import {
   Tag,
   Truck,
   Eye,
+  PiggyBank,
+  Wallet,
+  TrendingUp,
 } from 'lucide-react';
 import { UserProfile, MatchRelation } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -124,6 +127,13 @@ export function HomeDashboardView({
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap">
+            <button
+              onClick={() => onSelectTab('retroplanning')}
+              className="px-3.5 py-2 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+            >
+              <Calendar className="w-4 h-4 text-amber-400" />
+              <span>{isArabic ? 'مخطط الزواج (دار ودروج)' : 'Dar Wa Drouj 💍'}</span>
+            </button>
             <button
               onClick={() => onSelectTab('shop')}
               className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer shrink-0"
@@ -315,6 +325,53 @@ export function HomeDashboardView({
               </div>
             </div>
           ))}
+        </div>
+      </div>
+
+      {/* 💰 3.5. BANNIÈRE CONSEILLER ÉPARGNE & BUDGET IA (GEMINI 3.7) */}
+      <div
+        onClick={() => onSelectTab('finance')}
+        className="relative overflow-hidden bg-gradient-to-r from-emerald-900 via-teal-950 to-slate-900 rounded-3xl p-5 sm:p-6 text-white border border-emerald-500/30 shadow-lg cursor-pointer group hover:border-emerald-400/50 transition-all"
+      >
+        <div className="absolute top-0 right-0 -mt-6 -mr-6 w-40 h-40 bg-emerald-500/20 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-500 to-teal-400 text-slate-950 flex items-center justify-center shrink-0 shadow-md group-hover:scale-105 transition-transform">
+              <PiggyBank className="w-6 h-6" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-400/20 text-emerald-300 border border-emerald-400/30">
+                  IA GEMINI 3.7 FLASH
+                </span>
+                <span className="text-xs text-amber-300 font-black">
+                  {isArabic ? 'جديد 🇩🇿' : 'Nouveau 🇩🇿'}
+                </span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                {isArabic
+                  ? 'مستشار التوفير وتحضير ميزانية الزواج بالذكاء الاصطناعي'
+                  : 'Analysez vos Dépenses & Optimisez votre Budget Mariage'}
+              </h3>
+              <p className="text-xs text-emerald-100/80 max-w-xl">
+                {isArabic
+                  ? 'اكتشف كيف توفر حتى 35% من تكاليف القاعات والشورة والولائم بنصائح مخصصة لولايتك ودخلك.'
+                  : 'Identifiez vos postes de dépenses lourds (Salle, Choura, Traiteur) et obtenez un plan d épargne sur-mesure.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectTab('finance');
+            }}
+            className="px-4 py-2.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shrink-0 transition-transform active:scale-95 cursor-pointer"
+          >
+            <span>{isArabic ? 'تحليل ميزانيتي الآن' : 'Calculer mon épargne'}</span>
+            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+          </button>
         </div>
       </div>
 

@@ -184,6 +184,8 @@ export type ActiveTab =
   | 'customs'
   | 'marketplace'
   | 'shop'
+  | 'finance'
+  | 'retroplanning'
   | 'matches'
   | 'chat'
   | 'profile'

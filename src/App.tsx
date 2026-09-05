@@ -47,6 +47,8 @@ import { SocialFeed } from './components/feed/SocialFeed';
 import { CustomsGuideView } from './components/CustomsGuideView';
 import { WeddingMarketplaceView } from './components/WeddingMarketplaceView';
 import { YouthShopView } from './components/YouthShopView';
+import { GeminiFinancialAdvisorView } from './components/finance/GeminiFinancialAdvisorView';
+import { WeddingPlannerTimeline } from './components/wedding/WeddingPlannerTimeline';
 import { CallModal } from './components/CallModal';
 import { FooterProverbs } from './components/FooterProverbs';
 import { PremiumModal } from './components/PremiumModal';
@@ -472,7 +474,7 @@ export default function App() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-100/70 dark:bg-slate-950 text-slate-900 dark:text-slate-100 pb-16 font-sans flex flex-col justify-between transition-colors duration-200">
+    <div className={`min-h-screen bg-slate-100/70 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans flex flex-col justify-between transition-colors duration-200 ${activeTab === 'feed' ? 'pb-0' : 'pb-16'}`}>
       {showSplash && (
         <SplashScreen
           isDarkMode={isDarkMode}
@@ -491,7 +493,10 @@ export default function App() {
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
           allUsers={registeredUsers}
-          onSelectUser={(u) => handleStartDirectChat(u)}
+          onSelectUser={(u) => {
+            handleLoginSuccess(u);
+            setToastMessage(isArabic ? `تم التبديل إلى حساب ${u.pseudo}` : `Connecté en tant que ${u.pseudo}`);
+          }}
           onOpenCreateModal={() => setIsCreateActionModalOpen(true)}
           isDarkMode={isDarkMode}
           onToggleDarkMode={handleToggleDarkMode}
@@ -501,7 +506,7 @@ export default function App() {
         />
 
         {/* Main Content Area */}
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+        <main className={activeTab === 'feed' ? "w-full h-[calc(100dvh-3.75rem)] p-0 m-0 overflow-hidden bg-black" : "max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6"}>
           {activeTab === 'home' && (
             <HomeDashboardView
               currentUser={currentUser}
@@ -540,7 +545,7 @@ export default function App() {
           )}
 
           {activeTab === 'feed' && (
-            <div className="-mt-6 -mx-4 sm:-mx-6 lg:-mx-8 h-[calc(100vh-64px)] sm:h-[calc(100vh-80px)]">
+            <div className="w-full h-full">
               <SocialFeed 
                 currentUser={currentUser}
                 posts={socialPosts}
@@ -551,6 +556,7 @@ export default function App() {
                     handleStartDirectChat(target);
                   }
                 }}
+                onNavigateToHome={() => setActiveTab('home')}
                 onNavigateToDiscover={() => setActiveTab('discover')}
                 onNavigateToShop={(productId) => {
                   setActiveTab('shop');
@@ -567,6 +573,22 @@ export default function App() {
 
           {activeTab === 'shop' && (
             <YouthShopView />
+          )}
+
+          {activeTab === 'finance' && (
+            <GeminiFinancialAdvisorView
+              onNavigateToMarketplace={() => setActiveTab('marketplace')}
+              onNavigateToShop={() => setActiveTab('shop')}
+            />
+          )}
+
+          {activeTab === 'retroplanning' && (
+            <WeddingPlannerTimeline
+              onNavigateToMarketplace={(category) => {
+                setActiveTab('marketplace');
+              }}
+              onNavigateToFinance={() => setActiveTab('finance')}
+            />
           )}
 
           {activeTab === 'marketplace' && (
@@ -636,6 +658,7 @@ export default function App() {
               onLogout={handleLogout}
               likesReceivedCount={likesSent.length}
               onOpenPwaInstall={() => setIsPwaModalOpen(true)}
+              onSelectTab={setActiveTab}
             />
           )}
 
