@@ -215,6 +215,18 @@ export interface NisfyCommunity {
   activityLevel?: string;
 }
 
+export interface CommunityPostComment {
+  id: string;
+  authorName: string;
+  authorAvatar: string;
+  authorVerified?: boolean;
+  content: string;
+  timestamp: string;
+  likes: number;
+}
+
+export type FacebookReactionType = 'like' | 'love' | 'mabrouk' | 'douaa' | 'haha' | 'wow';
+
 export interface CommunityPostItem {
   id: string;
   communityId: string;
@@ -232,6 +244,11 @@ export interface CommunityPostItem {
   commentsCount: number;
   timestamp: string;
   likedBy?: string[];
+  userReaction?: FacebookReactionType;
+  reactionsCount?: Record<FacebookReactionType, number>;
+  commentsList?: CommunityPostComment[];
+  feeling?: string;
+  wilayaTag?: string;
 }
 
 export interface CommunityEventItem {

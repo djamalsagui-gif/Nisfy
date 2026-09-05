@@ -28,8 +28,23 @@ import {
   Clock,
   ExternalLink,
   Compass,
+  ThumbsUp,
+  Image as ImageIcon,
+  Tag,
+  MessageSquare,
+  Bookmark,
+  Share,
 } from 'lucide-react';
-import { UserProfile, NisfyCommunity, CommunityPostItem, CommunityEventItem, LiveRoom, CommunityCategory } from '../types';
+import {
+  UserProfile,
+  NisfyCommunity,
+  CommunityPostItem,
+  CommunityEventItem,
+  LiveRoom,
+  CommunityCategory,
+  FacebookReactionType,
+  CommunityPostComment,
+} from '../types';
 import {
   NISFY_COMMUNITIES,
   INITIAL_COMMUNITY_POSTS,
@@ -39,6 +54,8 @@ import {
 import { WILAYAS_69 } from '../data/wilayas';
 import { datingSounds } from '../utils/soundEffects';
 import { useLanguage } from '../context/LanguageContext';
+import { FacebookIcon, FacebookShareModal } from './FacebookShareModal';
+import { openFacebookShare } from '../utils/facebookShare';
 
 interface NisfyCommunitiesViewProps {
   currentUser: UserProfile;
@@ -46,6 +63,38 @@ interface NisfyCommunitiesViewProps {
   onStartDirectChat: (user: UserProfile) => void;
   onOpenCreateModal?: () => void;
 }
+
+export const FB_REACTIONS_LIST: {
+  type: FacebookReactionType;
+  emoji: string;
+  labelFr: string;
+  labelAr: string;
+  badgeBg: string;
+  textColor: string;
+}[] = [
+  { type: 'like', emoji: '👍', labelFr: "J'aime", labelAr: 'إعجاب', badgeBg: 'bg-[#1877F2]', textColor: 'text-[#1877F2]' },
+  { type: 'love', emoji: '❤️', labelFr: "J'adore", labelAr: 'أحببته', badgeBg: 'bg-rose-500', textColor: 'text-rose-500' },
+  { type: 'mabrouk', emoji: '💐', labelFr: 'Mabrouk', labelAr: 'مبارك', badgeBg: 'bg-emerald-500', textColor: 'text-emerald-600' },
+  { type: 'douaa', emoji: '🤲', labelFr: 'Douaa', labelAr: 'دعاء', badgeBg: 'bg-amber-500', textColor: 'text-amber-600' },
+  { type: 'haha', emoji: '😂', labelFr: 'Haha', labelAr: 'هههه', badgeBg: 'bg-amber-400', textColor: 'text-amber-600' },
+  { type: 'wow', emoji: '😮', labelFr: 'Waw', labelAr: 'واو', badgeBg: 'bg-orange-500', textColor: 'text-orange-600' },
+];
+
+export const ALGERIAN_FEELINGS = [
+  { emoji: '💍', fr: 'En préparation de mariage', ar: 'في تحضيرات الزواج' },
+  { emoji: '💖', fr: 'Heureux & Comblé', ar: 'سعيد ومستبشر' },
+  { emoji: '🇩🇿', fr: 'Fier de nos traditions', ar: 'فخور بتقاليدنا' },
+  { emoji: '🤲', fr: 'Reconnaissant & Serein', ar: 'شاكر وراضٍ' },
+  { emoji: '☕', fr: 'Posé & Réfléchi', ar: 'هادئ ومفكر' },
+  { emoji: '✈️', fr: 'En voyage / Diaspora', ar: 'في سفر / غربة' },
+];
+
+export const PRESET_PHOTO_OPTIONS = [
+  { label: '💍 Khetba & Bagues', url: 'https://images.unsplash.com/photo-1519741497674-611481863552?w=800&auto=format&fit=crop&q=80' },
+  { label: '🍲 Gastronomie & Tajines DZ', url: 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=800&auto=format&fit=crop&q=80' },
+  { label: '🏔️ Djurdjura / Montagnes DZ', url: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=800&auto=format&fit=crop&q=80' },
+  { label: '🏛️ Architecture Alger / Casbah', url: 'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&auto=format&fit=crop&q=80' },
+];
 
 export function NisfyCommunitiesView({
   currentUser,
@@ -82,6 +131,17 @@ export function NisfyCommunitiesView({
   const [newPostText, setNewPostText] = useState('');
   const [activeViewMode, setActiveViewMode] = useState<'explore' | 'feed' | 'live_rooms' | 'events'>('explore');
 
+  // Facebook Experience States
+  const [activeReactionPickerPostId, setActiveReactionPickerPostId] = useState<string | null>(null);
+  const [expandedCommentsPostIds, setExpandedCommentsPostIds] = useState<string[]>(['post-1', 'post-3']);
+  const [commentDrafts, setCommentDrafts] = useState<Record<string, string>>({});
+  const [shareModalPost, setShareModalPost] = useState<CommunityPostItem | null>(null);
+  const [postImageUrl, setPostImageUrl] = useState<string>('');
+  const [postFeeling, setPostFeeling] = useState<string>('');
+  const [postWilaya, setPostWilaya] = useState<string>('');
+  const [showPhotoPicker, setShowPhotoPicker] = useState<boolean>(false);
+  const [showFeelingPicker, setShowFeelingPicker] = useState<boolean>(false);
+
   // Toggle Join Community
   const handleToggleJoin = (commId: string, e?: React.MouseEvent) => {
     if (e) e.stopPropagation();
@@ -101,20 +161,113 @@ export function NisfyCommunitiesView({
     );
   };
 
-  // Like Post
-  const handleLikePost = (postId: string) => {
+  // 🔵 Facebook-Style Reaction System (Like, Love, Mabrouk, Douaa, Haha, Wow)
+  const handleReactToPost = (postId: string, reaction: FacebookReactionType) => {
     datingSounds.playTapSound();
     setPosts((prev) =>
       prev.map((p) => {
         if (p.id === postId) {
-          const isLiked = p.likedBy?.includes(currentUser.id);
+          const prevReaction = p.userReaction;
+          const nextReaction = prevReaction === reaction ? undefined : reaction;
+          const currentCounts: Record<FacebookReactionType, number> = {
+            like: p.reactionsCount?.like ?? p.likesCount,
+            love: p.reactionsCount?.love ?? 0,
+            mabrouk: p.reactionsCount?.mabrouk ?? 0,
+            douaa: p.reactionsCount?.douaa ?? 0,
+            haha: p.reactionsCount?.haha ?? 0,
+            wow: p.reactionsCount?.wow ?? 0,
+          };
+          const updatedCounts = { ...currentCounts };
+
+          if (prevReaction) {
+            updatedCounts[prevReaction] = Math.max(0, (updatedCounts[prevReaction] || 1) - 1);
+          }
+          if (nextReaction) {
+            updatedCounts[nextReaction] = (updatedCounts[nextReaction] || 0) + 1;
+          }
+
+          const totalLikes = Object.values(updatedCounts).reduce((acc, count) => acc + count, 0);
+          const isLiked = !!nextReaction;
           const nextLikedBy = isLiked
-            ? (p.likedBy || []).filter((id) => id !== currentUser.id)
-            : [...(p.likedBy || []), currentUser.id];
+            ? Array.from(new Set([...(p.likedBy || []), currentUser.id]))
+            : (p.likedBy || []).filter((id) => id !== currentUser.id);
+
           return {
             ...p,
-            likesCount: isLiked ? p.likesCount - 1 : p.likesCount + 1,
+            userReaction: nextReaction,
+            reactionsCount: updatedCounts,
+            likesCount: totalLikes,
             likedBy: nextLikedBy,
+          };
+        }
+        return p;
+      })
+    );
+    setActiveReactionPickerPostId(null);
+  };
+
+  // Like Post fallback (Quick 1-Click Like / J'aime)
+  const handleLikePost = (postId: string) => {
+    const post = posts.find((p) => p.id === postId);
+    if (post?.userReaction) {
+      handleReactToPost(postId, post.userReaction);
+    } else {
+      handleReactToPost(postId, 'like');
+    }
+  };
+
+  // 💬 Toggle Comments Drawer
+  const handleToggleComments = (postId: string) => {
+    datingSounds.playTapSound();
+    setExpandedCommentsPostIds((prev) =>
+      prev.includes(postId) ? prev.filter((id) => id !== postId) : [...prev, postId]
+    );
+  };
+
+  // ✍️ Add a Facebook-style public comment
+  const handleAddComment = (postId: string) => {
+    const text = commentDrafts[postId]?.trim();
+    if (!text) return;
+    datingSounds.playMessageSent();
+
+    const newComment: CommunityPostComment = {
+      id: `comm-c-${Date.now()}`,
+      authorName: currentUser.pseudo,
+      authorAvatar: currentUser.avatar,
+      authorVerified: currentUser.verified,
+      content: text,
+      timestamp: isArabic ? 'الآن' : 'À l’instant',
+      likes: 0,
+    };
+
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId) {
+          const nextList = [...(p.commentsList || []), newComment];
+          return {
+            ...p,
+            commentsList: nextList,
+            commentsCount: nextList.length,
+          };
+        }
+        return p;
+      })
+    );
+
+    setCommentDrafts((prev) => ({ ...prev, [postId]: '' }));
+  };
+
+  // Like a specific comment
+  const handleLikeComment = (postId: string, commentId: string) => {
+    datingSounds.playTapSound();
+    setPosts((prev) =>
+      prev.map((p) => {
+        if (p.id === postId && p.commentsList) {
+          return {
+            ...p,
+            commentsList: p.commentsList.map((c) =>
+              c.id === commentId ? { ...c, likes: c.likes + 1 } : c
+            ),
           };
         }
         return p;
@@ -138,10 +291,10 @@ export function NisfyCommunitiesView({
     );
   };
 
-  // Publish Quick Community Post
+  // Publish Quick Community Post with Facebook-style attributes
   const handleCreateQuickPost = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newPostText.trim()) return;
+    if (!newPostText.trim() && !postImageUrl) return;
 
     datingSounds.playMessageSent();
     const targetComm = selectedCommunity || communities[0];
@@ -152,17 +305,29 @@ export function NisfyCommunitiesView({
       authorId: currentUser.id,
       authorName: currentUser.pseudo,
       authorAvatar: currentUser.avatar,
-      authorCity: currentUser.city,
+      authorCity: postWilaya || currentUser.city,
       authorVerified: currentUser.verified,
       content: newPostText.trim(),
+      mediaUrl: postImageUrl || undefined,
+      mediaType: postImageUrl ? 'image' : undefined,
+      feeling: postFeeling || undefined,
+      wilayaTag: postWilaya || currentUser.city,
       likesCount: 1,
       commentsCount: 0,
       timestamp: isArabic ? 'الآن' : 'À l’instant',
       likedBy: [currentUser.id],
+      userReaction: 'like',
+      reactionsCount: { like: 1, love: 0, mabrouk: 0, douaa: 0, haha: 0, wow: 0 },
+      commentsList: [],
     };
 
     setPosts([newPost, ...posts]);
     setNewPostText('');
+    setPostImageUrl('');
+    setPostFeeling('');
+    setPostWilaya('');
+    setShowPhotoPicker(false);
+    setShowFeelingPicker(false);
   };
 
   // Live Room Handlers
@@ -696,156 +861,570 @@ export function NisfyCommunitiesView({
       )}
 
       {/* ============================================================ */}
-      {/* SECTION C: COMMUNITY FEED (POSTS, PHOTOS, POLLS)             */}
+      {/* SECTION C: COMMUNITY FEED (FACEBOOK EXPERIENCE)              */}
       {/* ============================================================ */}
       {activeViewMode === 'feed' && (
-        <div className="space-y-6">
-          {/* Quick Publish Box */}
-          <form
-            onSubmit={handleCreateQuickPost}
-            className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-5 border border-slate-200 dark:border-slate-800 shadow-sm space-y-3"
-          >
+        <div className="space-y-5 max-w-2xl mx-auto">
+          {/* 🔵 Facebook-Style Composer Card */}
+          <div className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-3">
             <div className="flex items-start gap-3">
               <img
                 src={currentUser.avatar}
                 alt={currentUser.pseudo}
-                className="w-10 h-10 rounded-full object-cover border border-slate-300 dark:border-slate-700"
+                className="w-11 h-11 rounded-full object-cover border-2 border-slate-200 dark:border-slate-700 shrink-0"
               />
-              <textarea
-                value={newPostText}
-                onChange={(e) => setNewPostText(e.target.value)}
-                placeholder={
-                  isArabic
-                    ? `شارك فكرة، استفساراً، أو تجربة مع مجتمعات نصفي...`
-                    : `Posez une question, partagez une recommandation ou échangez avec les 69 wilayas...`
-                }
-                rows={2}
-                className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#FF3823] resize-none"
-              />
-            </div>
+              <div className="flex-1 space-y-2">
+                <textarea
+                  value={newPostText}
+                  onChange={(e) => setNewPostText(e.target.value)}
+                  placeholder={
+                    isArabic
+                      ? `بماذا تفكر يا ${currentUser.pseudo}؟ شارك مع الـ 69 ولاية والجالية...`
+                      : `Que voulez-vous partager avec la communauté Nisfy, ${currentUser.pseudo} ?`
+                  }
+                  rows={2}
+                  className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-2xl p-3 text-sm text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1877F2] resize-none transition-all"
+                />
 
-            <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-              <span className="text-xs text-slate-400 font-medium">
-                {isArabic ? 'نشر في : مجتمعات نصفي' : 'Publier dans : Nisfy Communities'}
-              </span>
-              <button
-                type="submit"
-                disabled={!newPostText.trim()}
-                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white text-xs font-black shadow-md shadow-orange-500/20 disabled:opacity-40 cursor-pointer"
-              >
-                {isArabic ? 'نشر 🇩🇿' : 'Publier 🇩🇿'}
-              </button>
-            </div>
-          </form>
-
-          {/* Posts Stream */}
-          <div className="space-y-4">
-            {posts.map((post) => (
-              <div
-                key={post.id}
-                className="bg-white dark:bg-slate-900 rounded-3xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-sm space-y-4"
-              >
-                {/* Author Info & Community Tag */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <img
-                      src={post.authorAvatar}
-                      alt={post.authorName}
-                      className="w-10 h-10 rounded-full object-cover border border-slate-200 dark:border-slate-700"
-                    />
-                    <div>
-                      <div className="flex items-center gap-1.5">
-                        <span className="font-bold text-sm text-slate-900 dark:text-white">
-                          {post.authorName}
-                        </span>
-                        {post.authorVerified && (
-                          <CheckCircle2 className="w-3.5 h-3.5 text-blue-500 fill-blue-500/20" />
-                        )}
-                      </div>
-                      <div className="flex items-center gap-2 text-[11px] text-slate-400">
-                        <span>{post.communityName}</span>
-                        <span>•</span>
-                        <span>{post.timestamp}</span>
-                      </div>
-                    </div>
+                {/* Selected Attachments Chips */}
+                {(postImageUrl || postFeeling || postWilaya) && (
+                  <div className="flex flex-wrap items-center gap-2 pt-1">
+                    {postFeeling && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 text-amber-700 dark:text-amber-300 text-xs font-bold border border-amber-500/20">
+                        <span>{postFeeling}</span>
+                        <button
+                          type="button"
+                          onClick={() => setPostFeeling('')}
+                          className="hover:text-red-500 cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {postWilaya && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 text-xs font-bold border border-blue-500/20">
+                        <MapPin className="w-3 h-3" />
+                        <span>{postWilaya}</span>
+                        <button
+                          type="button"
+                          onClick={() => setPostWilaya('')}
+                          className="hover:text-red-500 cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
+                    {postImageUrl && (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 text-xs font-bold border border-emerald-500/20">
+                        <ImageIcon className="w-3 h-3" />
+                        <span>{isArabic ? 'صورة مرفقة' : 'Photo attachée'}</span>
+                        <button
+                          type="button"
+                          onClick={() => setPostImageUrl('')}
+                          className="hover:text-red-500 cursor-pointer"
+                        >
+                          <X className="w-3 h-3" />
+                        </button>
+                      </span>
+                    )}
                   </div>
+                )}
 
-                  <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-orange-500/10 text-[#FF3823] border border-orange-500/20">
-                    {post.authorCity || 'DZ'}
-                  </span>
+                {/* Attached Image Preview */}
+                {postImageUrl && (
+                  <div className="relative rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 max-h-48 bg-slate-900">
+                    <img src={postImageUrl} alt="Attachment" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={() => setPostImageUrl('')}
+                      className="absolute top-2 right-2 p-1.5 rounded-full bg-black/60 hover:bg-black text-white transition-colors cursor-pointer"
+                    >
+                      <X className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Photo Presets Drawer */}
+            {showPhotoPicker && (
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
+                  <span>{isArabic ? 'اختر صورة من المقترحات أو أضف رابطاً :' : 'Ajouter une photo (presets ou URL) :'}</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowPhotoPicker(false)}
+                    className="text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-
-                {/* Post Content */}
-                <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line">
-                  {post.content}
-                </p>
-
-                {/* Optional Media */}
-                {post.mediaUrl && post.mediaType === 'image' && (
-                  <div className="rounded-2xl overflow-hidden max-h-96 w-full bg-slate-900">
-                    <img src={post.mediaUrl} alt="Post media" className="w-full h-full object-cover" />
-                  </div>
-                )}
-
-                {/* Optional Interactive Poll */}
-                {post.mediaType === 'poll' && post.pollOptions && (
-                  <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-2">
-                    <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">
-                      {isArabic ? '📊 تصويت الأعضاء :' : '📊 Sondage de la communauté :'}
-                    </div>
-                    {post.pollOptions.map((opt, idx) => (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => handleVotePoll(post.id, idx)}
-                        className="w-full text-left p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#FF3823] text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between transition-colors cursor-pointer group"
-                      >
-                        <span className="group-hover:text-[#FF3823] transition-colors">{opt.text}</span>
-                        <span className="text-[11px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md text-slate-500">
-                          {opt.votes} votes
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Post Actions (Like, Comment, Share) */}
-                <div className="flex items-center justify-between pt-3 border-t border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 text-xs font-bold">
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                  {PRESET_PHOTO_OPTIONS.map((photo, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setPostImageUrl(photo.url);
+                        setShowPhotoPicker(false);
+                      }}
+                      className="p-1.5 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-[#1877F2] bg-white dark:bg-slate-900 text-[11px] font-bold text-left flex flex-col gap-1 transition-all cursor-pointer group"
+                    >
+                      <img src={photo.url} alt={photo.label} className="w-full h-16 object-cover rounded-lg" />
+                      <span className="truncate group-hover:text-[#1877F2]">{photo.label}</span>
+                    </button>
+                  ))}
+                </div>
+                <div className="pt-1 flex items-center gap-2">
+                  <input
+                    type="url"
+                    placeholder="https://... (URL d'une image)"
+                    value={postImageUrl}
+                    onChange={(e) => setPostImageUrl(e.target.value)}
+                    className="flex-1 px-3 py-1.5 text-xs rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 focus:outline-none focus:ring-1 focus:ring-[#1877F2]"
+                  />
                   <button
                     type="button"
-                    onClick={() => handleLikePost(post.id)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition-all cursor-pointer ${
-                      post.likedBy?.includes(currentUser.id)
-                        ? 'text-red-500 bg-red-500/10'
-                        : 'hover:bg-slate-100 dark:hover:bg-slate-800'
-                    }`}
+                    onClick={() => setShowPhotoPicker(false)}
+                    className="px-3 py-1.5 rounded-xl bg-[#1877F2] text-white text-xs font-bold"
                   >
-                    <Heart
-                      className={`w-4 h-4 ${
-                        post.likedBy?.includes(currentUser.id) ? 'fill-red-500' : ''
-                      }`}
-                    />
-                    <span>{post.likesCount}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                    <span>{post.commentsCount} {isArabic ? 'تعليق' : 'commentaires'}</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
-                  >
-                    <Share2 className="w-4 h-4" />
-                    <span>{isArabic ? 'مشاركة' : 'Partager'}</span>
+                    OK
                   </button>
                 </div>
               </div>
-            ))}
+            )}
+
+            {/* Feelings Picker Drawer */}
+            {showFeelingPicker && (
+              <div className="p-3 bg-slate-50 dark:bg-slate-800/60 rounded-2xl border border-slate-200 dark:border-slate-700 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-slate-600 dark:text-slate-300">
+                  <span>{isArabic ? 'بماذا تشعر الآن؟' : 'Que ressentez-vous actuellement ?'}</span>
+                  <button
+                    type="button"
+                    onClick={() => setShowFeelingPicker(false)}
+                    className="text-slate-400 hover:text-slate-600"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {ALGERIAN_FEELINGS.map((item, idx) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => {
+                        setPostFeeling(`${item.emoji} ${isArabic ? item.ar : item.fr}`);
+                        setShowFeelingPicker(false);
+                      }}
+                      className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-amber-500 bg-white dark:bg-slate-900 text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center gap-2 transition-all cursor-pointer"
+                    >
+                      <span className="text-base">{item.emoji}</span>
+                      <span className="truncate">{isArabic ? item.ar : item.fr}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Composer Toolbar */}
+            <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center gap-1 sm:gap-2">
+                {/* Photo Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowPhotoPicker(!showPhotoPicker);
+                    setShowFeelingPicker(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                    showPhotoPicker || postImageUrl
+                      ? 'bg-emerald-500/15 text-emerald-600'
+                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  <ImageIcon className="w-4 h-4 text-emerald-500" />
+                  <span className="hidden sm:inline">{isArabic ? 'صورة' : 'Photo'}</span>
+                </button>
+
+                {/* Feeling Button */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowFeelingPicker(!showFeelingPicker);
+                    setShowPhotoPicker(false);
+                  }}
+                  className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors cursor-pointer ${
+                    showFeelingPicker || postFeeling
+                      ? 'bg-amber-500/15 text-amber-600'
+                      : 'hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-400'
+                  }`}
+                >
+                  <Smile className="w-4 h-4 text-amber-500" />
+                  <span className="hidden sm:inline">{isArabic ? 'شعور / نشاط' : 'Sentiment'}</span>
+                </button>
+
+                {/* Wilaya Filter / Tag */}
+                <div className="relative inline-block">
+                  <select
+                    value={postWilaya}
+                    onChange={(e) => setPostWilaya(e.target.value)}
+                    className="px-2.5 py-1.5 rounded-xl text-xs font-bold bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-none cursor-pointer focus:ring-1 focus:ring-[#1877F2]"
+                  >
+                    <option value="">{isArabic ? '📍 الولاية' : '📍 Wilaya DZ'}</option>
+                    {WILAYAS_69.slice(0, 58).map((w) => (
+                      <option key={w.code} value={`${w.name} (${w.code})`}>
+                        {w.code} - {w.name}
+                      </option>
+                    ))}
+                    <option value="Diaspora (France)">59 - Diaspora (France)</option>
+                    <option value="Diaspora (Canada)">65 - Diaspora (Canada)</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Submit Button */}
+              <button
+                type="button"
+                onClick={handleCreateQuickPost}
+                disabled={!newPostText.trim() && !postImageUrl}
+                className="px-5 py-2 rounded-xl bg-[#1877F2] hover:bg-[#166fe5] text-white text-xs font-black shadow-md shadow-blue-500/25 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-2 cursor-pointer"
+              >
+                <span>{isArabic ? 'نشر في فيسبوك ونصفي 🇩🇿' : 'Publier 🇩🇿'}</span>
+                <Send className="w-3.5 h-3.5" />
+              </button>
+            </div>
+          </div>
+
+          {/* 🔵 Posts Stream (Style Facebook avec Réactions, Commentaires & Partage) */}
+          <div className="space-y-4">
+            {posts.map((post) => {
+              const userCurrentReaction = post.userReaction
+                ? FB_REACTIONS_LIST.find((r) => r.type === post.userReaction)
+                : null;
+              const isCommentsOpen = expandedCommentsPostIds.includes(post.id);
+
+              return (
+                <div
+                  key={post.id}
+                  className="bg-white dark:bg-slate-900 rounded-3xl p-4 sm:p-5 border border-slate-200/90 dark:border-slate-800 shadow-sm space-y-3.5 transition-all"
+                >
+                  {/* Post Header */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={post.authorAvatar}
+                        alt={post.authorName}
+                        className="w-11 h-11 rounded-full object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+                      />
+                      <div>
+                        <div className="flex flex-wrap items-center gap-1.5">
+                          <span className="font-bold text-sm text-slate-900 dark:text-white">
+                            {post.authorName}
+                          </span>
+                          {post.authorVerified && (
+                            <CheckCircle2 className="w-3.5 h-3.5 text-[#1877F2] fill-blue-500/20" />
+                          )}
+                          {post.feeling && (
+                            <span className="text-xs text-slate-500 dark:text-slate-400 font-medium">
+                              {isArabic ? 'يشعر بـ' : 'est'} <span className="font-bold text-slate-700 dark:text-slate-300">{post.feeling}</span>
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center gap-2 text-[11px] text-slate-400 pt-0.5">
+                          <span className="font-medium text-slate-600 dark:text-slate-400">{post.communityName}</span>
+                          <span>•</span>
+                          <span>{post.timestamp}</span>
+                          <span>•</span>
+                          <span title="Public">🌐</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Wilaya Tag & Direct FB Share shortcut */}
+                    <div className="flex items-center gap-1.5">
+                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-blue-500/10 text-[#1877F2] border border-blue-500/20">
+                        {post.wilayaTag || post.authorCity || 'DZ'}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          openFacebookShare({
+                            url: window.location.href,
+                            title: post.communityName,
+                            text: post.content,
+                            hashtag: '#Nisfy_DZ',
+                          })
+                        }
+                        title={isArabic ? 'مشاركة مباشرة على فيسبوك' : 'Partager directement sur Facebook'}
+                        className="p-1.5 rounded-full hover:bg-blue-50 dark:hover:bg-blue-950/40 text-[#1877F2] transition-colors cursor-pointer"
+                      >
+                        <FacebookIcon className="w-4 h-4 fill-current" />
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Post Content */}
+                  <p className="text-sm text-slate-800 dark:text-slate-200 leading-relaxed whitespace-pre-line">
+                    {post.content}
+                  </p>
+
+                  {/* Optional Media */}
+                  {post.mediaUrl && post.mediaType === 'image' && (
+                    <div className="rounded-2xl overflow-hidden max-h-96 w-full bg-slate-900 border border-slate-200/60 dark:border-slate-800">
+                      <img
+                        src={post.mediaUrl}
+                        alt="Post media"
+                        className="w-full h-full object-cover hover:scale-[1.01] transition-transform duration-300"
+                      />
+                    </div>
+                  )}
+
+                  {/* Optional Interactive Poll */}
+                  {post.mediaType === 'poll' && post.pollOptions && (
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80 space-y-2">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300 mb-1 flex items-center gap-1.5">
+                        <span>📊</span>
+                        <span>{isArabic ? 'تصويت الأعضاء في المجتمع :' : 'Sondage de la communauté :'}</span>
+                      </div>
+                      {post.pollOptions.map((opt, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleVotePoll(post.id, idx)}
+                          className="w-full text-left p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 hover:border-[#1877F2] text-xs font-bold text-slate-800 dark:text-slate-200 flex items-center justify-between transition-colors cursor-pointer group"
+                        >
+                          <span className="group-hover:text-[#1877F2] transition-colors">{opt.text}</span>
+                          <span className="text-[11px] bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-md text-slate-500">
+                            {opt.votes} votes
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* 🔵 Facebook Reaction Statistics Row */}
+                  <div className="flex items-center justify-between pt-1 text-xs text-slate-500 dark:text-slate-400">
+                    <div className="flex items-center gap-1.5">
+                      <div className="flex -space-x-1">
+                        <span className="w-5 h-5 rounded-full bg-[#1877F2] text-white text-[11px] flex items-center justify-center border-2 border-white dark:border-slate-900">
+                          👍
+                        </span>
+                        <span className="w-5 h-5 rounded-full bg-rose-500 text-white text-[11px] flex items-center justify-center border-2 border-white dark:border-slate-900">
+                          ❤️
+                        </span>
+                        <span className="w-5 h-5 rounded-full bg-emerald-500 text-white text-[11px] flex items-center justify-center border-2 border-white dark:border-slate-900">
+                          💐
+                        </span>
+                      </div>
+                      <span className="font-bold text-slate-700 dark:text-slate-300">
+                        {post.likesCount}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-3 text-[11px]">
+                      <button
+                        type="button"
+                        onClick={() => handleToggleComments(post.id)}
+                        className="hover:underline cursor-pointer"
+                      >
+                        {post.commentsCount} {isArabic ? 'تعليقات' : 'commentaires'}
+                      </button>
+                      <span>•</span>
+                      <button
+                        type="button"
+                        onClick={() => setShareModalPost(post)}
+                        className="hover:underline text-[#1877F2] font-semibold flex items-center gap-1 cursor-pointer"
+                      >
+                        <FacebookIcon className="w-3.5 h-3.5 fill-current" />
+                        <span>{isArabic ? 'مشاركة فيسبوك' : 'Partager'}</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 🔵 Facebook Main Action Bar (Reactions Dock, Comment, Share) */}
+                  <div className="relative flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800 text-slate-600 dark:text-slate-400 text-xs font-bold">
+                    {/* Reactions Trigger Button */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => handleLikePost(post.id)}
+                        onMouseEnter={() => setActiveReactionPickerPostId(post.id)}
+                        className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer ${
+                          userCurrentReaction
+                            ? `${userCurrentReaction.textColor} bg-slate-50 dark:bg-slate-800/80`
+                            : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                        }`}
+                      >
+                        <span className="text-base leading-none">
+                          {userCurrentReaction ? userCurrentReaction.emoji : '👍'}
+                        </span>
+                        <span>
+                          {userCurrentReaction
+                            ? isArabic
+                              ? userCurrentReaction.labelAr
+                              : userCurrentReaction.labelFr
+                            : isArabic
+                            ? 'إعجاب'
+                            : "J'aime"}
+                        </span>
+                      </button>
+
+                      {/* 🌟 Facebook Reactions Floating Dock */}
+                      {activeReactionPickerPostId === post.id && (
+                        <div
+                          onMouseLeave={() => setActiveReactionPickerPostId(null)}
+                          className="absolute bottom-full left-0 mb-2 z-30 bg-white dark:bg-slate-800 rounded-full py-1.5 px-2.5 shadow-2xl border border-slate-200 dark:border-slate-700 flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2 duration-200"
+                        >
+                          {FB_REACTIONS_LIST.map((reaction) => (
+                            <button
+                              key={reaction.type}
+                              type="button"
+                              onClick={() => handleReactToPost(post.id, reaction.type)}
+                              className="text-xl hover:scale-130 active:scale-95 transition-transform duration-150 p-1 cursor-pointer"
+                              title={isArabic ? reaction.labelAr : reaction.labelFr}
+                            >
+                              {reaction.emoji}
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Comment Button */}
+                    <button
+                      type="button"
+                      onClick={() => handleToggleComments(post.id)}
+                      className={`flex items-center gap-2 px-3 py-2 rounded-xl transition-all cursor-pointer ${
+                        isCommentsOpen
+                          ? 'text-[#1877F2] bg-blue-500/10'
+                          : 'hover:bg-slate-100 dark:hover:bg-slate-800'
+                      }`}
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                      <span>{isArabic ? 'تعليق' : 'Commenter'}</span>
+                    </button>
+
+                    {/* Share Modal Trigger */}
+                    <button
+                      type="button"
+                      onClick={() => setShareModalPost(post)}
+                      className="flex items-center gap-2 px-3 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-all cursor-pointer"
+                    >
+                      <Share2 className="w-4 h-4" />
+                      <span>{isArabic ? 'مشاركة' : 'Partager'}</span>
+                    </button>
+
+                    {/* Quick Direct FB Share */}
+                    <button
+                      type="button"
+                      onClick={() =>
+                        openFacebookShare({
+                          url: window.location.href,
+                          title: post.communityName,
+                          text: post.content,
+                          hashtag: '#Nisfy_Zawaj',
+                        })
+                      }
+                      className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#1877F2]/10 hover:bg-[#1877F2]/20 text-[#1877F2] transition-all cursor-pointer font-bold"
+                    >
+                      <FacebookIcon className="w-3.5 h-3.5 fill-current" />
+                      <span>{isArabic ? 'فيسبوك' : 'Sur Facebook'}</span>
+                    </button>
+                  </div>
+
+                  {/* 💬 Facebook Expandable Comments Section */}
+                  {isCommentsOpen && (
+                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 space-y-3">
+                      {/* Comments list */}
+                      {post.commentsList && post.commentsList.length > 0 ? (
+                        <div className="space-y-2.5 max-h-72 overflow-y-auto pr-1">
+                          {post.commentsList.map((c) => (
+                            <div key={c.id} className="flex items-start gap-2.5">
+                              <img
+                                src={c.authorAvatar}
+                                alt={c.authorName}
+                                className="w-8 h-8 rounded-full object-cover shrink-0 mt-0.5"
+                              />
+                              <div className="flex-1 min-w-0">
+                                <div className="bg-slate-100 dark:bg-slate-800/90 rounded-2xl px-3.5 py-2 inline-block max-w-full">
+                                  <div className="font-bold text-xs text-slate-900 dark:text-white flex items-center gap-1">
+                                    <span>{c.authorName}</span>
+                                    {c.authorVerified && (
+                                      <CheckCircle2 className="w-3 h-3 text-[#1877F2]" />
+                                    )}
+                                  </div>
+                                  <p className="text-xs text-slate-800 dark:text-slate-200 mt-0.5 leading-relaxed break-words">
+                                    {c.content}
+                                  </p>
+                                </div>
+                                <div className="flex items-center gap-3 text-[10px] text-slate-400 font-bold px-2 pt-1">
+                                  <span>{c.timestamp}</span>
+                                  <button
+                                    type="button"
+                                    onClick={() => handleLikeComment(post.id, c.id)}
+                                    className="hover:text-[#1877F2] cursor-pointer"
+                                  >
+                                    {isArabic ? 'إعجاب' : "J'aime"} ({c.likes})
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="text-center py-2 text-xs text-slate-400 font-medium">
+                          {isArabic
+                            ? 'كن أول من يعلق على هذا المنشور في المجتمع ✨'
+                            : 'Soyez le premier à commenter cette publication ✨'}
+                        </div>
+                      )}
+
+                      {/* Comment Input Box */}
+                      <div className="flex items-center gap-2 pt-1">
+                        <img
+                          src={currentUser.avatar}
+                          alt={currentUser.pseudo}
+                          className="w-8 h-8 rounded-full object-cover shrink-0"
+                        />
+                        <div className="flex-1 relative">
+                          <input
+                            type="text"
+                            value={commentDrafts[post.id] || ''}
+                            onChange={(e) =>
+                              setCommentDrafts((prev) => ({
+                                ...prev,
+                                [post.id]: e.target.value,
+                              }))
+                            }
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleAddComment(post.id);
+                              }
+                            }}
+                            placeholder={
+                              isArabic
+                                ? 'اكتب تعليقاً عاماً...'
+                                : 'Écrire un commentaire public...'
+                            }
+                            className="w-full bg-slate-100 dark:bg-slate-800/90 border border-slate-200 dark:border-slate-700 rounded-full py-2 px-4 text-xs text-slate-900 dark:text-white placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#1877F2]"
+                          />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleAddComment(post.id)}
+                          disabled={!commentDrafts[post.id]?.trim()}
+                          className="p-2 rounded-full bg-[#1877F2] text-white disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer hover:bg-[#166fe5] transition-all"
+                        >
+                          <Send className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
@@ -1271,6 +1850,18 @@ export function NisfyCommunitiesView({
             </div>
           </div>
         </div>
+      )}
+
+      {/* 🔵 Modal Partage Facebook & Réseaux Sociaux */}
+      {shareModalPost && (
+        <FacebookShareModal
+          isOpen={!!shareModalPost}
+          onClose={() => setShareModalPost(null)}
+          title={shareModalPost.communityName}
+          content={shareModalPost.content}
+          authorName={shareModalPost.authorName}
+          wilaya={shareModalPost.wilayaTag || shareModalPost.authorCity}
+        />
       )}
     </div>
   );

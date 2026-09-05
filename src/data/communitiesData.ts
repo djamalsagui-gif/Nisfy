@@ -412,6 +412,27 @@ export const INITIAL_COMMUNITY_POSTS: CommunityPostItem[] = [
     commentsCount: 38,
     timestamp: 'Il y a 2h',
     likedBy: [],
+    feeling: 'En préparation de mariage 💍',
+    wilayaTag: 'Alger (16)',
+    reactionsCount: { like: 88, love: 34, mabrouk: 16, douaa: 4, haha: 0, wow: 0 },
+    commentsList: [
+      {
+        id: 'c1-1',
+        authorName: 'Amine Kouba',
+        authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=500&auto=format&fit=crop&q=80',
+        content: 'Je te conseille Traiteur El Bahia à Kouba, ils ont fait le baptême de mon neveu, qualité irréprochable et respect des horaires !',
+        timestamp: 'Il y a 1h',
+        likes: 9,
+      },
+      {
+        id: 'c1-2',
+        authorName: 'Nassima El Madania',
+        authorAvatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
+        content: 'Mabrouk alikoum d’avance ! Traiteur Dar Soltane à Bir Mourad Raïs est également excellent pour les tajines et rechta.',
+        timestamp: 'Il y a 45 min',
+        likes: 14,
+      },
+    ],
   },
   {
     id: 'post-2',
@@ -433,6 +454,19 @@ export const INITIAL_COMMUNITY_POSTS: CommunityPostItem[] = [
     commentsCount: 64,
     timestamp: 'Il y a 4h',
     likedBy: [],
+    feeling: 'Curieux 🤔',
+    wilayaTag: 'Paris / Oran',
+    reactionsCount: { like: 180, love: 65, mabrouk: 28, douaa: 12, haha: 8, wow: 2 },
+    commentsList: [
+      {
+        id: 'c2-1',
+        authorName: 'Djamel M.',
+        authorAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=500&auto=format&fit=crop&q=80',
+        content: 'Rien ne remplace l’ambiance du bled avec les cortèges et la ferveur des voisins ! Sans hésiter en Algérie.',
+        timestamp: 'Il y a 3h',
+        likes: 27,
+      },
+    ],
   },
   {
     id: 'post-3',
@@ -450,6 +484,19 @@ export const INITIAL_COMMUNITY_POSTS: CommunityPostItem[] = [
     commentsCount: 89,
     timestamp: 'Il y a 6h',
     likedBy: [],
+    feeling: 'Heureuse & Bénie 💖',
+    wilayaTag: 'Oran (31)',
+    reactionsCount: { like: 210, love: 142, mabrouk: 68, douaa: 12, haha: 0, wow: 0 },
+    commentsList: [
+      {
+        id: 'c3-1',
+        authorName: 'Lina Constantine',
+        authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=500&auto=format&fit=crop&q=80',
+        content: 'Machallah rabii ykamal bel khir ! Les broderies sont magnifiques 🤲',
+        timestamp: 'Il y a 5h',
+        likes: 31,
+      },
+    ],
   },
   {
     id: 'post-4',
@@ -467,6 +514,19 @@ export const INITIAL_COMMUNITY_POSTS: CommunityPostItem[] = [
     commentsCount: 52,
     timestamp: 'Il y a 8h',
     likedBy: [],
+    feeling: 'Fier de nos traditions 🇩🇿',
+    wilayaTag: 'Tizi Ouzou (15)',
+    reactionsCount: { like: 195, love: 85, mabrouk: 24, douaa: 6, haha: 0, wow: 0 },
+    commentsList: [
+      {
+        id: 'c4-1',
+        authorName: 'Kahina Béjaïa',
+        authorAvatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=500&auto=format&fit=crop&q=80',
+        content: 'Rien de tel que nos robes brodées d’argent et la fierté de nos ancêtres !',
+        timestamp: 'Il y a 7h',
+        likes: 19,
+      },
+    ],
   },
 ];
 
