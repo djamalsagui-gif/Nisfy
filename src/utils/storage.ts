@@ -38,26 +38,50 @@ function getMigratedItem(key: string, legacyKey?: string): string | null {
 }
 
 // 1. Get or initialize registered users
+const STORAGE_DELETED_USERS_KEY = 'nisfy_deleted_user_ids';
+
+export function getDeletedUserIds(): string[] {
+  try {
+    const data = localStorage.getItem(STORAGE_DELETED_USERS_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function markUserAsDeleted(userId: string): void {
+  try {
+    const existing = getDeletedUserIds();
+    if (!existing.includes(userId)) {
+      localStorage.setItem(STORAGE_DELETED_USERS_KEY, JSON.stringify([...existing, userId]));
+    }
+  } catch (e) {
+    console.error('Error marking user as deleted', e);
+  }
+}
+
 export function getRegisteredUsers(): UserProfile[] {
   try {
+    const deletedIds = getDeletedUserIds();
     const data = getMigratedItem(STORAGE_KEYS.USERS, 'lovio_registered_users');
     if (!data) {
-      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(INITIAL_USERS));
-      return INITIAL_USERS;
+      const filteredInit = INITIAL_USERS.filter((u) => !deletedIds.includes(u.id));
+      localStorage.setItem(STORAGE_KEYS.USERS, JSON.stringify(filteredInit));
+      return filteredInit;
     }
     const saved: UserProfile[] = JSON.parse(data);
     // Deduplicate saved array by user ID to prevent duplicate keys
     const userMap = new Map<string, UserProfile>();
     if (Array.isArray(saved)) {
       saved.forEach((u) => {
-        if (u && u.id) {
+        if (u && u.id && !deletedIds.includes(u.id)) {
           userMap.set(u.id, u);
         }
       });
     }
-    // Merge any missing initial users by id
+    // Merge any missing initial users by id ONLY if they were not deleted
     INITIAL_USERS.forEach((u) => {
-      if (u && u.id && !userMap.has(u.id)) {
+      if (u && u.id && !userMap.has(u.id) && !deletedIds.includes(u.id)) {
         userMap.set(u.id, u);
       }
     });
@@ -257,5 +281,68 @@ export function clearRememberedAccount(): void {
     localStorage.removeItem(STORAGE_KEYS.REMEMBERED_ACCOUNT);
   } catch (e) {
     console.error('Error clearing remembered account', e);
+  }
+}
+
+// 8. Account Withdrawal & Mandatory Reasons Tracking (Droit de retrait)
+export interface AccountWithdrawalRecord {
+  id: string;
+  userId: string;
+  userPseudo: string;
+  userEmail: string;
+  wilayaCode?: string;
+  city?: string;
+  reasonId: string;
+  reasonLabel: string;
+  explanation: string;
+  withdrawnAt: string;
+}
+
+const STORAGE_WITHDRAWALS_KEY = 'nisfy_account_withdrawals';
+
+export function saveAccountWithdrawal(record: AccountWithdrawalRecord): void {
+  try {
+    const existing = getAccountWithdrawals();
+    const updated = [record, ...existing];
+    localStorage.setItem(STORAGE_WITHDRAWALS_KEY, JSON.stringify(updated));
+    window.dispatchEvent(new Event('nisfy_withdrawals_updated'));
+  } catch (e) {
+    console.error('Error saving account withdrawal record', e);
+  }
+}
+
+export function getAccountWithdrawals(): AccountWithdrawalRecord[] {
+  try {
+    const data = localStorage.getItem(STORAGE_WITHDRAWALS_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function deleteRegisteredUser(userId: string): UserProfile[] {
+  try {
+    // 1. Mark as permanently deleted
+    markUserAsDeleted(userId);
+
+    // 2. Filter from users list
+    const users = getRegisteredUsers();
+    const filtered = users.filter((u) => u.id !== userId);
+    saveRegisteredUsers(filtered);
+
+    // 3. Clean remembered account unconditionally
+    clearRememberedAccount();
+
+    // 4. Clean user matches & local session items
+    localStorage.removeItem(`${STORAGE_KEYS.MATCHES}_${userId}`);
+    localStorage.removeItem(STORAGE_KEYS.CURRENT_USER);
+
+    // 5. Notify any listeners
+    window.dispatchEvent(new Event('nisfy_users_updated'));
+
+    return filtered;
+  } catch (e) {
+    console.error('Error deleting registered user', e);
+    return getRegisteredUsers();
   }
 }

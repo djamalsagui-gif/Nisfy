@@ -29,6 +29,7 @@ import {
   Download,
   PiggyBank,
   TrendingUp,
+  UserX,
 } from 'lucide-react';
 import { UserProfile, Gender, LookingFor, ProfileVideo, ActiveTab } from '../types';
 import { WILAYAS_69 } from '../data/wilayas';
@@ -61,6 +62,7 @@ interface MyProfileViewProps {
   likesReceivedCount: number;
   onOpenPwaInstall?: () => void;
   onSelectTab?: (tab: ActiveTab) => void;
+  onOpenDeleteAccount?: () => void;
 }
 
 const AVATAR_SELECTION = [
@@ -99,6 +101,7 @@ export function MyProfileView({
   likesReceivedCount,
   onOpenPwaInstall,
   onSelectTab,
+  onOpenDeleteAccount,
 }: MyProfileViewProps) {
   const { t, isArabic } = useLanguage();
   const [pseudo, setPseudo] = useState(currentUser.pseudo);
@@ -1132,16 +1135,65 @@ export function MyProfileView({
             </a>
           </div>
 
+          {/* Zone Sécurité & Droit de retrait (Suppression du compte) */}
+          <div className="p-4 rounded-2xl bg-red-50/70 dark:bg-red-950/20 border border-red-200/80 dark:border-red-900/40 space-y-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-start gap-2.5">
+                <div className="w-8 h-8 rounded-xl bg-red-500/15 text-red-600 dark:text-red-400 flex items-center justify-center shrink-0 mt-0.5">
+                  <UserX className="w-4 h-4" />
+                </div>
+                <div>
+                  <h4 className="text-xs font-black text-slate-900 dark:text-white flex items-center gap-2">
+                    <span>{isArabic ? 'حق الانسحاب وحذف الحساب' : 'Droit de retrait & Suppression de compte'}</span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900/50 text-red-700 dark:text-red-300">
+                      {isArabic ? 'إبداء السبب إجباري' : 'Motif obligatoire'}
+                    </span>
+                  </h4>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5 leading-relaxed">
+                    {isArabic
+                      ? 'يحق لك الانسحاب وحذف حسابك وبياناتك نهائياً في أي وقت، مع إلزامية توضيح سبب المغادرة لمساعدتنا على تحسين المنصة.'
+                      : 'Vous avez le droit plein et entier de vous retirer de Nisfy. Pour valider votre retrait, vous devez obligatoirement expliquer la raison de votre départ.'}
+                  </p>
+                </div>
+              </div>
+
+              {onOpenDeleteAccount && (
+                <button
+                  type="button"
+                  onClick={onOpenDeleteAccount}
+                  className="px-3.5 py-2 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-black transition-all shadow-sm shrink-0 flex items-center justify-center gap-1.5 cursor-pointer self-start sm:self-auto"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                  <span>{isArabic ? 'حذف حسابي...' : 'Supprimer mon compte...'}</span>
+                </button>
+              )}
+            </div>
+          </div>
+
           {/* Actions Button */}
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100">
-            <button
-              type="button"
-              onClick={onLogout}
-              className="py-2.5 px-4 rounded-xl text-xs font-bold text-[#FF3823] hover:bg-orange-50 transition-colors flex items-center gap-1.5 self-start sm:self-auto cursor-pointer"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>{t.logout}</span>
-            </button>
+          <div className="pt-4 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <button
+                type="button"
+                onClick={onLogout}
+                className="py-2.5 px-4 rounded-xl text-xs font-bold text-[#FF3823] hover:bg-orange-50 dark:hover:bg-orange-950/30 transition-colors flex items-center gap-1.5 cursor-pointer"
+              >
+                <LogOut className="w-4 h-4" />
+                <span>{t.logout}</span>
+              </button>
+
+              {onOpenDeleteAccount && (
+                <button
+                  type="button"
+                  onClick={onOpenDeleteAccount}
+                  className="py-2.5 px-3 rounded-xl text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/30 transition-colors flex items-center gap-1.5 cursor-pointer"
+                  title={isArabic ? 'حذف الحساب نهائياً' : 'Supprimer définitivement mon compte'}
+                >
+                  <UserX className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">{isArabic ? 'حذف الحساب' : 'Supprimer compte'}</span>
+                </button>
+              )}
+            </div>
 
             <button
               type="submit"

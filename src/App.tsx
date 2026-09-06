@@ -24,6 +24,8 @@ import {
   saveLikesSent,
   getMatchesList,
   saveMatchesList,
+  deleteRegisteredUser,
+  saveAccountWithdrawal,
 } from './utils/storage';
 import { INITIAL_LIVES, INITIAL_LIVE_COMMENTS } from './data/initialData';
 import { INITIAL_SOCIAL_POSTS } from './data/socialFeedData';
@@ -32,6 +34,7 @@ import { datingSounds } from './utils/soundEffects';
 
 import { Navbar } from './components/Navbar';
 import { AuthModal } from './components/auth/AuthModal';
+import { DeleteAccountModal } from './components/DeleteAccountModal';
 import { HomeDashboardView } from './components/HomeDashboardView';
 import { DiscoverView } from './components/DiscoverView';
 import { SearchView } from './components/SearchView';
@@ -198,6 +201,71 @@ export default function App() {
     datingSounds.playLikeSound();
     setCurrentUser(null);
     setLoggedInUser(null);
+  };
+
+  // Droit de retrait / Suppression de compte avec motif obligatoire
+  const [isDeleteAccountOpen, setIsDeleteAccountOpen] = useState(false);
+  const [accountDeletedFarewell, setAccountDeletedFarewell] = useState<{
+    pseudo: string;
+    reasonLabel: string;
+    explanation?: string;
+  } | null>(null);
+
+  const handleConfirmDeleteAccount = (
+    reasonId: string,
+    reasonLabel: string,
+    explanation: string
+  ) => {
+    if (!currentUser) return;
+    try {
+      datingSounds.playTapSound();
+    } catch {}
+
+    const leavingPseudo = currentUser.pseudo;
+    const leavingUserId = currentUser.id;
+
+    // 1. Enregistrer le motif obligatoire d'explication pour audit & amélioration
+    try {
+      saveAccountWithdrawal({
+        id: `withdrawal_${Date.now()}`,
+        userId: leavingUserId,
+        userPseudo: leavingPseudo,
+        userEmail: currentUser.email,
+        wilayaCode: currentUser.wilayaCode,
+        city: currentUser.city,
+        reasonId,
+        reasonLabel,
+        explanation,
+        withdrawnAt: new Date().toISOString(),
+      });
+    } catch (e) {
+      console.error('Error saving account withdrawal record:', e);
+    }
+
+    // 2. Supprimer l'utilisateur du registre persistant
+    try {
+      const remainingUsers = deleteRegisteredUser(leavingUserId);
+      setRegisteredUsers(remainingUsers);
+    } catch (e) {
+      console.error('Error deleting user:', e);
+    }
+
+    // 3. Clôturer la session active & nettoyer les tokens
+    try {
+      localStorage.removeItem('nisfy_current_user');
+      localStorage.removeItem('lovio_current_user');
+    } catch {}
+
+    setCurrentUser(null);
+    setLoggedInUser(null);
+    setIsDeleteAccountOpen(false);
+
+    // 4. Afficher le dialogue bienveillant de confirmation de retrait avec z-index prioritaire
+    setAccountDeletedFarewell({
+      pseudo: leavingPseudo,
+      reasonLabel,
+      explanation,
+    });
   };
 
   // Toggle audio
@@ -464,6 +532,70 @@ export default function App() {
             onFinished={() => setShowSplash(false)}
           />
         )}
+
+        {/* Modal de remerciement et confirmation bienveillante de suppression (z-[100] pour être au-dessus de tout) */}
+        {accountDeletedFarewell && (
+          <div
+            id="account-deleted-farewell-overlay"
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in"
+            dir={isArabic ? 'rtl' : 'ltr'}
+          >
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 max-w-md w-full shadow-2xl text-center space-y-4 animate-in zoom-in-95">
+              <div className="w-14 h-14 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mx-auto text-2xl">
+                🤲
+              </div>
+
+              <div>
+                <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                  {isArabic ? 'تم تأكيد الانسحاب وحذف الحساب' : 'Compte supprimé avec succès'}
+                </h3>
+                <p className="text-xs text-slate-600 dark:text-slate-400 mt-2 leading-relaxed">
+                  {isArabic
+                    ? `شكراً لك ${accountDeletedFarewell.pseudo} على وقتك في نصفي. لقد تم حفظ سبب انسحابك ومسح جميع بياناتك وملفك الشخصي نهائياً.`
+                    : `Merci ${accountDeletedFarewell.pseudo} d'avoir fait partie de l'aventure Nisfy. Conformément à votre droit de retrait, toutes vos données ont été définitivement effacées.`}
+                </p>
+
+                <div className="mt-3.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-left space-y-2">
+                  <div>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                      {isArabic ? 'السبب المسجل :' : 'Motif enregistré :'}
+                    </span>
+                    <span className="text-xs font-bold text-slate-800 dark:text-slate-200 mt-0.5 block">
+                      {accountDeletedFarewell.reasonLabel}
+                    </span>
+                  </div>
+
+                  {accountDeletedFarewell.explanation && (
+                    <div className="pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
+                      <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+                        {isArabic ? 'التوضيح المقدم :' : 'Explication fournie :'}
+                      </span>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 italic mt-0.5 whitespace-pre-wrap">
+                        "{accountDeletedFarewell.explanation}"
+                      </p>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <p className="text-[11px] text-slate-500 dark:text-slate-400 italic">
+                {isArabic
+                  ? 'نتمنى لك دوام التوفيق والبركة في حياتك القادمة إن شاء الله.'
+                  : 'Nous vous souhaitons le meilleur et beaucoup de bonheur dans vos projets d’avenir.'}
+              </p>
+
+              <button
+                id="btn-close-account-deleted-farewell"
+                type="button"
+                onClick={() => setAccountDeletedFarewell(null)}
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-[#E11D48] hover:opacity-95 active:scale-98 text-white text-xs font-black shadow-md shadow-orange-500/20 transition-all cursor-pointer"
+              >
+                {isArabic ? 'موافق وإغلاق' : 'Compris, fermer'}
+              </button>
+            </div>
+          </div>
+        )}
+
         <AuthModal
           onLoginSuccess={handleLoginSuccess}
           registeredUsers={registeredUsers}
@@ -503,6 +635,7 @@ export default function App() {
           onOpenPremium={() => setIsPremiumModalOpen(true)}
           onOpenContact={() => setIsContactModalOpen(true)}
           onOpenPwaInstall={() => setIsPwaModalOpen(true)}
+          onOpenDeleteAccount={() => setIsDeleteAccountOpen(true)}
         />
 
         {/* Main Content Area */}
@@ -659,6 +792,7 @@ export default function App() {
               likesReceivedCount={likesSent.length}
               onOpenPwaInstall={() => setIsPwaModalOpen(true)}
               onSelectTab={setActiveTab}
+              onOpenDeleteAccount={() => setIsDeleteAccountOpen(true)}
             />
           )}
 
@@ -849,6 +983,16 @@ export default function App() {
         isOpen={isContactModalOpen}
         onClose={() => setIsContactModalOpen(false)}
       />
+
+      {/* ===== POPUP MODAL: DROIT DE RETRAIT & SUPPRESSION DE COMPTE (MOTIF OBLIGATOIRE) ===== */}
+      {currentUser && (
+        <DeleteAccountModal
+          isOpen={isDeleteAccountOpen}
+          onClose={() => setIsDeleteAccountOpen(false)}
+          currentUser={currentUser}
+          onConfirmDelete={handleConfirmDeleteAccount}
+        />
+      )}
 
       {/* ===== PWA INSTALLATION BANNER & MODAL ===== */}
       <PwaInstallBanner onOpenInstallModal={() => setIsPwaModalOpen(true)} />

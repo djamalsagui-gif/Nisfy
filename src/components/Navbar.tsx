@@ -35,6 +35,7 @@ import {
   PiggyBank,
   ArrowRightLeft,
   Calendar,
+  UserX,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -63,6 +64,7 @@ interface NavbarProps {
   onOpenVerification?: () => void;
   onOpenContact?: () => void;
   onOpenPwaInstall?: () => void;
+  onOpenDeleteAccount?: () => void;
 }
 
 export function Navbar({
@@ -86,6 +88,7 @@ export function Navbar({
   onOpenVerification,
   onOpenContact,
   onOpenPwaInstall,
+  onOpenDeleteAccount,
 }: NavbarProps) {
   const { t, isArabic } = useLanguage();
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -637,6 +640,24 @@ export function Navbar({
                 )}
 
                 <div className="border-t border-slate-100 dark:border-slate-800 my-1"></div>
+
+                {onOpenDeleteAccount && (
+                  <button
+                    onClick={() => {
+                      setShowUserMenu(false);
+                      onOpenDeleteAccount();
+                    }}
+                    className="w-full px-3 py-2 text-left text-xs font-semibold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
+                  >
+                    <UserX className="w-4 h-4 text-red-500 shrink-0" />
+                    <div className="flex flex-col min-w-0">
+                      <span>{isArabic ? 'حق الانسحاب وحذف الحساب' : 'Supprimer mon compte (Retrait)'}</span>
+                      <span className="text-[10px] text-red-400 dark:text-red-500 font-normal">
+                        {isArabic ? 'مع إبداء سبب المغادرة' : 'Explication obligatoire'}
+                      </span>
+                    </div>
+                  </button>
+                )}
 
                 <button
                   onClick={() => { setShowUserMenu(false); onLogout(); }}
