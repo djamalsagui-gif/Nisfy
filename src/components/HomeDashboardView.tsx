@@ -26,6 +26,7 @@ import {
   PiggyBank,
   Wallet,
   TrendingUp,
+  FileCheck2,
 } from 'lucide-react';
 import { UserProfile, MatchRelation } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -127,6 +128,13 @@ export function HomeDashboardView({
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap">
+            <button
+              onClick={() => onSelectTab('wedding_contracts')}
+              className="px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 text-amber-200 border border-white/20 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0 backdrop-blur-md"
+            >
+              <FileCheck2 className="w-4 h-4 text-amber-300" />
+              <span>{isArabic ? 'عقود وحجوزات الأعراس' : 'Contrats & Acomptes 📑'}</span>
+            </button>
             <button
               onClick={() => onSelectTab('retroplanning')}
               className="px-3.5 py-2 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
@@ -296,7 +304,8 @@ export function HomeDashboardView({
                     )}
                   </div>
                   <p className="text-xs text-slate-500 dark:text-slate-400 line-clamp-1">
-                    {vendor.category === 'salle_fetes' ? '🏰 Salles des Fêtes' :
+                    {vendor.category === 'cortege_vehicules' ? '🚗 Voitures Cortège & Mariage' :
+                     vendor.category === 'salle_fetes' ? '🏰 Salles des Fêtes' :
                      vendor.category === 'neggafa_tenues' ? '👑 Neggafa & Tenues' :
                      vendor.category === 'photographe_video' ? '📸 Photographes & Vidéo' :
                      vendor.category === 'traiteur_repas' ? '🍲 Traiteurs & Repas' : '✨ Prestataire Mariage'}

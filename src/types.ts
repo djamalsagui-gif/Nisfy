@@ -183,6 +183,7 @@ export type ActiveTab =
   | 'communities'
   | 'customs'
   | 'marketplace'
+  | 'wedding_contracts'
   | 'shop'
   | 'finance'
   | 'retroplanning'
@@ -339,6 +340,7 @@ export type WeddingVendorCategory =
   | 'patisserie_gateaux'
   | 'zorna_orchestre'
   | 'decoration_fleurs'
+  | 'cortege_vehicules'
   | 'voyage_noces';
 
 export interface WeddingVendor {
@@ -481,4 +483,33 @@ export interface RememberedAccount {
   savedAt: string;
   autoConnect?: boolean;
 }
+
+export type WeddingBookingStatus = 'devis_demande' | 'acompte_attente' | 'confirme_signe' | 'annule';
+
+export interface WeddingBookingContract {
+  id: string;
+  bookingCode: string;
+  vendorId: string;
+  vendorName: string;
+  vendorCategory: WeddingVendorCategory;
+  vendorPhone: string;
+  vendorWilaya: string;
+  clientName: string;
+  clientPhone: string;
+  clientEmail: string;
+  weddingDate: string;
+  guestCount?: number;
+  totalAmountDzd: number;
+  depositAmountDzd: number;
+  remainingAmountDzd: number;
+  status: WeddingBookingStatus;
+  paymentMethod: 'baridimob' | 'ccp' | 'especes_salle' | 'virement_cib';
+  selectedOptions: string[];
+  specialNotes?: string;
+  signedAt?: string;
+  signatureClient?: string;
+  termsAccepted: boolean;
+  createdAt: string;
+}
+
 

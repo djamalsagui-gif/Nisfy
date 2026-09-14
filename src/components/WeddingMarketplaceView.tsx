@@ -18,14 +18,17 @@ import {
   X,
   FileText,
   DollarSign,
+  FileCheck2,
 } from 'lucide-react';
 import { INITIAL_WEDDING_VENDORS } from '../data/weddingVendorsData';
-import { WeddingVendor, WeddingVendorCategory } from '../types';
+import { WeddingVendor, WeddingVendorCategory, UserProfile } from '../types';
 import { WILAYAS_LIST } from '../data/wilayas';
 import { useLanguage } from '../context/LanguageContext';
+import { WeddingBookingContractModal } from './wedding/WeddingBookingContractModal';
 
 const CATEGORY_ITEMS: { id: WeddingVendorCategory | 'all'; labelFr: string; labelAr: string; icon: string }[] = [
   { id: 'all', labelFr: 'Tous les Prestataires', labelAr: 'كل الخدمات', icon: '✨' },
+  { id: 'cortege_vehicules', labelFr: 'Location Voitures Cortège', labelAr: 'كراء سيارات الموكب والأفراح', icon: '🚗' },
   { id: 'salle_fetes', labelFr: 'Salles des Fêtes', labelAr: 'قاعات الحفلات', icon: '🏰' },
   { id: 'neggafa_tenues', labelFr: 'Neggafa & Tenues', labelAr: 'نكافة وأزياء تقليدية', icon: '👑' },
   { id: 'photographe_video', labelFr: 'Photographes & Vidéo', labelAr: 'تصوير فوتوغرافي وفيديو', icon: '📸' },
@@ -35,15 +38,26 @@ const CATEGORY_ITEMS: { id: WeddingVendorCategory | 'all'; labelFr: string; labe
   { id: 'voyage_noces', labelFr: 'Lune de Miel & Voyages', labelAr: 'شهر العسل والسياحة', icon: '✈️' },
 ];
 
-export const WeddingMarketplaceView: React.FC = () => {
+interface WeddingMarketplaceViewProps {
+  currentUser?: UserProfile | null;
+  onOpenContractsManager?: () => void;
+}
+
+export const WeddingMarketplaceView: React.FC<WeddingMarketplaceViewProps> = ({
+  currentUser,
+  onOpenContractsManager,
+}) => {
   const { isArabic } = useLanguage();
   const [vendors, setVendors] = useState<WeddingVendor[]>(INITIAL_WEDDING_VENDORS);
   const [selectedCategory, setSelectedCategory] = useState<WeddingVendorCategory | 'all'>('all');
   const [selectedWilaya, setSelectedWilaya] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   
-  // Selected vendor for modal
+  // Selected vendor for details modal
   const [activeVendor, setActiveVendor] = useState<WeddingVendor | null>(null);
+
+  // Click-to-Book & Contract Modal
+  const [bookingVendor, setBookingVendor] = useState<WeddingVendor | null>(null);
 
   // Quote & Budget Simulator Modal
   const [isQuoteModalOpen, setIsQuoteModalOpen] = useState<boolean>(false);
@@ -53,6 +67,7 @@ export const WeddingMarketplaceView: React.FC = () => {
   const [includePhoto, setIncludePhoto] = useState<boolean>(true);
   const [includeGateaux, setIncludeGateaux] = useState<boolean>(true);
   const [includeZorna, setIncludeZorna] = useState<boolean>(false);
+  const [includeCortege, setIncludeCortege] = useState<boolean>(true);
 
   // Filtered vendors
   const filteredVendors = useMemo(() => {
@@ -85,8 +100,9 @@ export const WeddingMarketplaceView: React.FC = () => {
     if (includePhoto) total += 70000;
     if (includeGateaux) total += guestCount * 160;
     if (includeZorna) total += 45000;
+    if (includeCortege) total += 35000;
     return total;
-  }, [guestCount, includeTenues, includePhoto, includeGateaux, includeZorna]);
+  }, [guestCount, includeTenues, includePhoto, includeGateaux, includeZorna, includeCortege]);
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-6 md:py-8 space-y-8" dir={isArabic ? 'rtl' : 'ltr'}>
@@ -109,6 +125,17 @@ export const WeddingMarketplaceView: React.FC = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+            {onOpenContractsManager && (
+              <button
+                type="button"
+                onClick={onOpenContractsManager}
+                className="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-black/40 hover:bg-black/60 text-white font-bold text-xs border border-white/20 transition cursor-pointer backdrop-blur-md"
+              >
+                <FileCheck2 className="w-4 h-4 text-amber-300" />
+                <span>{isArabic ? '📑 عقودي وحجوزاتي' : '📑 Mes Contrats & Acomptes'}</span>
+              </button>
+            )}
+
             <button
               type="button"
               onClick={() => setIsQuoteModalOpen(true)}
@@ -253,21 +280,32 @@ export const WeddingMarketplaceView: React.FC = () => {
               </div>
 
               {/* Action Buttons */}
-              <div className="p-5 pt-0 flex items-center gap-2">
+              <div className="p-5 pt-0 space-y-2">
                 <button
                   type="button"
-                  onClick={() => setActiveVendor(vendor)}
-                  className="flex-1 py-2.5 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-black hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+                  onClick={() => setBookingVendor(vendor)}
+                  className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-[#FF3823] text-white text-xs font-black hover:opacity-95 shadow-md shadow-orange-500/20 transition cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  {isArabic ? 'عرض التفاصيل' : 'Voir fiche complète'}
+                  <FileCheck2 className="w-4 h-4" />
+                  <span>{isArabic ? 'حجز رسمي وعقد فوري 📑' : 'Réserver & Contrat en 1 clic 📑'}</span>
                 </button>
-                <a
-                  href={`tel:${vendor.phone}`}
-                  className="p-2.5 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition"
-                  title="Appeler directement"
-                >
-                  <Phone className="w-4 h-4" />
-                </a>
+
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveVendor(vendor)}
+                    className="flex-1 py-2 px-3 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs font-black hover:bg-slate-200 dark:hover:bg-slate-700 transition cursor-pointer"
+                  >
+                    {isArabic ? 'عرض التفاصيل' : 'Voir fiche'}
+                  </button>
+                  <a
+                    href={`tel:${vendor.phone}`}
+                    className="p-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition"
+                    title="Appeler directement"
+                  >
+                    <Phone className="w-4 h-4" />
+                  </a>
+                </div>
               </div>
             </div>
           ))}
@@ -350,7 +388,20 @@ export const WeddingMarketplaceView: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto">
+              <div className="flex flex-col sm:flex-row items-center gap-3 w-full sm:w-auto">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const v = activeVendor;
+                    setActiveVendor(null);
+                    setBookingVendor(v);
+                  }}
+                  className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-[#FF3823] text-white font-black text-xs sm:text-sm hover:opacity-95 transition shadow-md cursor-pointer"
+                >
+                  <FileCheck2 className="w-4 h-4" />
+                  <span>{isArabic ? 'إبرام العقد وتثبيت الحجز 📑' : 'Établir le Contrat en 1 clic 📑'}</span>
+                </button>
+
                 <a
                   href={`tel:${activeVendor.phone}`}
                   className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-emerald-600 text-white font-black text-xs sm:text-sm hover:bg-emerald-700 transition shadow-md"
@@ -462,6 +513,18 @@ export const WeddingMarketplaceView: React.FC = () => {
                     className="w-4 h-4 accent-[#FF3823]"
                   />
                 </label>
+
+                <label className="flex items-center justify-between p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700/60">
+                  <span className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    🚗 {isArabic ? 'كراء سيارات الموكب والأفراح (Zekri Auto Location)' : 'Location Voitures de Marque Cortège (Zekri Auto Location)'}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={includeCortege}
+                    onChange={(e) => setIncludeCortege(e.target.checked)}
+                    className="w-4 h-4 accent-[#FF3823]"
+                  />
+                </label>
               </div>
             </div>
 
@@ -495,6 +558,7 @@ export const WeddingMarketplaceView: React.FC = () => {
                     includePhoto ? 'Photo & Vidéo HD' : null,
                     includeGateaux ? 'Gâteaux & Pâtisserie DZ' : null,
                     includeZorna ? 'Zorna & Musique' : null,
+                    includeCortege ? 'Location Voitures Cortège (Zekri Auto)' : null,
                   ].filter(Boolean).join(', ');
 
                   const subject = encodeURIComponent(`[DEVIS MARIAGE NISFY] Estimation pour ${guestCount} invités à ${selectedWilaya}`);
@@ -530,6 +594,19 @@ export const WeddingMarketplaceView: React.FC = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Wedding Booking & Contract Modal (Click-to-Book) */}
+      {bookingVendor && (
+        <WeddingBookingContractModal
+          isOpen={Boolean(bookingVendor)}
+          onClose={() => setBookingVendor(null)}
+          vendor={bookingVendor}
+          currentUser={currentUser}
+          onBookingSuccess={() => {
+            // Can trigger contracts manager or show toast
+          }}
+        />
       )}
     </div>
   );

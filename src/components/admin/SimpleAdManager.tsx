@@ -614,6 +614,7 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
 
     const categoryLabels: Record<Advertisement['category'], { fr: string; ar: string }> = {
       venue: { fr: 'Salles des Fêtes & Domaines', ar: 'قاعات الحفلات والفنادق' },
+      auto: { fr: 'Location Voitures & Cortèges', ar: 'كراء سيارات الموكب والأفراح' },
       fashion: { fr: 'Robes de Mariée & Caftans', ar: 'فساتين الزفاف والأزياء' },
       travel: { fr: 'Voyages de Noces & Omra', ar: 'رحلات شهر العسل والعمرة' },
       photo: { fr: 'Photographie & Vidéo 4K', ar: 'تصوير احترافي وفيديو 4K' },
@@ -2614,6 +2615,7 @@ export function SimpleAdManager({ onViewPublicAd, onBack }: SimpleAdManagerProps
                     className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white font-bold"
                   >
                     <option value="venue">🏰 Salles des Fêtes & Domaines</option>
+                    <option value="auto">🚗 Location Voitures & Cortèges</option>
                     <option value="fashion">👗 Robes de Mariée & Caftans</option>
                     <option value="travel">✈️ Voyages de Noces & Omra</option>
                     <option value="photo">📸 Photographie & Vidéo 4K</option>

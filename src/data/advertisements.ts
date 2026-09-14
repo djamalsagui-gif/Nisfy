@@ -5,7 +5,7 @@ export interface Advertisement {
   id: string;
   brandName: string;
   brandNameAr: string;
-  category: 'venue' | 'fashion' | 'travel' | 'photo' | 'catering' | 'jewelry';
+  category: 'venue' | 'fashion' | 'travel' | 'photo' | 'catering' | 'jewelry' | 'auto';
   categoryLabel: string;
   categoryLabelAr: string;
   tagline: string;
@@ -355,5 +355,62 @@ export const SPONSORED_ADS: Advertisement[] = [
     paymentStatus: 'pending',
     lastPaymentDate: '2026-07-30',
     internalNotes: 'Pack test 1 mois.'
+  },
+  {
+    id: 'ad-zekri-auto-location',
+    brandName: 'Zekri Auto Location • Cortèges & Mariage 🚗💍',
+    brandNameAr: 'زكري أوتو لوكاسيون • كراء سيارات الأعراس والمواكب',
+    category: 'auto',
+    categoryLabel: 'Location Véhicules de Marque & Cortège',
+    categoryLabelAr: 'كراء سيارات الماركات العالمية لمواكب الأعراس',
+    tagline: 'Mercedes, Audi, Range Rover & Porsche pour un cortège de mariage royal',
+    taglineAr: 'مرسيدس، أودي، رانج روفر وبورش لموكب زفاف ملكي لا يُنسى',
+    description: 'Zekri Auto Location met à votre disposition une flotte prestigieuse de voitures de grande marque pour vos fêtes de fiançailles, cortèges nuptiaux et cérémonies de mariage. Chauffeurs VIP en costume d’apparat, rubans et décorations florales raffinées offerts, service de navette aéroport pour les invités de la diaspora et disponibilité 24/7 sur Alger et toutes les wilayas.',
+    descriptionAr: 'تقدم لكم وكالة زكري أوتو لوكاسيون أسطولاً استثنائياً من أفخم السيارات الفاخرة المخصصة لمواكب الأعراس والأفراح بالجزائر. تزيين راقٍ بالورود، سائقين محترفين ببذلات رسمية، وخدمة خاصة للمغتربين والضيوف 24/7 في كافة الولايات.',
+    bannerImage: 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=1000&q=80',
+    logoImage: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=200&q=80',
+    galleryImages: [
+      'https://images.unsplash.com/photo-1503376780353-7e6692767b70?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1563720223185-11003d516935?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1555215695-3004980ad54e?auto=format&fit=crop&w=800&q=80',
+      'https://images.unsplash.com/photo-1549399542-7e3f8b79c341?auto=format&fit=crop&w=800&q=80',
+    ],
+    promoCode: 'ZEKRI-NISFY10',
+    discountBadge: '-10% + Décoration Florale Offerte',
+    discountBadgeAr: 'تخفيض 10% + تزيين الورد مجاناً',
+    wilayas: ['16 - Alger', '09 - Blida', '35 - Boumerdès', '31 - Oran', '25 - Constantine', 'Toutes les Wilayas'],
+    phone: '+213 550 88 44 22',
+    whatsapp: '+213550884422',
+    rating: 4.9,
+    reviewsCount: 164,
+    featured: true,
+    priceStartingFrom: '25 000 DZD / jour',
+    features: [
+      'Flotte de prestige : Mercedes Classe S, Range Rover, Audi Q8, BMW',
+      'Chauffeur VIP en costume inclus ou mise à disposition',
+      'Décoration florale de mariage & rubans personnalisés offerts',
+      'Livraison du véhicule au domicile ou à la salle des fêtes',
+    ],
+    featuresAr: [
+      'أسطول سيارات ملكي : مرسيدس، رانج روفر، أودي، بي إم دبليو',
+      'سائق VIP محترف باللباس الرسمي متوفر عند الطلب',
+      'تزيين طبيعي بالورود والأشرطة الفاخرة مهداة مع الحجز',
+      'توصيل واستلام السيارة أمام البيت أو قاعة الحفلات',
+    ],
+    musicThemeId: 'track-zorna-cortege',
+    musicThemeTitle: 'Mawakib El Afrah • Cortège & Zorna Royale',
+    musicThemeGenre: 'Cortège & Fête Populaire',
+    isActive: true,
+    advertiserContactPerson: 'M. Zekri (Direction)',
+    advertiserEmail: 'contact@zekri-autolocation.dz',
+    subscriptionPlan: '1_an',
+    subscriptionPlanLabel: 'Pack Prestige Annuel (12 Mois)',
+    monthlyFee: '35 000 DZD / mois',
+    startDate: '2026-01-01',
+    endDate: '2026-12-31',
+    paymentDueDate: '2026-09-01',
+    paymentStatus: 'paid',
+    lastPaymentDate: '2026-08-01',
+    internalNotes: 'Partenaire Officiel Voitures de Prestige & Cortèges Mariage NISFY.',
   }
 ];

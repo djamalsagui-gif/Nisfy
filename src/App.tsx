@@ -49,6 +49,7 @@ import { AdminAdvertisersView } from './components/admin/AdminAdvertisersView';
 import { SocialFeed } from './components/feed/SocialFeed';
 import { CustomsGuideView } from './components/CustomsGuideView';
 import { WeddingMarketplaceView } from './components/WeddingMarketplaceView';
+import { WeddingContractsManager } from './components/wedding/WeddingContractsManager';
 import { YouthShopView } from './components/YouthShopView';
 import { GeminiFinancialAdvisorView } from './components/finance/GeminiFinancialAdvisorView';
 import { WeddingPlannerTimeline } from './components/wedding/WeddingPlannerTimeline';
@@ -725,7 +726,16 @@ export default function App() {
           )}
 
           {activeTab === 'marketplace' && (
-            <WeddingMarketplaceView />
+            <WeddingMarketplaceView
+              currentUser={currentUser}
+              onOpenContractsManager={() => setActiveTab('wedding_contracts')}
+            />
+          )}
+
+          {activeTab === 'wedding_contracts' && (
+            <WeddingContractsManager
+              onNavigateToMarketplace={() => setActiveTab('marketplace')}
+            />
           )}
 
           {activeTab === 'live' && (

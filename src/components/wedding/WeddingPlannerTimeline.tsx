@@ -151,12 +151,13 @@ const INITIAL_TASKS: WeddingTask[] = [
   // Jour J
   {
     id: 'task_12',
-    titleFr: 'Cortège de voitures fleuries & Déroulement de la Fête',
-    titleAr: 'موكب السيارات المزينة وانطلاق حفل الزفاف المبارك',
+    titleFr: 'Location Voitures de Marque Cortège & Déroulement de la Fête (Zekri Auto Location)',
+    titleAr: 'كراء سيارات الموكب الفاخرة وانطلاق حفل الزفاف المبارك (زكري أوتو)',
     stage: 'jour_j',
-    category: 'general',
-    estimatedCostDzd: 50000,
+    category: 'cortege_vehicules',
+    estimatedCostDzd: 35000,
     completed: false,
+    recommendedVendorCategory: 'cortege_vehicules',
   },
 ];
 

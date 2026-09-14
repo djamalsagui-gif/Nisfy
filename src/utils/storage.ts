@@ -5,6 +5,7 @@ import {
   MatchRelation,
   LikeAction,
   RememberedAccount,
+  WeddingBookingContract,
 } from '../types';
 import {
   INITIAL_USERS,
@@ -345,4 +346,104 @@ export function deleteRegisteredUser(userId: string): UserProfile[] {
     console.error('Error deleting registered user', e);
     return getRegisteredUsers();
   }
+}
+
+// 7. Wedding Bookings & Contracts Storage
+const STORAGE_WEDDING_BOOKINGS_KEY = 'nisfy_wedding_booking_contracts';
+
+export const INITIAL_WEDDING_BOOKINGS: WeddingBookingContract[] = [
+  {
+    id: 'wbk-zekri-001',
+    bookingCode: 'NISFY-WBK-2026-089',
+    vendorId: 'vendor-9',
+    vendorName: 'Zekri Auto Location • Voitures de Marque pour Cortèges & Mariage 🚗💍',
+    vendorCategory: 'cortege_vehicules',
+    vendorPhone: '+213 550 88 44 22',
+    vendorWilaya: 'Alger (16) & Toutes Wilayas',
+    clientName: 'Karim & Amira Benali',
+    clientPhone: '0555 12 34 56',
+    clientEmail: 'karim.benali@gmail.com',
+    weddingDate: '2026-09-26',
+    guestCount: 250,
+    totalAmountDzd: 75000,
+    depositAmountDzd: 25000,
+    remainingAmountDzd: 50000,
+    status: 'confirme_signe',
+    paymentMethod: 'baridimob',
+    selectedOptions: [
+      'Mercedes Classe S Berline Noire Cortège VIP',
+      'Chauffeur professionnel en costume officiel',
+      'Compositions florales et rubans blancs offerts',
+      'Service disponible 24/7 sur Alger & Blida'
+    ],
+    specialNotes: 'Cortège au départ de Kouba vers la salle des fêtes des Eucalyptus.',
+    signedAt: '2026-09-10T14:30:00Z',
+    signatureClient: 'Karim Benali',
+    termsAccepted: true,
+    createdAt: '2026-09-08T11:00:00Z'
+  },
+  {
+    id: 'wbk-palais-roses-002',
+    bookingCode: 'NISFY-WBK-2026-092',
+    vendorId: 'vendor-1',
+    vendorName: 'Palais des Roses & Des Étoiles 🏰',
+    vendorCategory: 'salle_fetes',
+    vendorPhone: '+213 550 12 34 56',
+    vendorWilaya: 'Alger (16)',
+    clientName: 'Yacine & Sarah Mansouri',
+    clientPhone: '0661 78 90 12',
+    clientEmail: 'yacine.m@yahoo.fr',
+    weddingDate: '2026-10-15',
+    guestCount: 350,
+    totalAmountDzd: 380000,
+    depositAmountDzd: 100000,
+    remainingAmountDzd: 280000,
+    status: 'acompte_attente',
+    paymentMethod: 'ccp',
+    selectedOptions: [
+      'Salle principale prestige (450 places)',
+      'Suite VIP mariée avec loge coiffure',
+      'Éclairage LED féerique et fumée lourde'
+    ],
+    specialNotes: 'Acompte de 100 000 DZD en cours de validation CCP.',
+    termsAccepted: true,
+    createdAt: '2026-09-12T09:15:00Z'
+  }
+];
+
+export function getWeddingBookings(): WeddingBookingContract[] {
+  try {
+    const data = localStorage.getItem(STORAGE_WEDDING_BOOKINGS_KEY);
+    if (data) {
+      return JSON.parse(data);
+    }
+    // Initialize with demo contracts
+    localStorage.setItem(STORAGE_WEDDING_BOOKINGS_KEY, JSON.stringify(INITIAL_WEDDING_BOOKINGS));
+    return INITIAL_WEDDING_BOOKINGS;
+  } catch {
+    return INITIAL_WEDDING_BOOKINGS;
+  }
+}
+
+export function saveWeddingBookings(bookings: WeddingBookingContract[]): void {
+  try {
+    localStorage.setItem(STORAGE_WEDDING_BOOKINGS_KEY, JSON.stringify(bookings));
+    window.dispatchEvent(new Event('nisfy_wedding_bookings_updated'));
+  } catch (e) {
+    console.error('Error saving wedding bookings', e);
+  }
+}
+
+export function addWeddingBooking(booking: WeddingBookingContract): WeddingBookingContract[] {
+  const current = getWeddingBookings();
+  const updated = [booking, ...current];
+  saveWeddingBookings(updated);
+  return updated;
+}
+
+export function updateWeddingBookingStatus(bookingId: string, status: WeddingBookingContract['status']): WeddingBookingContract[] {
+  const current = getWeddingBookings();
+  const updated = current.map((b) => (b.id === bookingId ? { ...b, status } : b));
+  saveWeddingBookings(updated);
+  return updated;
 }

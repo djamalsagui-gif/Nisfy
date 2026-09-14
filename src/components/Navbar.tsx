@@ -36,6 +36,7 @@ import {
   ArrowRightLeft,
   Calendar,
   UserX,
+  FileCheck2,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -341,6 +342,19 @@ export function Navbar({
                 >
                   <Store className="w-4 h-4 text-amber-600" />
                   <span>{isArabic ? 'سوق وقاعات الأعراس' : 'Prestataires & Salles'}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('wedding_contracts'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'wedding_contracts' ? 'bg-amber-50 dark:bg-amber-950/60 text-amber-700' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <FileCheck2 className="w-4 h-4 text-[#FF3823]" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="truncate">{isArabic ? 'عقود وحجوزات الأعراس' : 'Contrats & Réservations DZ'}</span>
+                    <span className="text-[10px] text-slate-400 font-normal">Click-to-Book & Acomptes</span>
+                  </div>
                 </button>
 
                 <button
