@@ -327,8 +327,11 @@ export function SearchView({
       return (
         ad.brandName.toLowerCase().includes(query) ||
         ad.brandNameAr.includes(query) ||
+        ad.category.toLowerCase().includes(query) ||
         ad.categoryLabel.toLowerCase().includes(query) ||
         ad.categoryLabelAr.includes(query) ||
+        (ad.tagline && ad.tagline.toLowerCase().includes(query)) ||
+        (ad.taglineAr && ad.taglineAr.includes(query)) ||
         ad.description.toLowerCase().includes(query) ||
         ad.descriptionAr.includes(query) ||
         (ad.features && ad.features.some((f) => f.toLowerCase().includes(query))) ||

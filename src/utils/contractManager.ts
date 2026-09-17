@@ -19,7 +19,18 @@ export const getManagedContracts = (): NisfyContract[] => {
       localStorage.setItem(CONTRACTS_STORAGE_KEY, JSON.stringify(INITIAL_NISFY_CONTRACTS));
       return INITIAL_NISFY_CONTRACTS;
     }
-    return JSON.parse(data);
+    const parsed: NisfyContract[] = JSON.parse(data);
+    // Ensure any default contracts not yet in storage are preserved
+    const storedIds = new Set(parsed.map((c) => c.targetEntityId || c.id));
+    const missingDefaults = INITIAL_NISFY_CONTRACTS.filter(
+      (c) => !storedIds.has(c.targetEntityId) && !storedIds.has(c.id)
+    );
+    if (missingDefaults.length > 0) {
+      const merged = [...parsed, ...missingDefaults];
+      localStorage.setItem(CONTRACTS_STORAGE_KEY, JSON.stringify(merged));
+      return merged;
+    }
+    return parsed;
   } catch (err) {
     console.error('Error reading contracts from storage', err);
     return INITIAL_NISFY_CONTRACTS;
