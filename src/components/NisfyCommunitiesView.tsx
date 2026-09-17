@@ -443,6 +443,16 @@ export function NisfyCommunitiesView({
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  (e.target as HTMLElement)?.blur();
+                  const grid = document.getElementById('communities-cards-grid');
+                  if (grid) {
+                    grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }
+                }
+              }}
               placeholder={
                 isArabic
                   ? 'ابحث عن مجتمع (ولاية، مغتربين، زواج، طبخ، رياضة)...'
@@ -645,7 +655,7 @@ export function NisfyCommunitiesView({
           )}
 
           {/* Communities Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div id="communities-cards-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {filteredCommunities.map((comm) => (
               <div
                 key={comm.id}

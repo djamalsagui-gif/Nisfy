@@ -25,6 +25,7 @@ import { WeddingVendor, WeddingVendorCategory, UserProfile } from '../types';
 import { WILAYAS_LIST } from '../data/wilayas';
 import { useLanguage } from '../context/LanguageContext';
 import { WeddingBookingContractModal } from './wedding/WeddingBookingContractModal';
+import { datingSounds } from '../utils/soundEffects';
 
 const CATEGORY_ITEMS: { id: WeddingVendorCategory | 'all'; labelFr: string; labelAr: string; icon: string }[] = [
   { id: 'all', labelFr: 'Tous les Prestataires', labelAr: 'كل الخدمات', icon: '✨' },
@@ -83,14 +84,52 @@ export const WeddingMarketplaceView: React.FC<WeddingMarketplaceViewProps> = ({
         const matchesName = Boolean(vendor.name && vendor.name.toLowerCase().includes(q));
         const matchesWilaya = Boolean(vendor.wilayaName && vendor.wilayaName.toLowerCase().includes(q));
         const matchesDesc = Boolean(vendor.descriptionFr && vendor.descriptionFr.toLowerCase().includes(q));
+        const matchesDescAr = Boolean(vendor.descriptionAr && vendor.descriptionAr.includes(q));
+        const matchesCategory = Boolean(vendor.category && vendor.category.toLowerCase().includes(q));
+        const matchesPrice = Boolean(vendor.priceStartingAt && vendor.priceStartingAt.toLowerCase().includes(q));
         const matchesServices = Boolean(vendor.services && vendor.services.some((s) => Boolean(s) && s.toLowerCase().includes(q)));
-        if (!matchesName && !matchesWilaya && !matchesDesc && !matchesServices) {
+        if (!matchesName && !matchesWilaya && !matchesDesc && !matchesDescAr && !matchesCategory && !matchesPrice && !matchesServices) {
           return false;
         }
       }
       return true;
     });
   }, [vendors, selectedCategory, selectedWilaya, searchQuery]);
+
+  // Execute search and scroll on Enter
+  const handleSearchExecute = () => {
+    if (document.activeElement instanceof HTMLElement) {
+      document.activeElement.blur();
+    }
+    try {
+      datingSounds.playTapSound();
+    } catch {
+      // Audio failsafe
+    }
+    // If selectedCategory is filtering out results, auto-reset to 'all' so results display
+    if (selectedCategory !== 'all' && searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      const hasMatchesInAll = vendors.some((v) => {
+        const matchesName = Boolean(v.name && v.name.toLowerCase().includes(q));
+        const matchesDesc = Boolean(v.descriptionFr && v.descriptionFr.toLowerCase().includes(q));
+        const matchesDescAr = Boolean(v.descriptionAr && v.descriptionAr.includes(q));
+        const matchesCategory = Boolean(v.category && v.category.toLowerCase().includes(q));
+        const matchesServices = Boolean(v.services && v.services.some((s) => Boolean(s) && s.toLowerCase().includes(q)));
+        return matchesName || matchesDesc || matchesDescAr || matchesCategory || matchesServices;
+      });
+      if (hasMatchesInAll && filteredVendors.length === 0) {
+        setSelectedCategory('all');
+      }
+    }
+    setTimeout(() => {
+      const gridEl = document.getElementById('marketplace-vendors-grid');
+      if (gridEl) {
+        const yOffset = -80;
+        const y = gridEl.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: 'smooth' });
+      }
+    }, 150);
+  };
 
   // Budget calculation in DZD
   const estimatedBudgetDZD = useMemo(() => {
@@ -149,16 +188,45 @@ export const WeddingMarketplaceView: React.FC<WeddingMarketplaceViewProps> = ({
 
         {/* Search & Wilaya Bar */}
         <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-3">
-          <div className="relative md:col-span-2">
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearchExecute();
+            }}
+            className="relative md:col-span-2 flex items-center"
+          >
             <Search className={`absolute ${isArabic ? 'right-4' : 'left-4'} top-1/2 -translate-y-1/2 w-4 h-4 text-white/70`} />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder={isArabic ? 'ابحث عن قاعة، نكافة، مصور، حلويات أو خدمة...' : 'Rechercher un prestataire, une salle, un gâteau ou un service...'}
-              className={`w-full ${isArabic ? 'pr-11 pl-4' : 'pl-11 pr-4'} py-3 rounded-2xl bg-white/15 text-white placeholder-white/60 text-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-300 backdrop-blur-md`}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleSearchExecute();
+                }
+              }}
+              placeholder={isArabic ? 'ابحث عن كراء سيارات، قاعات، نكافة، مصور، حلويات...' : 'Rechercher location voiture, salle, neggafa, photographe, service...'}
+              className={`w-full ${isArabic ? 'pr-11 pl-20' : 'pl-11 pr-20'} py-3 rounded-2xl bg-white/15 text-white placeholder-white/60 text-sm border border-white/20 focus:outline-none focus:ring-2 focus:ring-amber-300 backdrop-blur-md`}
             />
-          </div>
+            <div className={`absolute ${isArabic ? 'left-2' : 'right-2'} flex items-center gap-1`}>
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="p-1 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition cursor-pointer"
+                >
+                  <X className="w-3.5 h-3.5" />
+                </button>
+              )}
+              <button
+                type="submit"
+                className="px-2.5 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-bold transition cursor-pointer"
+              >
+                {isArabic ? 'بحث' : 'OK'}
+              </button>
+            </div>
+          </form>
 
           <div>
             <select
@@ -205,7 +273,7 @@ export const WeddingMarketplaceView: React.FC<WeddingMarketplaceViewProps> = ({
       </div>
 
       {/* Vendor Cards Grid */}
-      <div className="space-y-4">
+      <div id="marketplace-vendors-grid" className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-base sm:text-lg font-black text-slate-900 dark:text-white flex items-center gap-2">
             <Store className="w-5 h-5 text-amber-600" />

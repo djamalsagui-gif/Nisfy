@@ -43,6 +43,7 @@ const CATEGORY_ICONS: Record<SearchCategory, any> = {
   wilayas: MapPin,
   recipes: Utensils,
   marketplace: ShoppingBag,
+  shop: ShoppingBag,
 };
 
 const CATEGORY_NAMES_FR: Record<SearchCategory, string> = {
@@ -53,7 +54,8 @@ const CATEGORY_NAMES_FR: Record<SearchCategory, string> = {
   groups: 'Groupes Salhiya',
   wilayas: '69 Wilayas',
   recipes: 'Gastronomie & Recettes',
-  marketplace: 'Services Mariage',
+  marketplace: 'Services Mariage & Location',
+  shop: 'Boutique & Drops',
 };
 
 const CATEGORY_NAMES_AR: Record<SearchCategory, string> = {
@@ -64,7 +66,8 @@ const CATEGORY_NAMES_AR: Record<SearchCategory, string> = {
   groups: 'المجموعات وصالون الصالحية',
   wilayas: '69 ولاية',
   recipes: 'الطبخ والوصفات',
-  marketplace: 'خدمات العرس',
+  marketplace: 'خدمات العرس والكراء',
+  shop: 'المتجر والمستعمل',
 };
 
 export function VoiceSearchModal({

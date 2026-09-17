@@ -9,7 +9,8 @@ export type SearchCategory =
   | 'groups'
   | 'wilayas'
   | 'recipes'
-  | 'marketplace';
+  | 'marketplace'
+  | 'shop';
 
 export interface VoiceSearchIntent {
   rawTranscript: string;
@@ -86,8 +87,12 @@ const CATEGORY_KEYWORDS: Record<SearchCategory, { fr: string[]; ar: string[] }> 
     ar: ['طبخ', 'وصفة', 'وصفات', 'مأكولات', 'طعام', 'أكلات', 'حلويات', 'كسكس', 'الشيف نجاة', 'نجاة'],
   },
   marketplace: {
-    fr: ['service', 'services', 'marketplace', 'boutique', 'prestataire', 'prestataires', 'salle des fêtes', 'traiteur', 'robe', 'costume', 'karakou', 'caftan', 'fête'],
-    ar: ['سوق', 'متجر', 'خدمات', 'خدمة', 'قاعة', 'قاعات', 'أعراس', 'عرس', 'فستان', 'كاراكو', 'قفطان', 'حلويات العرس'],
+    fr: ['service', 'services', 'marketplace', 'prestataire', 'prestataires', 'salle des fêtes', 'traiteur', 'location', 'louer', 'voiture', 'cortège', 'robe', 'costume', 'karakou', 'caftan', 'fête'],
+    ar: ['سوق', 'خدمات', 'خدمة', 'قاعة', 'قاعات', 'أعراس', 'عرس', 'كراء', 'تاجير', 'تأجير', 'سيارات', 'موكب', 'فستان', 'كاراكو', 'قفطان', 'حلويات العرس'],
+  },
+  shop: {
+    fr: ['shop', 'boutique', 'souk', 'drops', 'streetwear', 'sneakers', 'hoodie', 'vide-dressing', 'cadeau', 'cadeaux', 'trousseau', 'promo'],
+    ar: ['متجر', 'سوق', 'شوب', 'ستريت وير', 'سنيكرز', 'هودي', 'مستعمل', 'فيديو دريسينغ', 'هدية', 'هدايا', 'جهاز العروس', 'تخفيض'],
   },
 };
 

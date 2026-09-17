@@ -14,6 +14,8 @@ import {
   Laptop,
   ArrowRight,
   ExternalLink,
+  Copy,
+  Check,
 } from 'lucide-react';
 import { getPwaPlatformInfo, promptPwaInstall, PwaPlatformInfo } from '../utils/pwaManager';
 import { useLanguage } from '../context/LanguageContext';
@@ -28,6 +30,17 @@ export function PwaInstallModal({ isOpen, onClose }: PwaInstallModalProps) {
   const [platformInfo, setPlatformInfo] = useState<PwaPlatformInfo>(getPwaPlatformInfo());
   const [selectedTab, setSelectedTab] = useState<'auto' | 'android' | 'ios' | 'desktop'>('auto');
   const [installStatus, setInstallStatus] = useState<'idle' | 'installing' | 'installed'>('idle');
+  const [copiedLink, setCopiedLink] = useState(false);
+
+  const currentUrl = typeof window !== 'undefined' ? window.location.href.split('#')[0] : 'https://ais-pre-dlflbbqvudr35thfx53fhe-281824314167.europe-west2.run.app';
+
+  const handleCopyLink = () => {
+    if (typeof navigator !== 'undefined' && navigator.clipboard) {
+      navigator.clipboard.writeText(currentUrl);
+      setCopiedLink(true);
+      setTimeout(() => setCopiedLink(false), 2500);
+    }
+  };
 
   useEffect(() => {
     if (isOpen) {
@@ -295,25 +308,116 @@ export function PwaInstallModal({ isOpen, onClose }: PwaInstallModalProps) {
           )}
 
           {activePlatform === 'desktop' && (
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3">
-              <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
-                <Laptop className="w-4 h-4 text-[#38BDF8]" />
-                <span>{isArabic ? 'تثبيت التطبيق على جهاز الكمبيوتر (Chrome / Edge / Mac) :' : 'Installation sur Ordinateur (PC Windows / Mac) :'}</span>
+            <div className="space-y-4">
+              {/* Direct PC Link Box */}
+              <div className="p-4 rounded-2xl bg-slate-900 text-white border border-slate-700 shadow-md space-y-2.5">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-black uppercase tracking-wider text-amber-400 flex items-center gap-1.5">
+                    <Laptop className="w-3.5 h-3.5" />
+                    <span>{isArabic ? 'رابط التثبيت على الكمبيوتر (PC / Mac) :' : 'Lien officiel pour installer sur votre PC :'}</span>
+                  </span>
+                  {copiedLink && (
+                    <span className="text-[11px] text-emerald-400 font-bold flex items-center gap-1 animate-in fade-in">
+                      <Check className="w-3 h-3" />
+                      <span>{isArabic ? 'تم النسخ !' : 'Copié !'}</span>
+                    </span>
+                  )}
+                </div>
+
+                <div className="flex items-center gap-2 bg-slate-800/90 rounded-xl p-2 border border-slate-700">
+                  <input
+                    type="text"
+                    readOnly
+                    value={currentUrl}
+                    className="bg-transparent text-xs font-mono text-slate-200 w-full outline-none select-all truncate"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleCopyLink}
+                    className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-500 to-[#FF3823] text-white text-xs font-black hover:opacity-90 transition shrink-0 flex items-center gap-1.5 cursor-pointer"
+                  >
+                    {copiedLink ? <Check className="w-3.5 h-3.5" /> : <Copy className="w-3.5 h-3.5" />}
+                    <span>{copiedLink ? (isArabic ? 'تم' : 'Copié') : (isArabic ? 'نسخ الرابط' : 'Copier')}</span>
+                  </button>
+                </div>
+
+                <div className="flex items-center gap-2 pt-1">
+                  <a
+                    href={currentUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-1 py-2 px-3 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-bold transition flex items-center justify-center gap-1.5 border border-white/10 text-center"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-sky-400" />
+                    <span>{isArabic ? 'فتح في نافذة كاملة' : 'Ouvrir dans un nouvel onglet PC'}</span>
+                  </a>
+
+                  {platformInfo.canPromptInstall && (
+                    <button
+                      type="button"
+                      onClick={handleInstallClick}
+                      className="flex-1 py-2 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:opacity-90 text-white text-xs font-black transition flex items-center justify-center gap-1.5 shadow cursor-pointer text-center"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>{isArabic ? 'تثبيت البرنامج فوراً' : 'Installer sur le bureau'}</span>
+                    </button>
+                  )}
+                </div>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-300">
-                {isArabic
-                  ? 'انقر على أيقونة التثبيت ⊕ الموجودة في نهاية شريط الروابط (URL) في متصفح Chrome أو Edge لفتح نصفي كنافذة مستقلة.'
-                  : 'Cliquez sur l’icône ⊕ dans la barre d’adresse de Google Chrome ou Microsoft Edge pour ouvrir Nisfy comme un logiciel dédié.'}
-              </p>
-              {platformInfo.canPromptInstall && (
-                <button
-                  onClick={handleInstallClick}
-                  className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-slate-900 to-slate-800 dark:from-white dark:to-slate-100 text-white dark:text-slate-900 text-xs font-bold flex items-center justify-center gap-2 cursor-pointer hover:opacity-90 transition-opacity"
-                >
-                  <Download className="w-4 h-4" />
-                  <span>{isArabic ? 'تثبيت البرنامج على الكمبيوتر' : 'Installer sur le bureau PC / Mac'}</span>
-                </button>
-              )}
+
+              {/* Step by Step PC Guide */}
+              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/70 dark:border-slate-700/60 space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-slate-900 dark:text-white">
+                  <Sparkles className="w-4 h-4 text-amber-500" />
+                  <span>{isArabic ? 'طريقة التثبيت على Google Chrome و Microsoft Edge :' : 'Comment installer Nisfy sur votre PC (Windows ou Mac) :'}</span>
+                </div>
+
+                <ol className="space-y-2.5 text-xs text-slate-600 dark:text-slate-300">
+                  <li className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-[#38BDF8]/20 text-[#0284C7] dark:text-[#38BDF8] font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                      1
+                    </span>
+                    <span>
+                      {isArabic
+                        ? 'افتح الرابط أعلاه في متصفح Google Chrome أو Microsoft Edge على حاسوبك.'
+                        : 'Ouvrez le lien ci-dessus dans Google Chrome, Microsoft Edge ou Brave sur votre PC.'}
+                    </span>
+                  </li>
+
+                  <li className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-[#FF3823]/20 text-[#FF3823] font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                      2
+                    </span>
+                    <span>
+                      {isArabic
+                        ? 'انقر على أيقونة التثبيت ⊕ أو رمز شاشة الحاسوب ذات السهم في أقصى يمين شريط الروابط (URL).'
+                        : 'Cliquez sur l’icône d’installation ⊕ ou l’icône d’écran avec une flèche ⤓ située à droite de la barre d’adresse URL.'}
+                    </span>
+                  </li>
+
+                  <li className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                      3
+                    </span>
+                    <span>
+                      {isArabic
+                        ? 'أو اضغط على زر القائمة (⋮) ثم اختر "تثبيت Nisfy..." أو "Apps > Installer Nisfy".'
+                        : 'Ou ouvrez le menu (⋮) en haut à droite > "Installer Nisfy..." (ou "Applications" > "Installer ce site en tant qu’application").'}
+                    </span>
+                  </li>
+
+                  <li className="flex items-start gap-2.5">
+                    <span className="w-5 h-5 rounded-full bg-purple-500/20 text-purple-600 dark:text-purple-400 font-bold text-[11px] flex items-center justify-center shrink-0 mt-0.5">
+                      4
+                    </span>
+                    <span>
+                      {isArabic
+                        ? 'سيوضع اختصار رسمي على سطح المكتب (Bureau) ويفتح التطبيق كنافذة برمجية مستقلة بدون أشرطة متصفح!'
+                        : 'Une icône Nisfy sera créée sur votre Bureau Windows et votre Menu Démarrer. L’application s’ouvrira comme un logiciel dédié rapide et plein écran !'}
+                    </span>
+                  </li>
+                </ol>
+              </div>
             </div>
           )}
 

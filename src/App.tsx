@@ -87,6 +87,7 @@ export default function App() {
     return 'home';
   });
   const [isMuted, setIsMuted] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   // Dark Mode State
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
@@ -625,6 +626,8 @@ export default function App() {
           matchesCount={matches.length}
           isMuted={isMuted}
           onToggleMute={handleToggleMute}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
           allUsers={registeredUsers}
           onSelectUser={(u) => {
             handleLoginSuccess(u);
@@ -658,6 +661,8 @@ export default function App() {
             <SearchView
               currentUser={currentUser}
               allUsers={registeredUsers}
+              searchQuery={searchQuery}
+              onSearchQueryChange={setSearchQuery}
               onSelectUserForChat={(u) => handleStartDirectChat(u)}
               onSelectUserForProfile={(u) => handleStartDirectChat(u)}
               onSelectTab={setActiveTab}

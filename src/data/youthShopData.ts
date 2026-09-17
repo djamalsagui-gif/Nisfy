@@ -1,6 +1,8 @@
 export type ShopProductCategory = 
   | 'box_hdiya' 
   | 'trousseau_mode' 
+  | 'streetwear_sneakers'
+  | 'videdressing_deals'
   | 'bijoux_alliances' 
   | 'maison_deco' 
   | 'beaute_parfums' 
@@ -103,6 +105,20 @@ export const SHOP_CATEGORIES: { id: ShopProductCategory | 'all'; labelFr: string
     labelAr: 'جهاز العروس والموضة', 
     icon: '👗',
     descriptionFr: 'Caftans modernes, Karakous revisités, Qamis chics et tenues de fête'
+  },
+  { 
+    id: 'streetwear_sneakers', 
+    labelFr: 'Streetwear & Sneakers DZ', 
+    labelAr: 'ستريت وير وسنيكرز شبابية', 
+    icon: '👟',
+    descriptionFr: 'Hoodies oversize DZ, sneakers authentiques, casquettes et t-shirts calligraphie'
+  },
+  { 
+    id: 'videdressing_deals', 
+    labelFr: 'Vide-Dressing & Bons Plans', 
+    labelAr: 'سوق المستعمل وبون بلان', 
+    icon: '🏷️',
+    descriptionFr: 'Articles récents de seconde main en excellent état, vérifiés entre jeunes membres'
   },
   { 
     id: 'bijoux_alliances', 
@@ -403,6 +419,141 @@ export const INITIAL_SHOP_PRODUCTS: ShopProduct[] = [
       { nameFr: 'Blanc Marbré', nameAr: 'أبيض رخامي', hex: '#f8fafc' }
     ],
     deliveryEstimateDays: '24h à 48h'
+  },
+  {
+    id: 'prod-9',
+    titleFr: 'Hoodie Oversize "El Dzaïr 16" Coton Bio & Calligraphie 3D',
+    titleAr: 'هودي أوفرسايز "الجزائر 16" قطن أصلي مع تطريز خط عربي 3D',
+    descriptionFr: 'Le hoodie streetwear le plus en vogue chez les jeunes d\'Alger et de la diaspora. Molleton lourd 420g/m² ultra-doux, broderie en relief calligraphie arabe "الجزائر", coupe loose confortable et poche kangourou renforcée. Idéal pour sorties et style urbain.',
+    descriptionAr: 'الهودي الأكثر طلباً بين شباب وبنات الجزائر. قماش قطني ممتاز 420 غرام/م² فائق النعومة ومريح، تطريز بارز ثلاثي الأبعاد بالخط العربي الأصيل مع قصة واسعة فضفاضة وعصرية.',
+    category: 'streetwear_sneakers',
+    priceDzd: 6500,
+    priceEur: 35,
+    discountPriceDzd: 4900,
+    sellerName: 'Dzaïr Vibe Streetwear',
+    sellerWilaya: 'Alger (16)',
+    sellerWilayaCode: '16',
+    sellerVerified: true,
+    sellerAvatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&auto=format&fit=crop&q=80',
+    sellerPhone: '+213 552 14 25 36',
+    sellerInstagram: '@dzairvibe_brand',
+    rating: 4.9,
+    reviewsCount: 87,
+    inStock: true,
+    stockCount: 30,
+    images: [
+      'https://images.unsplash.com/photo-1556905055-8f358a7a47b2?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1509967419530-da38b4704bc6?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1578587018452-892bacefd3f2?w=800&auto=format&fit=crop&q=80'
+    ],
+    badges: ['Top Tendance Jeunes', '100% Coton 420g', 'Unisexe'],
+    isTrending: true,
+    sizes: ['S (Loose)', 'M (Loose)', 'L (Oversize)', 'XL (Oversize)'],
+    colors: [
+      { nameFr: 'Noir Mat Intense', nameAr: 'أسود مطفي فخم', hex: '#0f172a' },
+      { nameFr: 'Vert Fôret DZ', nameAr: 'أخضر غابي جزائري', hex: '#14532d' },
+      { nameFr: 'Beige Sable du Sahara', nameAr: 'بيج رمل الصحراء', hex: '#d6c7a1' }
+    ],
+    deliveryEstimateDays: '24h à 48h (Yalidine)'
+  },
+  {
+    id: 'prod-10',
+    titleFr: 'Sneakers "Retro DZ 1962" Édition Limitée Cuir & Suède',
+    titleAr: 'حذاء رياضي سنيكرز "ريترو 1962" جلد طبيعي إصدار محدود',
+    descriptionFr: 'Paire de baskets rétro aux accents vintage inspirées de la jeunesse algérienne. Semelle cupsole cousue amortissante, empiècements en cuir pleine fleur et suède premium, lacets cirés crème. Parfaites pour tous les jours.',
+    descriptionAr: 'حذاء سنيكرز كلاسيكي بتصميم أنيق يجمع بين الجلد الطبيعي الفاخر والسويد. نعل متين ومريح جداً للمشي والمشاوير اليومية مع لمسات وطنية راقية.',
+    category: 'streetwear_sneakers',
+    priceDzd: 11500,
+    priceEur: 60,
+    discountPriceDzd: 8900,
+    sellerName: 'Kicks Club DZ',
+    sellerWilaya: 'Oran (31)',
+    sellerWilayaCode: '31',
+    sellerVerified: true,
+    sellerAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+    sellerPhone: '+213 661 88 99 00',
+    sellerInstagram: '@kicks_club_dz',
+    rating: 4.8,
+    reviewsCount: 53,
+    inStock: true,
+    stockCount: 18,
+    images: [
+      'https://images.unsplash.com/photo-1552346154-21d32810aba3?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&auto=format&fit=crop&q=80'
+    ],
+    badges: ['Sneakers DZ Hype', 'Cuir Véritable', 'Semelle Cousue'],
+    isTrending: true,
+    sizes: ['39', '40', '41', '42', '43', '44', '45'],
+    colors: [
+      { nameFr: 'Blanc & Vert Émeraude', nameAr: 'أبيض وأخضر زمردي', hex: '#047857' },
+      { nameFr: 'Gris Ciment & Noir', nameAr: 'رمادي وأسود', hex: '#475569' }
+    ],
+    deliveryEstimateDays: '48h chrono'
+  },
+  {
+    id: 'prod-11',
+    titleFr: 'Vide-Dressing : Robe de Soirée Moderne Portée 1 Fois (État Neuf)',
+    titleAr: 'سوق المستعمل : فستان سهرة عصري ملبوس مرة واحدة بحالة ممتازة',
+    descriptionFr: 'Superbe robe longue de créatrice vert sauge plissée avec dos travaillé. Achetée 28 000 DZD pour un mariage de famille et portée uniquement 3 heures. Nettoyée au pressing, vendue à prix cassé entre membres de confiance Nisfy.',
+    descriptionAr: 'فستان سهرة أنيق طويل بلون أخضر ناعم مستورد. ملبوس مرة واحدة فقط في مناسبة عائلية لمدة 3 ساعات وبحالة جديدة تماماً ومغسول بالدراي كلين. فرصة ممتازة للبنات بخصم كبير.',
+    category: 'videdressing_deals',
+    priceDzd: 18000,
+    priceEur: 90,
+    discountPriceDzd: 12000,
+    sellerName: 'Lina Bouzid (Membre Vérifiée)',
+    sellerWilaya: 'Sétif (19)',
+    sellerWilayaCode: '19',
+    sellerVerified: true,
+    sellerAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
+    sellerPhone: '+213 541 33 44 55',
+    sellerInstagram: '@lina_setif_closet',
+    rating: 5.0,
+    reviewsCount: 14,
+    inStock: true,
+    stockCount: 1,
+    images: [
+      'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1568252542512-9fe8fe9c87bb?w=800&auto=format&fit=crop&q=80'
+    ],
+    badges: ['Vide-Dressing Certifié', 'Porté 1 Seule Fois', 'Affaire en Or'],
+    isTrending: true,
+    sizes: ['Taille 38 (M)'],
+    colors: [
+      { nameFr: 'Vert Sauge Poudré', nameAr: 'أخضر باستيل ناعم', hex: '#94a3b8' }
+    ],
+    deliveryEstimateDays: 'Remise en main propre Sétif ou Yalidine 48h'
+  },
+  {
+    id: 'prod-12',
+    titleFr: 'Pack Cadeau Rencontre : Mug Isotherme Couple + Carnet Calligraphie & Chocolats Artisanaux',
+    titleAr: 'باقة هدية اللقاء : كوب حراري أنيق + مذكرة خط عربي وشوكولاتة راقية',
+    descriptionFr: 'La box idéale pour faire plaisir ou marquer un premier rendez-vous / fiançailles. Comprend deux mugs thermiques inox gravés, un carnet à couverture rigide toilée avec stylo doré, et une boîte de 12 chocolats fins algériens faits main.',
+    descriptionAr: 'هدية لطيفة ومميزة للقاء التعارف أو الخطوبة. تتضمن كوبين حراريين حافظين للحرارة مع حفر بالليزر، مذكرة أنيقة بغلاف مخملي مع قلم ذهبي، وعلبة 12 قطعة شوكولاتة جزائرية فاخرة.',
+    category: 'box_hdiya',
+    priceDzd: 5800,
+    priceEur: 30,
+    discountPriceDzd: 4200,
+    sellerName: 'Vibe & Gifts DZ',
+    sellerWilaya: 'Constantine (25)',
+    sellerWilayaCode: '25',
+    sellerVerified: true,
+    sellerAvatar: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=150&auto=format&fit=crop&q=80',
+    sellerPhone: '+213 770 12 34 89',
+    sellerInstagram: '@vibegifts_constantine',
+    rating: 4.9,
+    reviewsCount: 41,
+    inStock: true,
+    stockCount: 15,
+    images: [
+      'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?w=800&auto=format&fit=crop&q=80'
+    ],
+    badges: ['Idée Cadeau Coup de Cœur', 'Personnalisation Prénoms', 'Emballage Soigné'],
+    isTrending: true,
+    allowPersonalization: true,
+    personalizationLabel: 'Prénoms ou phrase courte à graver sur les mugs',
+    deliveryEstimateDays: '48h à 72h'
   }
 ];
 

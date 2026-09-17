@@ -358,21 +358,21 @@ export const YouthShopView: React.FC = () => {
           <div className="space-y-3 max-w-2xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 text-xs font-bold">
               <Gift className="w-3.5 h-3.5 text-amber-400" />
-              <span>{isArabic ? 'سوق نصفي - تجارة إلكترونية وجهاز العرائس' : 'Souk Nisfy • E-Commerce & Trousseau Jeunesse'}</span>
+              <span>{isArabic ? 'سوق نصفي - دروبس شبابية، موضة، ستريت وير وفيديو دريسينغ' : 'Souk Nisfy • Streetwear, Drops Jeunesse, Vide-Dressing & Trousseau'}</span>
             </div>
 
             <h1 className="text-2xl sm:text-4xl font-black tracking-tight text-white">
               {isArabic ? (
-                <>كل ما يحتاجه <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-300">الشباب والعرائس</span> في مكان واحد</>
+                <>كل ما يبحث عنه <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-300">الشباب والعرائس</span> : موضة، هدايا ولقاءات</>
               ) : (
-                <>La Boutique Éthique des <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-300">Jeunes & Nouveaux Mariés</span></>
+                <>Le Souk Tendance des <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-emerald-300">Jeunes & Nouveaux Couples</span></>
               )}
             </h1>
 
             <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               {isArabic
-                ? 'صناديق هدايا الخطوبة، جهاز العروس، كاراكو وقفاطين عصرية، أطقم خواتم فضة 925، وعطور شرقية أصيلة مع خدمة التوصيل إلى 69 ولاية.'
-                : 'Box cadeaux de fiançailles, trousseau de la mariée, tenues traditionnelles modernes, alliances argent 925 et déco de maison avec livraison express Yalidine dans les 69 wilayas & diaspora.'}
+                ? 'ستريت وير جزائري أصلي، سنيكرز، بوكسات هدايا للقاءات والخطوبة، أطقم عصرية، وسوق مستعمل موثوق بين الأعضاء مع توصيل سريع لـ 69 ولاية.'
+                : 'Streetwear exclusif DZ, sneakers, packs cadeaux pour premières rencontres, vide-dressing vérifié entre membres et trousseau avec livraison express Yalidine dans les 69 wilayas & diaspora.'}
             </p>
 
             {/* Value Props Pills */}
@@ -451,6 +451,16 @@ export const YouthShopView: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                (e.target as HTMLElement)?.blur();
+                const el = document.getElementById('youth-shop-products-grid');
+                if (el) {
+                  el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+              }
+            }}
             placeholder={isArabic ? 'ابحث عن هدية، قفطان، طقم خواتم...' : 'Rechercher un cadeau, caftan, bague...'}
             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-800 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-emerald-500"
           />
@@ -524,7 +534,7 @@ export const YouthShopView: React.FC = () => {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+        <div id="youth-shop-products-grid" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
           {filteredProducts.map((product) => {
             const hasDiscount = !!product.discountPriceDzd;
             const currentPriceDzd = product.discountPriceDzd || product.priceDzd;
@@ -827,7 +837,7 @@ export const YouthShopView: React.FC = () => {
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex items-center gap-3 pt-2">
+                <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-2">
                   <button
                     onClick={() => {
                       handleAddToCart(
@@ -838,11 +848,21 @@ export const YouthShopView: React.FC = () => {
                       );
                       setActiveProduct(null);
                     }}
-                    className="flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 cursor-pointer transition-all transform active:scale-95"
+                    className="w-full sm:flex-1 py-3.5 px-4 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-600/25 flex items-center justify-center gap-2 cursor-pointer transition-all transform active:scale-95"
                   >
                     <ShoppingBag className="w-4 h-4" />
                     <span>{isArabic ? 'إضافة إلى السلة' : 'Ajouter au Panier'}</span>
                   </button>
+
+                  <a
+                    href={`https://wa.me/${activeProduct.sellerPhone.replace(/[^0-9]/g, '')}?text=Salam,%20je%20suis%20intéressé(e)%20par%20l'article%20Nisfy:%20${encodeURIComponent(activeProduct.titleFr)}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full sm:w-auto py-3.5 px-4 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer border border-slate-300 dark:border-slate-700"
+                  >
+                    <MessageCircle className="w-4 h-4 text-emerald-500" />
+                    <span>{isArabic ? 'مراسلة البائع (واتساب)' : 'Discuter avec le vendeur'}</span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -1305,11 +1325,13 @@ export const YouthShopView: React.FC = () => {
                       onChange={(e: any) => setNewProductCategory(e.target.value)}
                       className="w-full px-2.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs focus:outline-hidden"
                     >
-                      <option value="box_hdiya">Box Hdiya & Cadeaux</option>
-                      <option value="trousseau_mode">Trousseau & Mode Jeunes</option>
-                      <option value="bijoux_alliances">Alliances & Bijoux</option>
-                      <option value="maison_deco">Maison & Déco</option>
-                      <option value="beaute_parfums">Parfums & Soins</option>
+                      <option value="streetwear_sneakers">👟 Streetwear & Sneakers DZ</option>
+                      <option value="videdressing_deals">🏷️ Vide-Dressing & Bon Plan</option>
+                      <option value="box_hdiya">🎁 Box Hdiya & Cadeaux</option>
+                      <option value="trousseau_mode">👗 Trousseau & Mode Fête</option>
+                      <option value="bijoux_alliances">💍 Alliances & Bijoux</option>
+                      <option value="maison_deco">🏡 Maison & Déco</option>
+                      <option value="beaute_parfums">💄 Parfums & Soins</option>
                     </select>
                   </div>
                 </div>
