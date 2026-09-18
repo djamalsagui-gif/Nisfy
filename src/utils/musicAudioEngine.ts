@@ -239,6 +239,22 @@ class MusicAudioEngine {
     }
   }
 
+  public playNext(trackList?: MusicTrack[]) {
+    const list = trackList && trackList.length > 0 ? trackList : getAllAvailableTracks();
+    if (!list || list.length === 0) return;
+    const currentIndex = this.currentTrack ? list.findIndex((t) => t.id === this.currentTrack?.id) : -1;
+    const nextIndex = (currentIndex + 1) % list.length;
+    this.playTrack(list[nextIndex]);
+  }
+
+  public playPrev(trackList?: MusicTrack[]) {
+    const list = trackList && trackList.length > 0 ? trackList : getAllAvailableTracks();
+    if (!list || list.length === 0) return;
+    const currentIndex = this.currentTrack ? list.findIndex((t) => t.id === this.currentTrack?.id) : 0;
+    const prevIndex = (currentIndex - 1 + list.length) % list.length;
+    this.playTrack(list[prevIndex]);
+  }
+
   public stop() {
     this.playbackState = 'stopped';
     this.stopSynth();
@@ -288,6 +304,9 @@ class MusicAudioEngine {
       kabyle_fete: [440.0, 493.88, 554.37, 659.25, 739.99, 880.0], // Kabyle folklore festive
       rai_electro: [293.66, 329.63, 349.23, 392.0, 440.0, 523.25, 587.33], // Oran Rai bassline
       cortege_royal: [523.25, 587.33, 659.25, 783.99, 880.0, 1046.5], // Ceremonial Wedding
+      sahraoui_desert: [293.66, 349.23, 392.0, 440.0, 523.25, 587.33], // Blues Touareg Pentatonique
+      staifi_gasba: [440.0, 493.88, 554.37, 587.33, 659.25, 739.99], // Gasba Sétif & Aurès
+      rap_beat: [220.0, 261.63, 293.66, 329.63, 392.0, 440.0], // Trap DZ Bass & Melody
     };
 
     const synthPresetKey = track.synthPreset || 'chaabi_mandole';

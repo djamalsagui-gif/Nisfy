@@ -384,6 +384,47 @@ export function HomeDashboardView({
         </div>
       </div>
 
+      {/* 🎵 3.5 BANNIÈRE RUBRIQUE MUSIQUE DZ • TOUS LES GENRES */}
+      <div
+        onClick={() => onSelectTab('music')}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-[#FF6B35] via-[#FF3823] to-rose-600 text-white p-5 sm:p-6 shadow-md hover:shadow-xl transition-all cursor-pointer group"
+      >
+        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Music className="w-6 h-6 text-white" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white/25 text-white">
+                  {isArabic ? 'جديد • كل الأنواع' : 'NOUVEAU • TOUS LES GENRES'}
+                </span>
+                <span className="text-xs text-orange-100 font-bold">12+ Genres & YouTube</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                {isArabic ? '🎵 استمع لموسيقى وتراث الجزائر (شعبي، راي، قبايلي، أندلسي، صحراوي...)' : '🎵 Espace Musique DZ • Chaâbi, Raï, Andalou, Kabyle, Staïfi & Plus'}
+              </h3>
+              <p className="text-xs text-white/90 max-w-xl">
+                {isArabic ? 'مشغل صوت متطور، استيراد مباشر من يوتيوب، وتعيين نغمات لأفراحك وملفك الشخصي.' : 'Lecteur vinyle interactif, import YouTube 1-clic, et thèmes musicaux pour vos noces et profils.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectTab('music');
+            }}
+            className="px-4 py-2.5 rounded-2xl bg-white hover:bg-orange-50 text-[#FF3823] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shrink-0 transition-transform active:scale-95 cursor-pointer"
+          >
+            <span>{isArabic ? 'فتح قسم الموسيقى' : 'Écouter la musique'}</span>
+            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+          </button>
+        </div>
+      </div>
+
       {/* ❤️ 4. VITRINE RENCONTRE & COMPATIBILITÉS */}
       <div className="space-y-3.5">
         <div className="flex items-center justify-between">

@@ -61,6 +61,8 @@ import { useLanguage } from './context/LanguageContext';
 import { SplashScreen } from './components/SplashScreen';
 import { PwaInstallModal } from './components/PwaInstallModal';
 import { PwaInstallBanner } from './components/PwaInstallBanner';
+import { NisfyMusicView } from './components/music/NisfyMusicView';
+import { NisfyMusicFloatingBar } from './components/music/NisfyMusicFloatingBar';
 
 export default function App() {
   const { t, isArabic } = useLanguage();
@@ -823,8 +825,21 @@ export default function App() {
               onBack={() => setActiveTab('discover')}
             />
           )}
+
+          {activeTab === 'music' && (
+            <NisfyMusicView
+              currentUser={currentUser}
+              onSelectTab={setActiveTab}
+            />
+          )}
         </main>
       </div>
+
+      {/* Persistent Floating Mini-Player for Background Music Navigation */}
+      <NisfyMusicFloatingBar
+        activeTab={activeTab}
+        onOpenMusicTab={() => setActiveTab('music')}
+      />
 
       {/* Cultural Wisdom Proverbs Footer */}
       <FooterProverbs onOpenContact={() => setIsContactModalOpen(true)} />

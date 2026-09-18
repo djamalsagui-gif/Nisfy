@@ -192,7 +192,8 @@ export type ActiveTab =
   | 'profile'
   | 'live'
   | 'chef_nadjet'
-  | 'admin';
+  | 'admin'
+  | 'music';
 
 export type CommunityCategory = 'wilaya' | 'diaspora' | 'theme' | 'social';
 

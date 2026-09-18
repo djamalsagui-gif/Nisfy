@@ -38,6 +38,7 @@ import {
   Calendar,
   UserX,
   FileCheck2,
+  Music,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -148,7 +149,7 @@ export function Navbar({
   };
 
   const isMasterUser = checkIsAdmin(currentUser?.email);
-  const isSecondaryActive = ['shop', 'marketplace', 'customs', 'chef_nadjet', 'admin'].includes(activeTab);
+  const isSecondaryActive = ['shop', 'marketplace', 'customs', 'chef_nadjet', 'admin', 'retroplanning', 'finance', 'wedding_contracts', 'live', 'music'].includes(activeTab);
 
   return (
     <>
@@ -386,6 +387,19 @@ export function Navbar({
                 >
                   <Radio className="w-4 h-4 text-[#FF3823] animate-pulse" />
                   <span>{t.tabLive}</span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('music'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-semibold rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer ${
+                    activeTab === 'music' ? 'bg-orange-50 dark:bg-orange-950/60 text-[#FF3823]' : 'text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
+                  }`}
+                >
+                  <Music className="w-4 h-4 text-[#FF3823]" />
+                  <div className="flex flex-col min-w-0">
+                    <span className="truncate">{isArabic ? '🎵 موسيقى كل الأنواع' : '🎵 Musique Tous Genres'}</span>
+                    <span className="text-[10px] text-slate-400 font-normal">{isArabic ? 'شعبي، راي، أندلسي، قبايلي، يوتيوب' : 'Chaâbi, Raï, Andalou, Kabyle, Staïfi...'}</span>
+                  </div>
                 </button>
 
                 {onOpenPwaInstall && (
