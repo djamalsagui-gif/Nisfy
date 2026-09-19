@@ -63,6 +63,7 @@ import { PwaInstallModal } from './components/PwaInstallModal';
 import { PwaInstallBanner } from './components/PwaInstallBanner';
 import { NisfyMusicView } from './components/music/NisfyMusicView';
 import { NisfyMusicFloatingBar } from './components/music/NisfyMusicFloatingBar';
+import { NisfySoldesMarketView } from './components/NisfySoldesMarketView';
 
 export default function App() {
   const { t, isArabic } = useLanguage();
@@ -713,7 +714,16 @@ export default function App() {
           )}
 
           {activeTab === 'shop' && (
-            <YouthShopView />
+            <YouthShopView
+              onNavigateToSoldes={() => setActiveTab('soldes')}
+            />
+          )}
+
+          {activeTab === 'soldes' && (
+            <NisfySoldesMarketView
+              onNavigateToShop={() => setActiveTab('shop')}
+              onNavigateToHome={() => setActiveTab('home')}
+            />
           )}
 
           {activeTab === 'finance' && (

@@ -28,7 +28,8 @@ import {
   Check,
   CreditCard,
   Building,
-  DollarSign
+  DollarSign,
+  Flame
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import {
@@ -42,7 +43,11 @@ import { WILAYAS_LIST } from '../data/wilayas';
 import { useLanguage } from '../context/LanguageContext';
 import { getActiveShopProducts, addOrUpdateShopProduct } from '../utils/shopManager';
 
-export const YouthShopView: React.FC = () => {
+interface YouthShopViewProps {
+  onNavigateToSoldes?: () => void;
+}
+
+export const YouthShopView: React.FC<YouthShopViewProps> = ({ onNavigateToSoldes }) => {
   const { isArabic } = useLanguage();
 
   // Products & Categories (synced with admin shop manager)
@@ -420,6 +425,47 @@ export const YouthShopView: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* 🏷️ BANNIÈRE MARCHÉ DES SOLDES & VENTES FLASH */}
+      {onNavigateToSoldes && (
+        <div
+          onClick={onNavigateToSoldes}
+          className="rounded-2xl bg-gradient-to-r from-red-600 via-[#FF3823] to-amber-500 text-white p-4 shadow-md flex items-center justify-between gap-4 cursor-pointer hover:shadow-lg transition-all group"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center shrink-0">
+              <Flame className="w-5 h-5 text-amber-200 fill-amber-300 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-black text-xs sm:text-sm">
+                  {isArabic ? '🔥 سوق الصولد والهمزات الكبرى (تخفيضات حتى -70%)' : '🔥 Grand Marché des Soldes & Ventes Flash (Jusqu’à -70%)'}
+                </span>
+                <span className="hidden sm:inline-block px-2 py-0.5 rounded-full bg-white text-red-600 font-black text-[10px]">
+                  DÉSTOCKAGE
+                </span>
+              </div>
+              <p className="text-[11px] text-white/90">
+                {isArabic
+                  ? 'تصفية تروسو، كاراكو، أواني ومستعمل فاخر مع التوصيل لـ 58 ولاية'
+                  : 'Caftans, robes mariée, robots cuisine et trousseau à prix cassés'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onNavigateToSoldes();
+            }}
+            className="px-3.5 py-1.5 rounded-xl bg-white text-red-600 hover:bg-amber-50 font-black text-xs shrink-0 flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+          >
+            <span>{isArabic ? 'اكتشف الصولد' : 'Voir les soldes'}</span>
+            <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+          </button>
+        </div>
+      )}
 
       {/* 2. CATEGORY SELECTOR TABS */}
       <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none">

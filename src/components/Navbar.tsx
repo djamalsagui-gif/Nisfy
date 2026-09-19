@@ -39,6 +39,8 @@ import {
   UserX,
   FileCheck2,
   Music,
+  Flame,
+  Tag,
 } from 'lucide-react';
 import { UserProfile, ActiveTab } from '../types';
 import { useLanguage } from '../context/LanguageContext';
@@ -149,7 +151,7 @@ export function Navbar({
   };
 
   const isMasterUser = checkIsAdmin(currentUser?.email);
-  const isSecondaryActive = ['shop', 'marketplace', 'customs', 'chef_nadjet', 'admin', 'retroplanning', 'finance', 'wedding_contracts', 'live', 'music'].includes(activeTab);
+  const isSecondaryActive = ['shop', 'soldes', 'marketplace', 'customs', 'chef_nadjet', 'admin', 'retroplanning', 'finance', 'wedding_contracts', 'live', 'music'].includes(activeTab);
 
   return (
     <>
@@ -323,6 +325,29 @@ export function Navbar({
                   <div className="flex flex-col min-w-0">
                     <span className="truncate">{isArabic ? 'مستشار الميزانية والتوفير IA' : 'Conseiller Épargne IA'}</span>
                     <span className="text-[10px] text-slate-400 font-normal">Gemini 3.7 • Budget Zawaj</span>
+                  </div>
+                </button>
+
+                {/* 🏷️ Marché des Soldes & Ventes Flash */}
+                <button
+                  onClick={() => { onSelectTab('soldes'); setShowExplorerMenu(false); }}
+                  className={`w-full px-3 py-2 text-left text-xs font-black rounded-xl flex items-center gap-2.5 transition-all cursor-pointer ${
+                    activeTab === 'soldes'
+                      ? 'bg-gradient-to-r from-red-600 to-[#FF3823] text-white shadow-xs'
+                      : 'bg-red-50/80 dark:bg-red-950/40 text-red-600 dark:text-red-400 hover:bg-red-100/90 border border-red-200/60 dark:border-red-900/40'
+                  }`}
+                >
+                  <Flame className="w-4 h-4 text-red-600 dark:text-red-400 animate-pulse shrink-0" />
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-1.5">
+                      <span className="truncate">{isArabic ? 'سوق الصولد والهمزات' : 'Marché des Soldes DZ'}</span>
+                      <span className="px-1.5 py-0.2 rounded-full bg-red-600 text-white text-[9px] font-black">
+                        -70%
+                      </span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-slate-400 font-normal">
+                      {isArabic ? 'تخفيضات التروسو، أواني ومستعمل فاخر' : 'Ventes flash & Déstockage'}
+                    </span>
                   </div>
                 </button>
 

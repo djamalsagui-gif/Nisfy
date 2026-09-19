@@ -425,6 +425,47 @@ export function HomeDashboardView({
         </div>
       </div>
 
+      {/* 🏷️ 3.6 BANNIÈRE MARCHÉ DES SOLDES & VENTES FLASH DZ */}
+      <div
+        onClick={() => onSelectTab('soldes')}
+        className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-red-600 via-[#FF3823] to-amber-500 text-white p-5 sm:p-6 shadow-md hover:shadow-xl transition-all cursor-pointer group"
+      >
+        <div className="absolute top-0 right-0 -mt-8 -mr-8 w-48 h-48 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="flex items-start sm:items-center gap-3.5">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+              <Flame className="w-6 h-6 text-amber-200 fill-amber-300 animate-pulse" />
+            </div>
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-white text-red-600">
+                  {isArabic ? 'تخفيضات كبرى • حتى -70%' : 'VENTES FLASH • JUSQU’À -70%'}
+                </span>
+                <span className="text-xs text-amber-200 font-bold">58 Wilayas • Yalidine</span>
+              </div>
+              <h3 className="text-base sm:text-lg font-black text-white">
+                {isArabic ? '🏷️ سوق الصولد والهمزات • جهاز العروس، كاراكو ومستعمل فاخر' : '🏷️ Marché des Soldes DZ • Trousseau, Déstockage & Bonnes Affaires'}
+              </h3>
+              <p className="text-xs text-white/90 max-w-xl">
+                {isArabic ? 'تصفية محلات، فساتين ملبوسة مرة واحدة، عجانة وأجهزة المطبخ بأسعار مخفضة جداً مع الدفع عند الاستلام.' : 'Déstockage d’ateliers de couture, caftans, valises, électroménager et pièces d’occasion comme neuves.'}
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onSelectTab('soldes');
+            }}
+            className="px-4 py-2.5 rounded-2xl bg-white hover:bg-amber-50 text-red-600 font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shrink-0 transition-transform active:scale-95 cursor-pointer"
+          >
+            <span>{isArabic ? 'دخول سوق الصولد' : 'Voir les soldes'}</span>
+            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+          </button>
+        </div>
+      </div>
+
       {/* ❤️ 4. VITRINE RENCONTRE & COMPATIBILITÉS */}
       <div className="space-y-3.5">
         <div className="flex items-center justify-between">

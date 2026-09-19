@@ -193,7 +193,8 @@ export type ActiveTab =
   | 'live'
   | 'chef_nadjet'
   | 'admin'
-  | 'music';
+  | 'music'
+  | 'soldes';
 
 export type CommunityCategory = 'wilaya' | 'diaspora' | 'theme' | 'social';
 
