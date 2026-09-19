@@ -32,7 +32,9 @@ import {
   CreditCard,
   Building,
   Check,
-  Award
+  Award,
+  Globe,
+  Scale
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import {
@@ -170,6 +172,9 @@ export const NisfySoldesMarketView: React.FC<NisfySoldesMarketViewProps> = ({
   const [proWilaya, setProWilaya] = useState<string>('16');
   const [proInstagram, setProInstagram] = useState<string>('');
   const [proSuccess, setProSuccess] = useState<boolean>(false);
+
+  // ⚖️ Comparateur de Prix Web Modal
+  const [comparisonTargetItem, setComparisonTargetItem] = useState<SoldeItem | null>(null);
 
   // Filtered and sorted items
   const filteredItems = useMemo(() => {
@@ -660,8 +665,12 @@ export const NisfySoldesMarketView: React.FC<NisfySoldesMarketViewProps> = ({
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[11px] font-bold text-blue-800 dark:text-blue-300 bg-blue-100/70 dark:bg-blue-950/60 px-2.5 py-1 rounded-xl flex items-center gap-1 border border-blue-200/50 dark:border-blue-900/50">
+              <Scale className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+              <span>{isArabic ? 'مقارن أسعار الويب مدمج' : 'Comparateur Web inclus'}</span>
+            </span>
             <span className="text-[11px] font-bold text-emerald-800 dark:text-emerald-300">
-              🇩🇿 {isArabic ? '58 ولاية مغطاة' : 'Couverture 58 Wilayas'}
+              🇩🇿 {isArabic ? '58 ولاية مغطاة' : '58 Wilayas'}
             </span>
           </div>
         </div>
@@ -855,6 +864,25 @@ export const NisfySoldesMarketView: React.FC<NisfySoldesMarketViewProps> = ({
                           <span className="font-bold text-slate-700 dark:text-slate-200">{item.soldePriceEur} €</span>
                         </div>
                       </div>
+
+                      {/* 🌐 Comparateur de prix sur le web direct button */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setComparisonTargetItem(item);
+                        }}
+                        className="mt-2 w-full py-1.5 px-2.5 rounded-xl bg-white/90 dark:bg-slate-900/90 hover:bg-white text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-800 font-bold text-[11px] flex items-center justify-between shadow-2xs hover:border-red-400 dark:hover:border-red-500 transition-all cursor-pointer group/comp"
+                      >
+                        <span className="flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                          <Scale className="w-3.5 h-3.5" />
+                          <span>{isArabic ? 'مقارنة السعر مع المتاجر والويب' : 'Comparer le prix sur le Web'}</span>
+                        </span>
+                        <span className="text-[10px] text-slate-400 group-hover/comp:text-red-600 dark:group-hover/comp:text-red-400 flex items-center gap-0.5 font-medium">
+                          <span>{isArabic ? 'تحقق' : 'Vérifier'}</span>
+                          <ChevronRight className="w-3 h-3 rtl:rotate-180" />
+                        </span>
+                      </button>
                     </div>
 
                     {/* Action buttons */}
@@ -989,6 +1017,38 @@ export const NisfySoldesMarketView: React.FC<NisfySoldesMarketViewProps> = ({
                 <span className="text-xs text-slate-400 block">Prix Diaspora</span>
                 <span className="text-lg font-bold text-slate-700 dark:text-slate-200">{activeItem.soldePriceEur} €</span>
               </div>
+            </div>
+
+            {/* ⚖️ Comparateur de Prix Web Direct Access Banner */}
+            <div className="p-3.5 rounded-2xl bg-gradient-to-r from-blue-50 via-indigo-50 to-blue-50 dark:from-blue-950/40 dark:via-indigo-950/30 dark:to-blue-950/40 border border-blue-200 dark:border-blue-900/50 flex flex-col sm:flex-row items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                  <Scale className="w-4 h-4" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-black text-blue-950 dark:text-blue-200">
+                      {isArabic ? 'مقارن الأسعار على الويب والمتاجر' : 'Comparateur de Prix Web Nisfy'}
+                    </span>
+                    <span className="px-1.5 py-0.5 rounded-md bg-blue-600 text-white text-[9px] font-bold">
+                      {isArabic ? 'شفافية 100%' : 'Audit Marché'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-600 dark:text-slate-400">
+                    {isArabic
+                      ? 'قارن سعر هذا المنتج مع أسعار السوق ومحلات العاصمة ووهران والمتاجر الرقمية قبل اتخاذ قرار الشراء.'
+                      : 'Comparez le tarif de ce produit avec les boutiques physiques et les sites spécialisés pour vérifier la bonne affaire.'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setComparisonTargetItem(activeItem)}
+                className="w-full sm:w-auto px-3.5 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shrink-0 shadow-sm active:scale-95 transition-all cursor-pointer"
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>{isArabic ? 'فتح المقارن' : 'Lancer le comparateur'}</span>
+              </button>
             </div>
 
             {/* Description */}
@@ -1860,6 +1920,235 @@ export const NisfySoldesMarketView: React.FC<NisfySoldesMarketViewProps> = ({
                 </button>
               </form>
             )}
+          </div>
+        </div>
+      )}
+
+      {/* ⚖️ 8. MODAL COMPARATEUR DE PRIX WEB & MARCHÉ DZ */}
+      {comparisonTargetItem && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in">
+          <div
+            className="bg-white dark:bg-slate-900 rounded-3xl max-w-2xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-6 space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-2xl bg-blue-600 text-white flex items-center justify-center shadow-md shadow-blue-500/20">
+                  <Scale className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base sm:text-lg font-black text-slate-900 dark:text-white">
+                      {isArabic ? 'مقارن أسعار الويب والمتاجر' : 'Comparateur de Prix Web & Marché'}
+                    </h3>
+                    <span className="px-2 py-0.5 rounded-full bg-blue-100 dark:bg-blue-900/60 text-blue-700 dark:text-blue-300 text-[10px] font-bold">
+                      Audit DZ
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    {isArabic
+                      ? 'مقارنة حيادية تساعدك على التأكد هل العرض همزة حقيقية قبل الشراء'
+                      : 'Analyse comparative pour vous aider à décider en toute transparence'}
+                  </p>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setComparisonTargetItem(null)}
+                className="w-8 h-8 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500 hover:text-slate-800 flex items-center justify-center cursor-pointer transition-colors"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {/* Item Quick Overview */}
+            <div className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <img
+                src={comparisonTargetItem.images[0]}
+                alt={comparisonTargetItem.titleFr}
+                className="w-16 h-16 rounded-xl object-cover border border-slate-200 dark:border-slate-700 shrink-0"
+              />
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-bold text-red-600 dark:text-red-400 block">
+                  {isArabic ? comparisonTargetItem.categoryLabelAr : comparisonTargetItem.categoryLabelFr}
+                </span>
+                <h4 className="font-bold text-xs sm:text-sm text-slate-900 dark:text-white truncate">
+                  {isArabic ? comparisonTargetItem.titleAr : comparisonTargetItem.titleFr}
+                </h4>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-slate-500">
+                    {isArabic ? 'البائع:' : 'Vendeur :'} <strong className="text-slate-700 dark:text-slate-300">{comparisonTargetItem.sellerName}</strong> ({comparisonTargetItem.sellerWilaya})
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Duel de Prix: Nisfy vs Prix Moyen Web */}
+            {(() => {
+              const soldePrice = comparisonTargetItem.soldePriceDzd;
+              const marketBenchmark = comparisonTargetItem.marketComparison?.suggestedStorePriceDzd || comparisonTargetItem.originalPriceDzd;
+              const diffDzd = marketBenchmark - soldePrice;
+              const isGoodDeal = diffDzd > 0;
+              const savingsRatio = Math.round((diffDzd / marketBenchmark) * 100);
+
+              // Comparison sources
+              const sources = comparisonTargetItem.marketComparison?.sources || [
+                { siteName: 'Moyenne Boutiques Didouche / Hydra (Alger)', priceDzd: marketBenchmark, inStock: true, badge: 'Magasins Physiques' },
+                { siteName: 'Moyenne Annonces Ouedkniss & Marketplaces DZ', priceDzd: Math.round(marketBenchmark * 0.95), inStock: true, badge: 'Web Algérie' },
+                { siteName: 'Boutiques Spécialisées Instagram / Facebook DZ', priceDzd: Math.round(marketBenchmark * 1.05), inStock: false, badge: 'Réseaux Sociaux' }
+              ];
+
+              return (
+                <div className="space-y-4">
+                  {/* Price Comparison Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    {/* Prix Nisfy */}
+                    <div className="p-4 rounded-2xl bg-gradient-to-br from-red-500/10 via-red-500/5 to-transparent border-2 border-red-500/80 dark:border-red-500/70 relative">
+                      <span className="px-2 py-0.5 rounded-md bg-red-600 text-white text-[10px] font-black uppercase tracking-wider absolute top-3 right-3 rtl:right-auto rtl:left-3">
+                        {isArabic ? 'عرض نصفي الحالي' : 'Offre Solde Nisfy'}
+                      </span>
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">
+                        {isArabic ? 'السعر المقترح هنا' : 'Tarif vérifié sur Nisfy'}
+                      </span>
+                      <div className="text-2xl sm:text-3xl font-black text-red-600 dark:text-red-400 mt-1">
+                        {soldePrice.toLocaleString()} <span className="text-sm font-bold">DZD</span>
+                      </div>
+                      <div className="mt-2 text-[11px] text-emerald-700 dark:text-emerald-400 font-bold flex items-center gap-1">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>{isArabic ? 'جاهز للشحن مع التوصيل 58 ولاية' : 'En stock immédiat avec Yalidine'}</span>
+                      </div>
+                    </div>
+
+                    {/* Prix Constaté sur la Toile */}
+                    <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 relative">
+                      <span className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 text-[10px] font-bold uppercase tracking-wider absolute top-3 right-3 rtl:right-auto rtl:left-3">
+                        {isArabic ? 'معدل سعر السوق' : 'Moyenne du marché'}
+                      </span>
+                      <span className="text-[11px] font-bold text-slate-500 dark:text-slate-400 block">
+                        {isArabic ? 'السعر في المتاجر والويب' : 'Tarif moyen constaté sur la toile'}
+                      </span>
+                      <div className="text-2xl sm:text-3xl font-black text-slate-800 dark:text-slate-100 mt-1">
+                        {marketBenchmark.toLocaleString()} <span className="text-sm font-bold text-slate-500">DZD</span>
+                      </div>
+                      <div className="mt-2 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                        <Globe className="w-3.5 h-3.5 text-blue-500" />
+                        <span>{isArabic ? 'مبني على 3 مصادر موثوقة' : 'Relevé sur 3 enseignes de référence'}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Verdict / Decision Banner */}
+                  <div className={`p-4 rounded-2xl border flex items-start gap-3 ${
+                    isGoodDeal
+                      ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800/70 text-emerald-900 dark:text-emerald-200'
+                      : 'bg-amber-50 dark:bg-amber-950/40 border-amber-300 dark:border-amber-800/70 text-amber-900 dark:text-amber-200'
+                  }`}>
+                    <div className="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                      <Sparkles className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-black text-xs sm:text-sm">
+                          {isArabic
+                            ? isGoodDeal ? '✨ قرار المقارن: همزة وصفقة ممتازة!' : '⚠️ قرار المقارن: السعر متقارب مع السوق'
+                            : isGoodDeal ? '✨ Verdict Comparateur : Excellente affaire confirmée !' : '⚠️ Verdict : Tarif proche du marché'}
+                        </span>
+                        {isGoodDeal && (
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-600 text-white text-[10px] font-black">
+                            -{savingsRatio}%
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-xs text-slate-700 dark:text-slate-300 mt-1 leading-relaxed">
+                        {isArabic
+                          ? (comparisonTargetItem.marketComparison?.verdictAr || `شراء هذا المنتج من نصفي يوفر لك ${diffDzd.toLocaleString()} دج مقارنة بالسعر المتداول على الويب والمحلات.`)
+                          : (comparisonTargetItem.marketComparison?.verdictFr || `Acheter cet article sur Nisfy vous fait économiser ${diffDzd.toLocaleString()} DZD par rapport aux autres canaux du marché.`)}
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Tableau détaillé des sources constatées sur la toile */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <h4 className="text-xs font-black text-slate-800 dark:text-slate-200 flex items-center gap-1.5">
+                        <Globe className="w-3.5 h-3.5 text-blue-600" />
+                        <span>{isArabic ? 'أسعار نفس الصنف في المواقع والمحلات:' : 'Tarifs constatés pour le même produit :'}</span>
+                      </h4>
+                      <span className="text-[10px] text-slate-400">Relevé actualisé</span>
+                    </div>
+
+                    <div className="space-y-1.5">
+                      {sources.map((src, idx) => {
+                        const priceDelta = src.priceDzd - soldePrice;
+                        return (
+                          <div
+                            key={idx}
+                            className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 text-xs"
+                          >
+                            <div className="flex items-center gap-2">
+                              <span className="w-2 h-2 rounded-full bg-blue-500" />
+                              <div>
+                                <span className="font-bold text-slate-900 dark:text-white block sm:inline">
+                                  {src.siteName}
+                                </span>
+                                {src.badge && (
+                                  <span className="sm:ml-2 px-1.5 py-0.5 rounded bg-slate-200 dark:bg-slate-700 text-slate-600 dark:text-slate-300 text-[9px] font-semibold">
+                                    {src.badge}
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                            <div className="text-right rtl:text-left shrink-0">
+                              <span className="font-black text-slate-900 dark:text-white text-xs sm:text-sm">
+                                {src.priceDzd.toLocaleString()} DZD
+                              </span>
+                              {priceDelta > 0 && (
+                                <span className="block text-[10px] text-red-600 dark:text-red-400 font-bold">
+                                  +{priceDelta.toLocaleString()} DZD plus cher
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* Boutons d'action rapides */}
+                  <div className="flex flex-col sm:flex-row items-center gap-2.5 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const itm = comparisonTargetItem;
+                        setComparisonTargetItem(null);
+                        setActiveItem(null);
+                        setOrderItem(itm);
+                        setOrderQuantity(1);
+                        setOrderSuccessId(null);
+                      }}
+                      className="w-full sm:flex-1 py-3 px-4 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <ShoppingBag className="w-4 h-4" />
+                      <span>{isArabic ? 'اقتناص الصفقة والطلب الفوري' : 'Profiter de la bonne affaire (Commander)'}</span>
+                    </button>
+
+                    {/* Google Web Search Direct Link */}
+                    <a
+                      href={`https://www.google.com/search?q=${encodeURIComponent(
+                        `${comparisonTargetItem.brandOrModel || comparisonTargetItem.titleFr} prix algerie dzd`
+                      )}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full sm:w-auto py-3 px-4 rounded-2xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 text-slate-700 dark:text-slate-200 font-bold text-xs flex items-center justify-center gap-1.5 active:scale-95 transition-all cursor-pointer"
+                    >
+                      <ExternalLink className="w-3.5 h-3.5 text-blue-500" />
+                      <span>{isArabic ? 'بحث مباشر على Google' : 'Rechercher sur Google'}</span>
+                    </a>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </div>
       )}

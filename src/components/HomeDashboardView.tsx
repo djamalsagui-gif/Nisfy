@@ -128,26 +128,44 @@ export function HomeDashboardView({
           </div>
 
           <div className="flex items-center gap-2.5 flex-wrap">
+            {/* Direct Soldes Shortcut */}
+            <button
+              onClick={() => onSelectTab('soldes')}
+              className="px-3.5 py-2 rounded-2xl bg-red-600/90 hover:bg-red-500 text-white border border-red-400/40 font-black text-xs shadow-md transition-all flex items-center gap-1.5 cursor-pointer shrink-0 animate-pulse"
+            >
+              <Flame className="w-4 h-4 text-amber-300 fill-amber-300" />
+              <span>{isArabic ? 'سوق الصولد (-70%)' : 'Soldes DZ 🔥'}</span>
+            </button>
+
+            {/* Direct Music Shortcut */}
+            <button
+              onClick={() => onSelectTab('music')}
+              className="px-3.5 py-2 rounded-2xl bg-amber-500/25 hover:bg-amber-500/40 text-amber-300 border border-amber-400/30 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+            >
+              <Music className="w-4 h-4 text-amber-400" />
+              <span>{isArabic ? 'موسيقى وتراث' : 'Musique 🎵'}</span>
+            </button>
+
             <button
               onClick={() => onSelectTab('wedding_contracts')}
               className="px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 text-amber-200 border border-white/20 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0 backdrop-blur-md"
             >
               <FileCheck2 className="w-4 h-4 text-amber-300" />
-              <span>{isArabic ? 'عقود وحجوزات الأعراس' : 'Contrats & Acomptes 📑'}</span>
+              <span>{isArabic ? 'عقود الأعراس' : 'Contrats 📑'}</span>
             </button>
             <button
               onClick={() => onSelectTab('retroplanning')}
-              className="px-3.5 py-2 rounded-2xl bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="px-3.5 py-2 rounded-2xl bg-white/10 hover:bg-white/20 text-amber-200 border border-white/20 font-bold text-xs shadow-sm transition-all flex items-center gap-1.5 cursor-pointer shrink-0"
             >
               <Calendar className="w-4 h-4 text-amber-400" />
-              <span>{isArabic ? 'مخطط الزواج (دار ودروج)' : 'Dar Wa Drouj 💍'}</span>
+              <span>{isArabic ? 'مخطط الزواج' : 'Dar Wa Drouj 💍'}</span>
             </button>
             <button
               onClick={() => onSelectTab('shop')}
               className="px-4 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer shrink-0"
             >
               <ShoppingBag className="w-4 h-4" />
-              <span>{isArabic ? 'سوق المنتجات (الأسعار مباشرة)' : 'Vitrine Produits & Prix'}</span>
+              <span>{isArabic ? 'سوق المنتجات' : 'Vitrine Produits & Prix'}</span>
             </button>
             <button
               onClick={() => onSelectTab('discover')}
@@ -176,13 +194,22 @@ export function HomeDashboardView({
               </p>
             </div>
           </div>
-          <button
-            onClick={() => onSelectTab('shop')}
-            className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
-          >
-            <span>{isArabic ? 'كل المنتجات' : 'Voir toute la boutique'}</span>
-            <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => onSelectTab('soldes')}
+              className="text-xs font-black text-red-600 dark:text-red-400 hover:underline flex items-center gap-1 cursor-pointer bg-red-50 dark:bg-red-950/40 px-2.5 py-1 rounded-full border border-red-200/60 dark:border-red-900/60"
+            >
+              <Flame className="w-3.5 h-3.5 fill-current" />
+              <span>{isArabic ? 'تخفيضات الصولد (-70%)' : 'Soldes (-70%)'}</span>
+            </button>
+            <button
+              onClick={() => onSelectTab('shop')}
+              className="text-xs font-bold text-emerald-600 dark:text-emerald-400 hover:underline flex items-center gap-1 cursor-pointer"
+            >
+              <span>{isArabic ? 'كل المنتجات' : 'Voir toute la boutique'}</span>
+              <ArrowRight className="w-3.5 h-3.5 rtl:rotate-180" />
+            </button>
+          </div>
         </div>
 
         {/* 6 Showcase Products Grid */}
@@ -243,6 +270,69 @@ export function HomeDashboardView({
               </div>
             );
           })}
+        </div>
+      </div>
+
+      {/* 🏷️ & 🎵 DUO BANNERS: SOLDES MARCHÉ & MUSIQUE DZ */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+        {/* Banner 1: Marché des Soldes & Bonnes Affaires */}
+        <div
+          onClick={() => onSelectTab('soldes')}
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-red-600 via-[#FF3823] to-amber-500 text-white p-4 sm:p-5 shadow-lg shadow-red-500/20 cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all group flex items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform">
+              <Flame className="w-6 h-6 text-amber-200 fill-amber-300 animate-pulse" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-sm sm:text-base font-black truncate">
+                  {isArabic ? '🔥 سوق الصولد والهمزات الكبرى' : '🔥 Grand Marché des Soldes (-70%)'}
+                </span>
+                <span className="px-1.5 py-0.5 rounded-full bg-white text-red-600 font-black text-[9px] shrink-0">
+                  DÉSTOCKAGE
+                </span>
+              </div>
+              <p className="text-xs text-white/90 line-clamp-1">
+                {isArabic
+                  ? 'تصفية تروسو، كاراكو، أواني ومستعمل فاخر مع مقارن الأسعار في الويب وتوصيل لـ 58 ولاية'
+                  : 'Parfums, trousseau, mode & comparateur de prix Web en direct. Tiers de confiance Nisfy.'}
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-white/20 text-white group-hover:bg-white group-hover:text-red-600 transition-colors">
+            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+          </div>
+        </div>
+
+        {/* Banner 2: Musique Algérienne & Playlists */}
+        <div
+          onClick={() => onSelectTab('music')}
+          className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-amber-950 to-slate-900 text-white p-4 sm:p-5 shadow-lg border border-amber-500/30 cursor-pointer hover:scale-[1.01] active:scale-[0.99] transition-all group flex items-center justify-between gap-4"
+        >
+          <div className="flex items-center gap-3.5 min-w-0">
+            <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-400/30 backdrop-blur-md flex items-center justify-center shrink-0 shadow-inner group-hover:rotate-6 transition-transform">
+              <Music className="w-6 h-6 text-amber-400" />
+            </div>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-sm sm:text-base font-black truncate">
+                  {isArabic ? '🎵 تراث وموسيقى نصفي الجزائرية' : '🎵 Musique Nisfy • Tendance & Patrimoine'}
+                </span>
+                <span className="px-1.5 py-0.5 rounded-full bg-amber-400 text-slate-950 font-black text-[9px] shrink-0">
+                  AUDIO DZ
+                </span>
+              </div>
+              <p className="text-xs text-slate-300 line-clamp-1">
+                {isArabic
+                  ? 'شعبي، راي، أندلسي، قبائلي وسطايفي لأجواء الأعراس واللقاءات الراقية'
+                  : 'Chaâbi, Raï, Andalou, Kabyle, Staïfi pour vos préparatifs de fête et vos écoutes.'}
+              </p>
+            </div>
+          </div>
+          <div className="shrink-0 flex items-center justify-center w-8 h-8 rounded-full bg-white/10 text-amber-300 group-hover:bg-amber-400 group-hover:text-slate-950 transition-colors">
+            <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+          </div>
         </div>
       </div>
 

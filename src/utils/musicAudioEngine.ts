@@ -2,7 +2,7 @@ import { MusicTrack, NISFY_MUSIC_CATALOG, getAllAvailableTracks } from '../data/
 
 export type AudioPlaybackState = 'playing' | 'paused' | 'stopped';
 
-type MusicEventListener = (track: MusicTrack | null, state: AudioPlaybackState, currentTime: number) => void;
+type MusicEventListener = (track: MusicTrack | null, state: AudioPlaybackState, currentTime: number, duration?: number) => void;
 
 class MusicAudioEngine {
   private ctx: AudioContext | null = null;
@@ -38,7 +38,7 @@ class MusicAudioEngine {
 
   public subscribe(listener: MusicEventListener): () => void {
     this.listeners.add(listener);
-    listener(this.currentTrack, this.playbackState, this.currentTime);
+    listener(this.currentTrack, this.playbackState, this.currentTime, this.duration);
     return () => {
       this.listeners.delete(listener);
     };
@@ -46,7 +46,7 @@ class MusicAudioEngine {
 
   private notify() {
     this.listeners.forEach((listener) => {
-      listener(this.currentTrack, this.playbackState, this.currentTime);
+      listener(this.currentTrack, this.playbackState, this.currentTime, this.duration);
     });
   }
 

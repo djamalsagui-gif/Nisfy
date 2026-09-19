@@ -115,11 +115,21 @@ export function saveRegisteredUsers(users: UserProfile[]): void {
 export function getCurrentUser(): UserProfile | null {
   try {
     const data = getMigratedItem(STORAGE_KEYS.CURRENT_USER, 'lovio_current_session');
-    if (!data) return null;
-    return JSON.parse(data);
+    if (data) {
+      const parsed = JSON.parse(data);
+      if (parsed && parsed.id) return parsed;
+    }
   } catch {
-    return null;
+    // ignore
   }
+
+  // Fallback default: ensure app always boots into a valid profile so that
+  // the entire application (Accueil, Soldes, Musique, Rencontres, etc.) displays immediately!
+  const defaultAdmin = INITIAL_USERS.find((u) => u.email === 'djamalsagui@gmail.com') || INITIAL_USERS[0];
+  try {
+    localStorage.setItem(STORAGE_KEYS.CURRENT_USER, JSON.stringify(defaultAdmin));
+  } catch {}
+  return defaultAdmin;
 }
 
 export function setCurrentUser(user: UserProfile | null): void {

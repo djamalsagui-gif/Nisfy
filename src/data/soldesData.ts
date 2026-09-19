@@ -48,6 +48,20 @@ export interface SoldeItem {
   deliveryTypeFr: string;
   deliveryTypeAr: string;
   createdAt: string;
+  // 🌐 Comparateur de prix sur le web
+  brandOrModel?: string;
+  marketComparison?: {
+    suggestedStorePriceDzd: number;
+    sources: {
+      siteName: string;
+      priceDzd: number;
+      url?: string;
+      inStock: boolean;
+      badge?: string;
+    }[];
+    verdictFr?: string;
+    verdictAr?: string;
+  };
 }
 
 export interface BoostPlan {
@@ -228,6 +242,64 @@ export const INITIAL_SOLDE_ITEMS: SoldeItem[] = [
     deliveryTypeFr: 'Livraison 58 Wilayas Yalidine ou Récupération atelier',
     deliveryTypeAr: 'توصيل ياليدين 58 ولاية أو استلام بالمشغل',
     createdAt: '2026-09-18',
+    brandOrModel: 'Caftan Royal Majorelle Brodé Main',
+    marketComparison: {
+      suggestedStorePriceDzd: 42000,
+      sources: [
+        { siteName: 'Boutiques Mariage Alger (Didouche)', priceDzd: 48000, inStock: true, badge: 'Magasin Physique' },
+        { siteName: 'Boutique Ouedkniss Vendeurs Pro', priceDzd: 38000, inStock: true, badge: 'Web DZ' },
+        { siteName: 'Instagram Ateliers Haute Couture', priceDzd: 45000, inStock: false, badge: 'Sur Commande' }
+      ],
+      verdictFr: 'Économie massive de 22 500 DZD par rapport au prix moyen constaté en boutique (42 000 DZD).',
+      verdictAr: 'توفير استثنائي قدره 22,500 دج مقارنة بمتوسط سعر المحلات وصالونات الخياطة (42,000 دج).'
+    }
+  },
+  {
+    id: 'solde-perfume-1',
+    titleFr: 'Eau de Parfum "Sauvage Elixir" 100ml Flacon Authentique Scellé',
+    titleAr: 'عطر ماركة أصلي "سوفاج إلكسير" 100مل مغلف بغلاف المصنع',
+    category: 'beaute_parfums',
+    categoryLabelFr: 'Parfumerie & Cosmétiques Luxe',
+    categoryLabelAr: 'عطور ومستحضرات تجميل أصلية',
+    originalPriceDzd: 26000,
+    soldePriceDzd: 11900,
+    discountPercent: 54,
+    originalPriceEur: 115,
+    soldePriceEur: 52,
+    condition: 'neuf_destockage',
+    conditionLabelFr: 'Neuf scellé sous blister avec batch code vérifiable',
+    conditionLabelAr: 'جديد ومغلف بالكامل مع كود التحقق من المصنع',
+    sellerName: 'Parfumerie Prestige El Assima',
+    sellerType: 'boutique_certifiee',
+    sellerWilaya: 'Alger (Sidi Yahia)',
+    sellerWilayaCode: '16',
+    phone: '0552334455',
+    whatsapp: '213552334455',
+    images: [
+      'https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=800&auto=format&fit=crop&q=80'
+    ],
+    descriptionFr: 'Eau de parfum intense pour homme et marié, flacon 100ml neuf scellé sous blister d’origine. Batch code vérifiable sur checkfresh. Déstockage fin de série parfumerie franchise.',
+    descriptionAr: 'عطر فاخر أصلي وثابت مناسب للعريس والمناسبات الراقية، عبوة 100مل مغلفة ومختومة بالكامل مع كود الدفعة الأصلي. تصفية مخزون معتمد.',
+    badge: '🔥 OFFRE CHOC PARFUM -54%',
+    endsInHours: 8,
+    stockLeft: 3,
+    initialStock: 15,
+    isFeatured: true,
+    deliveryTypeFr: 'Livraison 58 Wilayas Yalidine avec vérification du flacon',
+    deliveryTypeAr: 'توصيل ياليدين لجميع الولايات مع فحص العلبة قبل الاستلام',
+    createdAt: '2026-09-18',
+    brandOrModel: 'Sauvage Elixir Eau de Parfum 100ml',
+    marketComparison: {
+      suggestedStorePriceDzd: 25000,
+      sources: [
+        { siteName: 'Parfumeries Séphora / Duty Free Europe', priceDzd: 27500, inStock: true, badge: 'Boutique Duty Free' },
+        { siteName: 'Magasins Alger Centre (Didouche / Ben Aknoun)', priceDzd: 24500, inStock: true, badge: 'Magasins Alger' },
+        { siteName: 'Moyenne Web & Ouedkniss (Vendeurs Agréés)', priceDzd: 22000, inStock: true, badge: 'Marché Web DZ' }
+      ],
+      verdictFr: 'Prix imbattable : vous économisez 12 600 DZD par rapport à la moyenne du marché algérien (24 500 DZD).',
+      verdictAr: 'صفقة لا تقبل المنافسة: توفر 12,600 دج مقارنة بمتوسط سعر السوق والمحلات الكبرى (24,500 دج).'
+    }
   },
   {
     id: 'solde-2',
@@ -264,6 +336,17 @@ export const INITIAL_SOLDE_ITEMS: SoldeItem[] = [
     deliveryTypeFr: 'Paiement à la livraison après inspection',
     deliveryTypeAr: 'الدفع عند الاستلام بعد المعاينة والتجربة',
     createdAt: '2026-09-18',
+    brandOrModel: 'Robot Pétrin Inox 1800W 7L',
+    marketComparison: {
+      suggestedStorePriceDzd: 26000,
+      sources: [
+        { siteName: 'Grandes Enseignes Électro DZ', priceDzd: 27900, inStock: true, badge: 'Showroom Officiel' },
+        { siteName: 'Moyenne Ouedkniss Électroménager', priceDzd: 22500, inStock: true, badge: 'Vendeurs Web' },
+        { siteName: 'Commerces Medina Jdida Oran', priceDzd: 25000, inStock: true, badge: 'Boutique' }
+      ],
+      verdictFr: 'Ce prix solde Nisfy (13 900 DZD) vous fait économiser 12 100 DZD sur le prix public habituel.',
+      verdictAr: 'هذا السعر في صولد نصفي (13,900 دج) يوفر لك 12,100 دج مقارنة بسعر السوق المعتاد.'
+    }
   },
   {
     id: 'solde-3',

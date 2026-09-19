@@ -269,6 +269,32 @@ export function Navbar({
             )}
           </button>
 
+          {/* 7. 🔥 Soldes DZ (-70%) Direct Tab */}
+          <button
+            onClick={() => onSelectTab('soldes')}
+            className={`px-3 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'soldes'
+                ? 'bg-red-600 text-white shadow-xs'
+                : 'text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40'
+            }`}
+          >
+            <Flame className={`w-3.5 h-3.5 ${activeTab === 'soldes' ? 'text-amber-200 fill-amber-200' : 'text-red-500 fill-red-500'} animate-pulse`} />
+            <span>{isArabic ? 'الصولد 🔥' : 'Soldes DZ 🔥'}</span>
+          </button>
+
+          {/* 8. 🎵 Musique Direct Tab */}
+          <button
+            onClick={() => onSelectTab('music')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+              activeTab === 'music'
+                ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white shadow-xs'
+                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+            }`}
+          >
+            <Music className={`w-3.5 h-3.5 ${activeTab === 'music' ? 'text-white' : 'text-amber-500'}`} />
+            <span>{isArabic ? 'موسيقى 🎵' : 'Musique 🎵'}</span>
+          </button>
+
           {/* Admin Direct Button (When Super Admin or activeTab === 'admin') */}
           {(isMasterUser || activeTab === 'admin') && (
             <button
@@ -535,6 +561,37 @@ export function Navbar({
             )}
           </div>
 
+          {/* 🏷️ Direct Quick Access: Marché des Soldes DZ */}
+          <button
+            onClick={() => onSelectTab('soldes')}
+            className={`px-3 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
+              activeTab === 'soldes'
+                ? 'bg-red-600 text-white ring-2 ring-red-400/50 shadow-md'
+                : 'bg-red-500 hover:bg-red-600 text-white border border-red-400/50'
+            }`}
+            title="Marché des Soldes & Bonnes Affaires DZ (-70%)"
+          >
+            <Flame className="w-3.5 h-3.5 fill-current animate-pulse text-amber-300" />
+            <span className="font-extrabold">{isArabic ? 'الصولد 🔥' : 'Soldes DZ 🔥'}</span>
+            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-white text-red-700 font-black leading-none">
+              -70%
+            </span>
+          </button>
+
+          {/* 🎵 Direct Quick Access: Musique Nisfy */}
+          <button
+            onClick={() => onSelectTab('music')}
+            className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs ${
+              activeTab === 'music'
+                ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white ring-2 ring-orange-400/50 shadow-md'
+                : 'bg-amber-500/15 hover:bg-amber-500/25 text-amber-900 dark:text-amber-300 border border-amber-500/30'
+            }`}
+            title="Musique algérienne (Chaâbi, Raï, Andalou, Kabyle, Staïfi)"
+          >
+            <Music className="w-3.5 h-3.5 text-amber-500" />
+            <span className="font-bold">{isArabic ? 'موسيقى 🎵' : 'Musique 🎵'}</span>
+          </button>
+
           {/* Minimal Language Toggle */}
           <LanguageSwitcher size="sm" variant="toggle" />
 
@@ -590,6 +647,32 @@ export function Navbar({
                 </div>
 
                 {/* Main Menu Links */}
+                <button
+                  onClick={() => { onSelectTab('soldes'); setShowUserMenu(false); }}
+                  className="w-full px-3 py-2 text-left text-xs font-bold text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/40 rounded-xl flex items-center justify-between transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Flame className="w-4 h-4 text-red-500 fill-current" />
+                    <span>{isArabic ? 'سوق الصولد والهمزات الكبرى' : 'Marché des Soldes (-70%)'}</span>
+                  </div>
+                  <span className="px-1.5 py-0.5 rounded-full bg-red-600 text-white text-[9px] font-black">
+                    PROMO
+                  </span>
+                </button>
+
+                <button
+                  onClick={() => { onSelectTab('music'); setShowUserMenu(false); }}
+                  className="w-full px-3 py-2 text-left text-xs font-bold text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-950/40 rounded-xl flex items-center justify-between transition-colors cursor-pointer"
+                >
+                  <div className="flex items-center gap-2.5">
+                    <Music className="w-4 h-4 text-amber-500" />
+                    <span>{isArabic ? 'الموسيقى والتراث الجزائري' : 'Nisfy Musique DZ'}</span>
+                  </div>
+                  <span className="px-1.5 py-0.5 rounded-full bg-amber-500 text-white text-[9px] font-black">
+                    AUDIO
+                  </span>
+                </button>
+
                 <button
                   onClick={() => { onSelectTab('profile'); setShowUserMenu(false); }}
                   className="w-full px-3 py-2 text-left text-xs font-semibold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl flex items-center gap-2.5 transition-colors cursor-pointer"
@@ -749,6 +832,78 @@ export function Navbar({
                 </button>
               </div>
             )}
+          </div>
+        </div>
+      </div>
+
+      {/* 🌟 Ultra-Visible Secondary Quick-Access Bar (Always visible on all screen sizes) */}
+      <div className="bg-slate-100/90 dark:bg-slate-800/90 border-b border-slate-200/80 dark:border-slate-750 px-3 py-1.5 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex items-center justify-between gap-2 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="text-[11px] font-black uppercase text-slate-400 dark:text-slate-500 tracking-wider hidden sm:inline">
+              {isArabic ? 'وصول سريع :' : 'Accès Direct :'}
+            </span>
+
+            {/* 🏷️ BOUTON SOLDES DZ (-70%) */}
+            <button
+              onClick={() => onSelectTab('soldes')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                activeTab === 'soldes'
+                  ? 'bg-red-600 text-white ring-2 ring-red-400'
+                  : 'bg-red-500 hover:bg-red-600 text-white shadow-xs'
+              }`}
+            >
+              <Flame className="w-3.5 h-3.5 text-amber-300 fill-amber-300 animate-pulse" />
+              <span>{isArabic ? 'سوق الصولد والهمزات (-70%)' : 'Soldes DZ 🔥'}</span>
+              <span className="px-1.5 py-0.2 rounded-full bg-white text-red-700 text-[9px] font-black">
+                -70%
+              </span>
+            </button>
+
+            {/* 🎵 BOUTON MUSIQUE DZ */}
+            <button
+              onClick={() => onSelectTab('music')}
+              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                activeTab === 'music'
+                  ? 'bg-gradient-to-r from-[#FF6B35] to-[#FF3823] text-white ring-2 ring-orange-400'
+                  : 'bg-amber-500 hover:bg-amber-600 text-slate-950 font-black shadow-xs'
+              }`}
+            >
+              <Music className="w-3.5 h-3.5" />
+              <span>{isArabic ? 'قسم الموسيقى والتراث 🎵' : 'Musique 🎵'}</span>
+            </button>
+
+            {/* 💍 Dar Wa Drouj / Contrats */}
+            <button
+              onClick={() => onSelectTab('wedding_contracts')}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'wedding_contracts'
+                  ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-black'
+                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 border border-slate-200 dark:border-slate-600'
+              }`}
+            >
+              <FileCheck2 className="w-3.5 h-3.5 text-amber-500" />
+              <span>{isArabic ? 'عقود الأعراس' : 'Contrats 📑'}</span>
+            </button>
+
+            {/* 🛍️ Vitrine Produits */}
+            <button
+              onClick={() => onSelectTab('shop')}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer ${
+                activeTab === 'shop'
+                  ? 'bg-emerald-600 text-white font-black'
+                  : 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 hover:bg-slate-50 border border-slate-200 dark:border-slate-600'
+              }`}
+            >
+              <ShoppingBag className="w-3.5 h-3.5 text-emerald-600" />
+              <span>{isArabic ? 'سوق المنتجات' : 'Vitrine Boutique'}</span>
+            </button>
+          </div>
+
+          <div className="hidden md:flex items-center gap-2 shrink-0">
+            <span className="text-[11px] font-semibold text-slate-500 dark:text-slate-400">
+              🇩🇿 Nisfy • 58 Wilayas & Diaspora
+            </span>
           </div>
         </div>
       </div>
